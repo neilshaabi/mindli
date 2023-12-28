@@ -20,14 +20,14 @@ class Config(object):
 
 
 # Config values for running app in development
-class Dev(Config):
+class DevConfig(Config):
     DEBUG: bool = True
     RESET_DB: bool = True
     SQLALCHEMY_DATABASE_URI: str = f"sqlite:///{os.path.join(basedir, 'mindli.sqlite')}"
 
 
 # Config values for running app in production
-class Prod(Config):
+class ProdConfig(Config):
     DEBUG: bool = False
     RESET_DB: bool = False
     SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]

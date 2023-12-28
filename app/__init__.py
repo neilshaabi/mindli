@@ -5,11 +5,11 @@ from flask_login import LoginManager
 from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
 
-from app.config import Dev, Prod
+from app.config import DevConfig, ProdConfig
 from app.db import User, db, insertTestData
 
 app = Flask(__name__)
-app.config.from_object(Prod if os.environ["ENV"] == "prod" else Dev)
+app.config.from_object(ProdConfig if os.environ["ENV"] == "prod" else DevConfig)
 
 # Set up database
 db.init_app(app)
