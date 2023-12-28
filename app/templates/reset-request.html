@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 
 {% block title %}
     Reset Password
@@ -6,21 +6,21 @@
 
 {% block main %}
 
-    <div class="page-header"></div>
+    <div class='page-header'></div>
 
-    <div class="container">
+    <div class='container'>
         <h3>Reset password</h3>
         <p>Please enter the email address that is <br> associated with your account</p>
-        <form id="reset-request-form">
-            <div class="form-floating">
-                <input type="email" id="email" name="email" placeholder="Email address" class="form-control">
-                <label for="email">Email address</label>
+        <form id='reset-request-form'>
+            <div class='form-floating'>
+                <input type='email' id='email' name='email' placeholder='Email address' class='form-control'>
+                <label for='email'>Email address</label>
             </div>
-            <div id="error-alert" class="alert alert-danger" style="display: none;"></div>
-            <button type="submit" class="btn btn-primary">
-                <span class="btn-text">Reset Password</span>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                <span class="visually-hidden">Loading...</span>
+            <div id='error-alert' class='alert alert-danger' style='display: none;'></div>
+            <button type='submit' class='btn btn-primary'>
+                <span class='btn-text'>Reset Password</span>
+                <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                <span class='visually-hidden'>Loading...</span>
             </button>
         </form>
     </div>

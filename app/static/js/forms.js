@@ -3,11 +3,11 @@ $(document).ready(function() {
     // Toggles loading button
     function showLoadingBtn(isLoading) {
         if (isLoading == true) {
-            $(':input[type="submit"]').prop('disabled', true);
+            $(':input[type='submit']').prop('disabled', true);
             $('.btn-text').hide();
             $('.spinner-border').show();
         } else {
-            $(':input[type="submit"]').prop('disabled', false);
+            $(':input[type='submit']').prop('disabled', false);
             $('.btn-text').show();
             $('.spinner-border').hide();
         }
@@ -190,14 +190,14 @@ $(document).ready(function() {
         showLoadingBtn(true);
 
         // Displays error message if user is not logged in
-        if ($('.btn-primary:submit').attr('data-authenticated') == "False") {
+        if ($('.btn-primary:submit').attr('data-authenticated') == 'False') {
             showLoadingBtn(false);
-            $('#error-alert').html("Please <a href='/login'>sign in</a> to purchase a membership").show();
+            $('#error-alert').html('Please <a href='/login'>sign in</a> to purchase a membership').show();
             return;
         }
 
         // Handles selection of each membership type
-        if ($('#student-info').is(":visible")) {
+        if ($('#student-info').is(':visible')) {
             var membership_type = 'Student';
             var student_id = $('#student_id').val();
         } else {

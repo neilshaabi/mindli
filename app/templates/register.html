@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+{% extends 'layout.html' %}
 
 {% block title %}
     Register
@@ -6,34 +6,34 @@
 
 {% block main %}
 
-    <div class="page-header"></div>
+    <div class='page-header'></div>
 
-    <div class="container">
+    <div class='container'>
         <h3>Create account</h3>
-        <p>Have an account? <a href="/login">Sign in</a></p>
-        <form id="register-form">
-            <div class="form-floating">
-                <input type="text" id="first_name" placeholder="First name" class="form-control">
-                <label for="first_name">First name</label>
+        <p>Have an account? <a href='/login'>Sign in</a></p>
+        <form id='register-form'>
+            <div class='form-floating'>
+                <input type='text' id='first_name' placeholder='First name' class='form-control'>
+                <label for='first_name'>First name</label>
             </div>
-            <div class="form-floating">
-                <input type="text" id="last_name" placeholder="Last name" class="form-control">
-                <label for="last_name">Last name</label>
+            <div class='form-floating'>
+                <input type='text' id='last_name' placeholder='Last name' class='form-control'>
+                <label for='last_name'>Last name</label>
             </div>
-            <div class="form-floating">
-                <input type="email" id="email" placeholder="Email address" class="form-control">
-                <label for="email">Email</label>
+            <div class='form-floating'>
+                <input type='email' id='email' placeholder='Email address' class='form-control'>
+                <label for='email'>Email</label>
             </div>
-            <div class="form-floating">
-                <input type="password" id="password" placeholder="Password" class="form-control">
-                <label for="password">Password</label>
+            <div class='form-floating'>
+                <input type='password' id='password' placeholder='Password' class='form-control'>
+                <label for='password'>Password</label>
             </div>
-            <div class="description">At least 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number</div>
-            <div id="error-alert" class="alert alert-danger" style="display: none;"></div>
-            <button type="submit" class="btn btn-primary">
-                <span class="btn-text">Register</span>
-                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
-                <span class="visually-hidden">Loading...</span>
+            <div class='description'>At least 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number</div>
+            <div id='error-alert' class='alert alert-danger' style='display: none;'></div>
+            <button type='submit' class='btn btn-primary'>
+                <span class='btn-text'>Register</span>
+                <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                <span class='visually-hidden'>Loading...</span>
             </button>
         </form>
     </div>

@@ -29,7 +29,7 @@ $(document).ready(function() {
 
         // // Show section whose id contains the matching membership type
         var id = (event.target.id).split('-')[0];
-        $(".membership-info[id^='" + id + "']").show();
+        $('.membership-info[id^='' + id + '']').show();
 
         // // Update styling of selected toggle
         $('.toggle').removeClass('active-toggle');
@@ -44,7 +44,7 @@ $(document).ready(function() {
 
         // Show swiper whose id contains the matching exec type
         var id = (event.target.id).split('-')[0];
-        $(".team-swiper[id^='" + id + "']").show();
+        $('.team-swiper[id^='' + id + '']').show();
 
         // Update styling of selected toggle
         $('.team-toggle').removeClass('active-toggle');
@@ -115,7 +115,7 @@ $(document).ready(function() {
         direction: 'horizontal',
         grabCursor: 'true',
         spaceBetween: 25,
-        slidesPerView: "1",
+        slidesPerView: '1',
         loop: true,
 
         autoplay: {
@@ -131,16 +131,16 @@ $(document).ready(function() {
     });
 
     // Member list search bar
-    $("#search").on('input', function() {
+    $('#search').on('input', function() {
 
-        var input = $("#search").val().toLowerCase();
-        var rows = $("tbody > tr");
+        var input = $('#search').val().toLowerCase();
+        var rows = $('tbody > tr');
 
         // Show all rows initially
         $(rows).show();
 
         // Do not hide any rows if search term is empty
-        if (input == "") {
+        if (input == '') {
             return;
         }
 
@@ -150,7 +150,7 @@ $(document).ready(function() {
             var thisRow = rows[i];
             var cells = thisRow.getElementsByTagName('td');
 
-            var fullName = (cells[1].innerText + " " + cells[2].innerText).toLowerCase();
+            var fullName = (cells[1].innerText + ' ' + cells[2].innerText).toLowerCase();
             var studentID = cells[3].innerText;
 
             // Hide row if it does not contain the search term
