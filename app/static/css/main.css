@@ -239,10 +239,6 @@ input:-webkit-autofill:focus {
     font-weight: 300;
 }
 
-#home-page .social-icons {
-    margin-top: 70px;
-}
-
 
 /* Miscellaneous */
 
@@ -271,15 +267,4 @@ input:-webkit-autofill:focus {
 
 i {
     margin-right: 7px;
-}
-
-.social-link i {
-    color: white;
-    font-size: 1.5rem;
-    margin-right: 15px;
-    transition: all 0.3s ease;
-}
-
-.social-link i:hover {
-    transform: translateY(-5px);
 }
