@@ -173,7 +173,7 @@ def email_verification(token):
     # Invalid/expired token
     except:
         flash(
-            'Invalid or expired verification link, please sign in to request a new link'
+            'Invalid or expired verification link, please log in to request a new link'
         )
 
     return redirect('/')
