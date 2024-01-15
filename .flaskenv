@@ -1,4 +1,4 @@
-FLASK_APP=mindli.py
+FLASK_APP=run.py
 FLASK_DEBUG=True
 ENV=dev
 SECRET_KEY=
