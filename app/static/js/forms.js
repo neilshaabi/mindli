@@ -17,6 +17,7 @@ $(document).ready(function() {
     // Registration handler using AJAX
     $('#register-form').on('submit', function(event) {
 
+        event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
@@ -41,13 +42,13 @@ $(document).ready(function() {
                 }
             }
         );
-        event.preventDefault();
     });
 
 
     // Login handler using AJAX
     $('#login-form').on('submit', function(event) {
-
+        
+        event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
@@ -69,13 +70,13 @@ $(document).ready(function() {
                 }
             }
         );
-        event.preventDefault();
     });
 
 
     // Resend email verification handler using AJAX
     $('#verify-email-form').on('submit', function(event) {
 
+        event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
@@ -84,13 +85,13 @@ $(document).ready(function() {
                 showLoadingBtn(false);
             }
         );
-        event.preventDefault();
     });
 
 
     // Password reset request handler using AJAX
     $('#reset-request-form').on('submit', function(event) {
 
+        event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
@@ -112,13 +113,13 @@ $(document).ready(function() {
                 }
             }
         );
-        event.preventDefault();
     });
 
 
     // Password reset handler using AJAX
     $('#reset-password-form').on('submit', function(event) {
 
+        event.preventDefault();
         showLoadingBtn(true)
 
         $.post(
@@ -138,11 +139,10 @@ $(document).ready(function() {
 
                 // Redirect to home page if successful
                 else {
+                    console.log(data)
                     window.location = data;
                 }
             }
         );
-        event.preventDefault();
     });
-
 });
