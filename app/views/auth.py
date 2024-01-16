@@ -2,9 +2,9 @@ from datetime import date
 
 from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
                    render_template, request, session, url_for)
-from flask_login import current_user, login_user, logout_user
+from flask_login import login_user, logout_user
+from itsdangerous import BadSignature, SignatureExpired
 from markupsafe import escape
-from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, mail
@@ -103,8 +103,10 @@ def login() -> Response:
         # Find user with this email
         user = User.query.filter_by(email=email).first()
 
-        # Check if user with this email does not exist or if password is incorrect
-        if user is None or not check_password_hash(user.password_hash, password):
+        # Check if user exists and password is correct
+        if user is None or (
+            not check_password_hash(user.password_hash, password)
+        ):
             error = "Incorrect email/password"
 
         # Check if user's email has been verified
@@ -153,7 +155,7 @@ def verify_email() -> Response:
         return render_template("verify-email.html", email=session["email"])
 
 
-# Directed to by link in verification emails, handles email verification using token
+# Handles email verification using token
 @bp.route("/email-verification/<token>")
 def email_verification(token):
     # Get email from token
@@ -172,9 +174,10 @@ def email_verification(token):
         flash("Success! Your email address has been verified")
 
     # Invalid/expired token
-    except:
+    except (BadSignature, SignatureExpired):
         flash(
-            "Invalid or expired verification link, please log in to request a new link"
+            "Invalid or expired verification link, "
+            "please log in to request a new link"
         )
 
     return redirect(url_for("main.index"))
@@ -243,9 +246,10 @@ def reset_request() -> Response:
         return render_template("reset-request.html")
 
 
-# Directed to by link in password reset emails, displays page to update password
+# Displays page to update password
 @bp.route("/reset-password/<token>")
 def reset_password(token):
+
     # Get email from token
     try:
         email = current_app.serialiser.loads(
@@ -254,6 +258,9 @@ def reset_password(token):
         return render_template("reset-password.html", email=email)
 
     # Invalid/expired token
-    except:
-        flash("Invalid or expired reset link, please request another password reset")
+    except (BadSignature, SignatureExpired):
+        flash(
+            "Invalid or expired reset link, "
+            "please request another password reset"
+        )
         return redirect(url_for("main.index"))

@@ -8,7 +8,7 @@ def test_get_index(client: FlaskClient):
     THEN check that the response is valid
     """
     get_response = client.get("/")
-    assert get_response.status_code == 20
+    assert get_response.status_code == 200
 
 
 def test_post_index(client: FlaskClient):

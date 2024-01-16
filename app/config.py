@@ -8,7 +8,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 
 # Default config values
 class Config(object):
-    SECRET_KEY: str = os.environ["SECRET_KEY"]  # Generated with os.urandom(12).hex()
+    SECRET_KEY: str = os.environ["SECRET_KEY"]  # os.urandom(12).hex()
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
     # Flask Mail setup
@@ -25,7 +25,9 @@ class Config(object):
 class DevConfig(Config):
     DEBUG: bool = True
     RESET_DB: bool = True
-    SQLALCHEMY_DATABASE_URI: str = f"sqlite:///{os.path.join(basedir, 'mindli.sqlite')}"
+    SQLALCHEMY_DATABASE_URI: str = (
+        "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
+    )
 
 
 class ProdConfig(Config):

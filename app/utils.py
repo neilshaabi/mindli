@@ -39,8 +39,14 @@ def sendEmailWithToken(
     return
 
 
-# Returns a dictionary with text to include in an email depending on the subject
 def getMsg(token, subject: str):
-    return ""
+    """
+    Returns a dictionary with text to include
+    in an email depending on the subject
+    """
+    body = "TODO"
+    btn_text = "TODO"
+    route = "TODO"
+
     link = url_for(route, token=token, _external=True)
     return [body, link, btn_text]

@@ -26,7 +26,9 @@ class User(UserMixin, db.Model):
     """Model of a User stored in the database"""
 
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    email: so.Mapped[str] = so.mapped_column(sa.String(254), index=True, unique=True)
+    email: so.Mapped[str] = so.mapped_column(
+        sa.String(254), index=True, unique=True
+    )
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(256))
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     last_name: so.Mapped[str] = so.mapped_column(sa.String(50))
@@ -36,7 +38,10 @@ class User(UserMixin, db.Model):
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
 
     def __repr__(self) -> str:
-        """Returns a string representing a user with their id and email address"""
+        """
+        Returns a string representing a user with
+        their id and email address, used by print()
+        """
         return f"<User {self.id}: {self.email}>"
 
 
