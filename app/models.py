@@ -1,6 +1,6 @@
 from datetime import date
 from enum import Enum
-from typing import List, Optional
+from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -9,9 +9,11 @@ from werkzeug.security import generate_password_hash
 
 from app import db, login_manager
 
+
 @login_manager.user_loader
 def load_user(user_id: str):
     return User.query.get(int(user_id))
+
 
 class UserRole(Enum):
     """Enumeration for the user role (client or therapist)"""

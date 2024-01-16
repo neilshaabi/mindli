@@ -1,6 +1,9 @@
 import os
 
+from dotenv import load_dotenv
+
 basedir: str = os.path.abspath(os.path.dirname(__file__))
+load_dotenv(os.path.join(basedir, ".env"))
 
 
 # Default config values
@@ -19,21 +22,28 @@ class Config(object):
     MAIL_SUPPRESS_SEND: bool = False
 
 
-# Config values for running app in development
 class DevConfig(Config):
     DEBUG: bool = True
     RESET_DB: bool = True
     SQLALCHEMY_DATABASE_URI: str = f"sqlite:///{os.path.join(basedir, 'mindli.sqlite')}"
 
 
-# Config values for running app in production
 class ProdConfig(Config):
     DEBUG: bool = False
     RESET_DB: bool = False
     SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
 
-class TestConfig(Config):
-    TESTING = True
-    SQLALCHEMY_DATABASE_URI = 'sqlite://'
 
-config = ProdConfig if os.environ["ENV"] == "prod" else DevConfig
+class TestConfig(Config):
+    TESTING: bool = True
+    RESET_DB: bool = False
+    SQLALCHEMY_DATABASE_URI: str = "sqlite://"  # Use in-memory database
+
+
+CONFIGS: "dict[str, Config]" = {
+    "dev": DevConfig,
+    "prod": ProdConfig,
+    "test": TestConfig,
+}
+
+selected_config = CONFIGS[os.environ["ENV"]]

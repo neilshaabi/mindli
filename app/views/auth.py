@@ -1,27 +1,18 @@
 from datetime import date
 
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
+                   render_template, request, session, url_for)
 from flask_login import current_user, login_user, logout_user
 from markupsafe import escape
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, mail
-from app.db import User
+from app.models import User
 from app.utils import isValidPassword, sendEmailWithToken
 
 bp = Blueprint("auth", __name__)
+
 
 @bp.route("/")
 @bp.route("/index")
@@ -84,7 +75,11 @@ def register() -> Response:
 
             # Send verification email and redirect to home page
             sendEmailWithToken(
-                current_app.serialiser, mail, user.first_name, user.email, "Email Verification"
+                current_app.serialiser,
+                mail,
+                user.first_name,
+                user.email,
+                "Email Verification",
             )
             session["email"] = email
             return url_for("verify_email")
@@ -147,7 +142,11 @@ def verify_email() -> Response:
     # Sends verification email to user (POST used to utilise AJAX)
     if request.method == "POST":
         sendEmailWithToken(
-            current_app.serialiser, mail, user.first_name, user.email, "Email Verification"
+            current_app.serialiser,
+            mail,
+            user.first_name,
+            user.email,
+            "Email Verification",
         )
         return ""
     else:
@@ -200,7 +199,11 @@ def reset_request() -> Response:
             # Send reset email
             else:
                 sendEmailWithToken(
-                    current_app.serialiser, mail, user.first_name, user.email, "Password Reset"
+                    current_app.serialiser,
+                    mail,
+                    user.first_name,
+                    user.email,
+                    "Password Reset",
                 )
                 flash("Password reset instructions sent to {}".format(email))
                 return url_for("main.index")
