@@ -1,9 +1,13 @@
 :root {
-    --accent-primary: #ff4545;
-    --accent-dark: #dd2323;
-    --dark-grey: #111;
-    --mid-grey: #222;
-    --light-grey: rgba(255, 255, 255, 0.55);
+    
+    --accent-primary: #635bff;
+    --accent-dark: #533afd;
+
+    --light-grey-bg: #f8fafc;
+    --light-grey-outline: #e0e1e4;
+    --light-grey-text: #6c7888;
+    --dark-grey-text: #414552;
+
     --content-width: 80%;
 }
 
@@ -22,7 +26,7 @@ body {
     min-height: -webkit-fill-available;
     width: 100vw;
     height: 100%;
-    background: var(--dark-grey);
+    background: var(--light-grey-bg);
 }
 
 main {
@@ -37,6 +41,7 @@ nav {
     position: absolute;
     top: 0;
     left: 0;
+    background: white;
 }
 
 
@@ -79,18 +84,16 @@ a:hover {
 }
 
 .form-control {
-    color: white;
-    background: var(--mid-grey);
+    color: var(--dark-grey-text);
+    background: white;
     font-size: 0.9rem;
-    margin: 10px 0;
-    border-color: var(--light-grey);
+    margin: 12px 0;
+    border-color: var(--light-grey-outline);
 }
 
 .form-control:focus {
-    color: white;
-    background: var(--mid-grey);
-    background-color: var(--mid-grey);
-    border-color: white;
+    color: var(--dark-grey-text);
+    border-color: var(--dark-grey-text);
     outline: none;
     box-shadow: none;
 }
@@ -98,7 +101,7 @@ a:hover {
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus {
-    -webkit-text-fill-color: white;
+    -webkit-text-fill-color: var(--dark-grey-text);
     -webkit-box-shadow: none;
     box-shadow: none;
     transition: all 0s 50000s;
@@ -140,7 +143,6 @@ input:-webkit-autofill:focus {
 /* Containers */
 
 .page-header {
-    color: white;
     padding: 30px;
     padding-top: 7vh;
     padding-bottom: 20px;
@@ -148,8 +150,9 @@ input:-webkit-autofill:focus {
 }
 
 .container {
-    color: white;
-    background: var(--mid-grey);
+    color: var(--dark-grey-text);
+    background: white;
+    box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
     width: 30%;
     padding: 40px;
     border-radius: 5px;
@@ -181,30 +184,18 @@ input:-webkit-autofill:focus {
     .container {
         width: var(--content-width);
     }
-
-    .calendar-month {
-        display: none;
-    }
-
-    .calendar-agenda {
-        display: block !important;
-    }
-
-    .page-header {
-        padding-top: 30px !important;
-    }
 }
 
 .container .description,
 .container .description a {
-    color: var(--light-grey);
+    color: var(--light-grey-text);
     text-align: left;
     font-size: 0.8rem;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
 }
 
 .container .description a:hover {
-    color: white;
+    color: var(--dark-grey-text);
 }
 
 .container .btn {
@@ -216,7 +207,7 @@ input:-webkit-autofill:focus {
 /* Home page */
 
 #home-page {
-    color: white;
+    color: var(--dark-grey-text);
     align-items: center;
     justify-content: left;
     text-align: left;
@@ -248,8 +239,8 @@ input:-webkit-autofill:focus {
 }
 
 .flashed-message {
-    color: var(--light-grey);
-    background: var(--dark-grey);
+    color: var(--dark-grey-text);
+    background: var(--light-grey-bg);
     border: none;
     z-index: 99;
     margin: 0;
