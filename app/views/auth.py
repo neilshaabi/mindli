@@ -29,7 +29,9 @@ def logout() -> Response:
 
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response:
+    
     if request.method == "POST":
+
         # Get form data
         first_name = escape(request.form.get("first_name"))
         last_name = escape(request.form.get("last_name"))
@@ -189,9 +191,12 @@ def email_verification(token):
 # Handles password resets by sending emails and updating the database
 @bp.route("/reset-password", methods=["GET", "POST"])
 def reset_request() -> Response:
+    
     if request.method == "POST":
+        
         # Form submitted to request a password reset
         if request.form.get("form-type") == "request":
+            
             # Get form data
             email = request.form.get("email").lower()
 
