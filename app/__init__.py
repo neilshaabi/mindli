@@ -29,15 +29,15 @@ def create_app(config: Config = selected_config):
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
     # Reset database
-    from app.models import resetDatabase
-
+    from app.models import insertDummyData
     if app.config["RESET_DB"]:
         with app.app_context():
-            resetDatabase()
+            db.drop_all()
+            db.create_all()
+            insertDummyData()
 
     # Register blueprints
     from app.views import auth, main
-
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
 

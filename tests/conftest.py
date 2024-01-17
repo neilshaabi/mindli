@@ -7,12 +7,11 @@ from app.config import TestConfig
 
 
 @pytest.fixture()
-def app():
+def app() -> Flask:
     app = create_app(config=TestConfig)
-
     with app.app_context():
         db.create_all()
-    yield app
+    return app
 
 
 @pytest.fixture()

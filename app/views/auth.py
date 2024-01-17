@@ -95,7 +95,9 @@ def register() -> Response:
 # Logs user in if credentials are valid
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response:
+    
     if request.method == "POST":
+        
         # Get form data
         email = request.form.get("email").lower()
         password = request.form.get("password")
@@ -130,6 +132,7 @@ def login() -> Response:
 # Displays page with email verification instructions, sends verification email
 @bp.route("/verify-email", methods=["GET", "POST"])
 def verify_email() -> Response:
+    
     # Get user with email stored in session
     user = (
         User.query.filter_by(email=session["email"]).first()

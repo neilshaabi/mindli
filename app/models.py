@@ -45,33 +45,28 @@ class User(UserMixin, db.Model):
         return f"<User {self.id}: {self.email}>"
 
 
-def resetDatabase() -> None:
+def insertDummyData() -> None:
     """Insert dummy data into database"""
 
-    # Reset database
-    db.drop_all()
-    db.create_all()
-
-    # Sample list of users
     users: List[User] = [
         User(
-            email="neilshaabi@gmail.com",
-            password_hash=generate_password_hash("n"),
-            first_name="Neil",
-            last_name="Shaabi",
+            email="client@example.com",
+            password_hash=generate_password_hash("password"),
+            first_name="John",
+            last_name="Smith",
             date_joined=date.today(),
-            role=UserRole.THERAPIST,
+            role=UserRole.CLIENT,
             verified=True,
             active=True,
         ),
         User(
-            email="neil.shaabi@warwick.ac.uk",
-            password_hash=generate_password_hash("n"),
-            first_name="John",
+            email="therapist@example.com",
+            password_hash=generate_password_hash("password"),
+            first_name="Jane",
             last_name="Doe",
             date_joined=date.today(),
-            role=UserRole.CLIENT,
-            verified=False,  # Assuming the client's email is not yet verified
+            role=UserRole.THERAPIST,
+            verified=False,
             active=True,
         ),
     ]
