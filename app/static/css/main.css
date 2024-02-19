@@ -155,7 +155,7 @@ input:-webkit-autofill:focus {
     border: none;
 }
 
-@media only screen and (max-width: 992px) {
+@media only screen and (max-width: 991px) {
     .container {
         width: 80%;
     }
