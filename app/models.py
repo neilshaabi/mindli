@@ -1,6 +1,6 @@
 from datetime import date
 from enum import Enum
-from typing import List
+from typing import List, Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -16,15 +16,17 @@ def load_user(user_id: str):
 
 
 class UserRole(Enum):
-    """Enumeration for the user role (client or therapist)"""
-
     CLIENT = "client"
     THERAPIST = "therapist"
 
+class DeliveryMethod(Enum):
+    INPERSON = "in-person"
+    TEXT = "text"
+    AUDIO = "audio"
+    VIDEO = "video"
+
 
 class User(UserMixin, db.Model):
-    """Model of a User stored in the database"""
-
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     email: so.Mapped[str] = so.mapped_column(
         sa.String(254), index=True, unique=True
@@ -37,17 +39,67 @@ class User(UserMixin, db.Model):
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
 
+    therapist: so.Mapped[Optional["Therapist"]] = so.relationship(
+        back_populates="user"
+    )
+
     def __repr__(self) -> str:
-        """
-        Returns a string representing a user with
-        their id and email address, used by print()
-        """
-        return f"<User {self.id}: {self.email}>"
+        return f"<User({self.id}: {self.email}>"
+
+
+therapist_specialisation = sa.Table(
+    "therapist_specialisation",
+    db.Model.metadata,
+    sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
+    sa.Column("specialisation_id", sa.ForeignKey("specialisation.id"), primary_key=True),
+)
+
+therapist_intervention = sa.Table(
+    "therapist_intervention",
+    db.Model.metadata,
+    sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
+    sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
+)
+
+
+class Therapist(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    
+    # TODO
+    # country: so.Mapped[str] = so.mapped_column(sa.String(50))
+    # languages: so.Mapped[str] = so.mapped_column(sa.String(50))
+    # location: so.Mapped[str]
+    # session_fees: 
+    delivery_methods: so.Mapped[str] = so.mapped_column(sa.Enum(DeliveryMethod))
+
+    user: so.Mapped["User"] = so.relationship(back_populates="therapist")
+    specialisations: so.Mapped[List["Specialisation"]] = so.relationship(
+        secondary=therapist_specialisation, back_populates="therapists"
+    )
+    interventions: so.Mapped[List["Intervention"]] = so.relationship(
+        secondary=therapist_intervention, back_populates="therapists"
+    )
+
+
+class Specialisation(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
+    
+    therapists: so.Mapped[List[Therapist]] = so.relationship(
+        secondary=therapist_specialisation, back_populates="specialisations"
+    )
+
+class Intervention(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
+    
+    therapists: so.Mapped[List[Therapist]] = so.relationship(
+        secondary=therapist_intervention, back_populates="interventions"
+    )
 
 
 def insertDummyData() -> None:
-    """Insert dummy data into database"""
-
     users: List[User] = [
         User(
             email="client@example.com",
