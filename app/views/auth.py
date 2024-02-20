@@ -100,30 +100,40 @@ def login() -> Response:
     
     if request.method == "POST":
         
+        errors: dict[str,str] = {}
+        
         # Get form data
         email = request.form.get("email").lower()
         password = request.form.get("password")
 
-        # Find user with this email
-        user = User.query.filter_by(email=email).first()
+        # Validate input
+        if not email:
+            errors['email'] = 'Email is required'
+        if not password:
+            errors['password'] = 'Password is required'
 
-        # Check if user exists and password is correct
-        if user is None or (
-            not check_password_hash(user.password_hash, password)
-        ):
-            error = "Incorrect email/password"
+        else:
+        
+            # Find user with this email
+            user = User.query.filter_by(email=email).first()
+
+            # Check if user exists and password is correct
+            if user is None or not check_password_hash(user.password_hash, password):
+                errors['password'] = 'Incorrect email/password'
+        
+        # If there are errors, don't proceed to check the user
+        if errors:
+            return jsonify({'errors': errors})
 
         # Check if user's email has been verified
-        elif not user.verified:
+        if not user.verified:
+            # Store the email in the session to use in the email verification process
             session["email"] = email
-            return url_for("verify_email")
+            return jsonify({'url': url_for("auth.verify_email")})
 
         # Log user in and redirect to home page
-        else:
-            login_user(user)
-            return url_for("main.index")
-
-        return jsonify({"error": error})
+        login_user(user)
+        return jsonify({'url': url_for("main.index")})
 
     # Request method is GET
     else:

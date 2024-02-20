@@ -1,3 +1,8 @@
+// Define a function to generate HTML code to display errors
+function createErrorHTML(message) {
+    return $('<div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> ' + message + '</div>');
+}
+
 $(document).ready(function() {
 
     // Toggles loading button
@@ -12,6 +17,22 @@ $(document).ready(function() {
             $('.spinner-border').hide();
         }
     }
+
+    // Event listener for the toggle button
+    $('#togglePassword').click(function() {
+        
+        // Toggle the type attribute of the password field
+        const passwordFieldType = $('#password').attr('type') === 'password' ? 'text' : 'password';
+        $('#password').attr('type', passwordFieldType);
+
+        // Toggle the icon class
+        const icon = $(this).find('i');
+        if (passwordFieldType === 'password') {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
 
 
     // Registration handler using AJAX
@@ -57,16 +78,27 @@ $(document).ready(function() {
                 'password': $('#password').val()
             },
             function(data) {
-
+                
                 // Display error message if unsuccessful
-                if (data.error) {
+                if (data.errors) {
+                    
                     showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
+
+                    // Clear previous errors
+                    $('.error-message').remove();
+
+                    // Display new errors below corresponding input fields
+                    for (const key in data.errors) {
+                        const inputField = $('#' + key);
+                        const errorMessage = createErrorHTML(data.errors[key]);
+                        inputField.after(errorMessage);
+                        inputField.addClass('input-error');
+                    }   
                 }
 
-                // Redirect to home page if successful
+                // Redirect to next page if successful
                 else {
-                    window.location = data;
+                    window.location = data.url;
                 }
             }
         );

@@ -10,8 +10,12 @@
     --light-grey-text: #6c7888;
     --dark-grey-text: #414552;
 
+    --my-form-padding: 1rem 0.75rem;
+    --my-form-height: calc(3.5rem + 2px);
     --my-border-radius: 5px;
     --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
+
+    --my-transition: ease all 0.15s;
 }
 
 * {
@@ -46,6 +50,7 @@ nav {
     left: 0;
     background: white;
     box-shadow: var(--my-box-shadow);
+    z-index: 1000;
 }
 
 
@@ -59,7 +64,7 @@ h3 {
 a {
     color: var(--accent-primary);
     text-decoration: none;
-    transition: all 0.2s ease;
+    transition: var(--my-transition);
 }
 
 a:hover {
@@ -78,7 +83,9 @@ i {
     text-align: left;
 }
 
-.form-control {
+.form-floating .form-control {
+    height: var(--my-form-height);
+    padding: var(--my-form-padding);
     color: var(--dark-grey-text);
     background: white;
     border-color: var(--light-grey-outline);
@@ -90,6 +97,7 @@ i {
 .form-control:focus {
     color: var(--dark-grey-text);
     border-color: var(--dark-grey-text);
+    border-color: var(--accent-primary);
     outline: none;
     box-shadow: none;
 }
@@ -103,6 +111,16 @@ input:-webkit-autofill:focus {
     transition: all 0s 50000s;
 }
 
+.input-error {
+    border: solid 1px red;
+}
+
+.error-message {
+    color: red;
+    font-size: 0.8rem;
+    margin: 5px 0;
+}
+
 
 /* Buttons */
 
@@ -110,6 +128,7 @@ input:-webkit-autofill:focus {
     padding: 10px 30px;
     border: none;
     border-radius: var(--my-border-radius);
+    transition: var(--my-transition);
 }
 
 .btn:focus,
@@ -135,6 +154,22 @@ input:-webkit-autofill:focus {
     background: var(--accent-greyed);
 }
 
+.form-floating button {
+    color: var(--light-grey-text);
+    padding: var(--my-form-padding);
+    position: absolute;
+    top: 0;
+    right: 0;
+    border: none;
+    background: none;
+    cursor: pointer;
+    transition: var(--my-transition);
+}
+
+.form-floating button:hover {
+    color: var(--dark-grey-text);
+}
+
 
 /* Containers */
 
@@ -149,7 +184,7 @@ input:-webkit-autofill:focus {
     color: var(--dark-grey-text);
     background: white;
     box-shadow: var(--my-box-shadow);
-    width: 40%;
+    width: 35%;
     padding: 3rem;
     border-radius: var(--my-border-radius);
     border: none;
@@ -164,9 +199,8 @@ input:-webkit-autofill:focus {
 .container .description,
 .container .description a {
     color: var(--light-grey-text);
-    text-align: left;
     font-size: 0.8rem;
-    margin-bottom: 12px;
+    margin: 12px 0;
 }
 
 .container .description a:hover {
@@ -175,7 +209,7 @@ input:-webkit-autofill:focus {
 
 .container .btn {
     width: 100%;
-    height: calc(3.5rem + 2px);
+    height: var(--my-form-height);
 }
 
 
