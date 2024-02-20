@@ -1,6 +1,22 @@
-// Define a function to generate HTML code to display errors
-function createErrorHTML(message) {
-    return $('<div class="error-message"><i class="fa-solid fa-circle-exclamation"></i> ' + message + '</div>');
+// Function to display error messages
+function displayFormErrors(errors) {
+    
+    // Clear previous errors
+    $('.error-message').remove();
+    $('.input-error').removeClass('input-error');
+
+    // Display new errors below corresponding input fields
+    for (const key in errors) {
+        const inputField = $('#' + key);
+        const errorMessage = $(
+            '<div class="error-message">' 
+                + '<i class="fa-solid fa-circle-exclamation"></i> ' 
+                + errors[key] 
+            + '</div>'
+        );
+        inputField.after(errorMessage);
+        inputField.addClass('input-error');
+    }   
 }
 
 $(document).ready(function() {
@@ -37,32 +53,24 @@ $(document).ready(function() {
 
     // Registration handler using AJAX
     $('#register-form').on('submit', function(event) {
-
+        
         event.preventDefault();
         showLoadingBtn(true);
 
-        $.post(
-            '/register', {
-                'first_name': $('#first_name').val(),
-                'last_name': $('#last_name').val(),
-                'email': $('#email').val(),
-                'password': $('#password').val()
-            },
-            function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Reload page if successful
-                else {
-                    window.location = data;
-
-                }
+        $.post('/register', {
+            'first_name': $('#first_name').val(),
+            'last_name': $('#last_name').val(),
+            'email': $('#email').val(),
+            'password': $('#password').val()
+        },
+        function(data) {
+            if (data.errors) {
+                showLoadingBtn(false);
+                displayFormErrors(data.errors);
+            } else {
+                window.location = data.url;
             }
-        );
+        });
     });
 
 
@@ -78,26 +86,10 @@ $(document).ready(function() {
                 'password': $('#password').val()
             },
             function(data) {
-                
-                // Display error message if unsuccessful
                 if (data.errors) {
-                    
                     showLoadingBtn(false);
-
-                    // Clear previous errors
-                    $('.error-message').remove();
-
-                    // Display new errors below corresponding input fields
-                    for (const key in data.errors) {
-                        const inputField = $('#' + key);
-                        const errorMessage = createErrorHTML(data.errors[key]);
-                        inputField.after(errorMessage);
-                        inputField.addClass('input-error');
-                    }   
-                }
-
-                // Redirect to next page if successful
-                else {
+                    displayFormErrors(data.errors);
+                } else {
                     window.location = data.url;
                 }
             }

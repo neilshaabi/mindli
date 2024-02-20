@@ -32,31 +32,31 @@ def register() -> Response:
     
     if request.method == "POST":
 
+        errors = {}
+
         # Get form data
         first_name = escape(request.form.get("first_name"))
         last_name = escape(request.form.get("last_name"))
         email = request.form.get("email")
         password = request.form.get("password")
 
-        # Ensure full name was entered
-        if (not first_name or first_name.isspace()) or (
-            not last_name or last_name.isspace()
-        ):
-            error = "Please enter your full name"
+        # Validate input
+        if not first_name or first_name.isspace():
+            errors['first_name'] = 'First name is required'
+        if not last_name or last_name.isspace():
+            errors['last_name'] = 'Last name is required'
+        if not email or email.isspace():
+            errors['email'] = 'Email is required'
+        elif User.query.filter_by(email=email.lower()).first():
+            errors['email'] = 'Email address is already in use'
+        if not isValidPassword(password):
+            errors['password'] = 'Please enter a valid password'
 
-        # Ensure email was entered
-        elif not email or email.isspace():
-            error = "Please enter your email"
-
-        # Ensure user with same email does not already exist
-        elif User.query.filter_by(email=email.lower()).first() is not None:
-            error = "This email address is already in use"
-
-        # Ensure a valid password was entered
-        elif not isValidPassword(password):
-            error = "Please enter a valid password"
-
-        # Successful registration
+        # If there are any errors, return them
+        if errors:
+            return jsonify({'errors': errors})
+    
+        # Proceed with successful registration
         else:
             # Insert new user into database
             email = email.lower()
@@ -84,9 +84,7 @@ def register() -> Response:
                 "Email Verification",
             )
             session["email"] = email
-            return url_for("verify_email")
-
-        return jsonify({"error": error})
+            return jsonify({'url': url_for("auth.verify_email")})
 
     # Request method is GET
     else:
@@ -100,7 +98,7 @@ def login() -> Response:
     
     if request.method == "POST":
         
-        errors: dict[str,str] = {}
+        errors = {}
         
         # Get form data
         email = request.form.get("email").lower()

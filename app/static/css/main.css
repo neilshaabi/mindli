@@ -112,7 +112,7 @@ input:-webkit-autofill:focus {
 }
 
 .input-error {
-    border: solid 1px red;
+    border: solid 1px red !important;
 }
 
 .error-message {
