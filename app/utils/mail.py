@@ -10,8 +10,8 @@ from app.models import User
 
 @unique
 class EmailSubject(Enum):
-    EMAIL_VERIFICATION = "Email Verification"
-    PASSWORD_RESET = "Password Reset"
+    EMAIL_VERIFICATION = "Email verification"
+    PASSWORD_RESET = "Password reset"
 
 
 class EmailMessage:
