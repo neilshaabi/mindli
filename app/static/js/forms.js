@@ -32,6 +32,14 @@ function displayFormErrors(errors) {
     }
 }
 
+function ajaxFormResponseHandler(response) {
+    if (response.errors) {
+        displayFormErrors(response.errors);
+    } else {
+        window.location = response.url;
+    }
+}
+
 $(document).ready(function() {
 
     // Event listener for the toggle button
@@ -49,6 +57,7 @@ $(document).ready(function() {
             icon.removeClass('fa-eye').addClass('fa-eye-slash');
         }
     });
+    
 
 
     // Registration handler using AJAX
@@ -64,12 +73,8 @@ $(document).ready(function() {
             'password': $('#password').val()
         },
         function(data) {
-            if (data.errors) {
-                showLoadingBtn(false);
-                displayFormErrors(data.errors);
-            } else {
-                window.location = data.url;
-            }
+            showLoadingBtn(false);
+            ajaxFormResponseHandler(data);
         });
     });
 
@@ -86,12 +91,8 @@ $(document).ready(function() {
                 'password': $('#password').val()
             },
             function(data) {
-                if (data.errors) {
-                    showLoadingBtn(false);
-                    displayFormErrors(data.errors);
-                } else {
-                    window.location = data.url;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });
@@ -113,28 +114,19 @@ $(document).ready(function() {
 
 
     // Password reset request handler using AJAX
-    $('#reset-request-form').on('submit', function(event) {
+    $('#initiate-password-reset-form').on('submit', function(event) {
 
         event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
             '/reset-password', {
-                'form-type': 'request',
+                'form-type': 'initiate_password_reset',
                 'email': $('#email').val()
             },
             function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Redirect to home page if successful
-                else {
-                    window.location = data;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });
@@ -148,24 +140,14 @@ $(document).ready(function() {
 
         $.post(
             '/reset-password', {
-                'form-type': 'reset',
+                'form-type': 'reset_password',
                 'email': $('#email').val(),
                 'password': $('#password').val(),
                 'password_confirmation': $('#password_confirmation').val()
             },
             function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false)
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Redirect to home page if successful
-                else {
-                    console.log(data)
-                    window.location = data;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });

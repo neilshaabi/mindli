@@ -41,7 +41,7 @@ main {
     top: 56px; /* Nav height */
     left: 0;
     width: 100%;
-    height: calc(100% - var(--my-nav-height));
+    min-height: calc(100% - var(--my-nav-height));
     padding: 3rem;
     background: var(--light-grey-bg);
 }
@@ -145,7 +145,7 @@ input:-webkit-autofill:focus {
 .error-message {
     color: red;
     font-size: 0.8rem;
-    margin: 5px 0;
+    margin: 12px 0;
 }
 
 

@@ -62,7 +62,7 @@ def register() -> Response:
         if not isValidPassword(password):
             errors["password"] = "Please enter a valid password"
 
-        # If there are any errors, return them
+        # Return errors if any
         if errors:
             return jsonify({"errors": errors})
 
@@ -122,13 +122,13 @@ def login() -> Response:
             if user is None or not check_password_hash(user.password_hash, password):
                 errors["password"] = "Incorrect email/password"
 
-        # If there are errors, don't proceed to check the user
+        # Return errors if any
         if errors:
             return jsonify({"errors": errors})
 
-        # Check if user's email has been verified
+        # Ensure user's email is verified
         if not user.verified:
-            # Store the email in the session to use in the email verification process
+            # Store email in session for verification and redirect
             session["email"] = email
             return jsonify({"url": url_for("auth.verify_email")})
 
@@ -197,6 +197,7 @@ def email_verification(token):
             "Invalid or expired verification link, "
             "please log in to request a new link"
         )
+    
     return redirect(url_for("main.index"))
 
 
@@ -204,8 +205,12 @@ def email_verification(token):
 @bp.route("/reset-password", methods=["GET", "POST"])
 def reset_request() -> Response:
     if request.method == "POST":
-        # Form submitted to request a password reset
-        if request.form.get("form-type") == "request":
+        
+        errors = {}
+        
+        # Form submitted to initiate a password reset
+        if request.form.get("form-type") == "initiate_password_reset":
+            
             # Get form data
             email = request.form.get("email").lower()
 
@@ -214,8 +219,12 @@ def reset_request() -> Response:
 
             # Check if user with this email does not exist
             if user is None:
-                error = "No account found with this email address"
+                errors["email"] = "No account found with this email address"
 
+            # Return errors if any
+            if errors:
+                return jsonify({"errors": errors})
+            
             # Send reset email
             else:
                 email_message = EmailMessage(
@@ -226,12 +235,11 @@ def reset_request() -> Response:
                 )
                 email_message.send()
                 flash(f"Password reset instructions sent to {email}")
-                return url_for("main.index")
-
-            return jsonify({"error": error})
+                return jsonify({"url": url_for("main.index")})
 
         # Form submitted to reset password
-        elif request.form.get("form-type") == "reset":
+        elif request.form.get("form-type") == "reset_password":
+            
             # Get form data
             email = request.form.get("email")
             password = request.form.get("password")
@@ -239,12 +247,16 @@ def reset_request() -> Response:
 
             # Ensure a valid password was entered
             if not isValidPassword(password):
-                error = "Please enter a valid password"
+                errors["password"] = "Please enter a valid password"
 
             # Ensure password and confirmation match
             elif password != password_confirmation:
-                error = "Passwords do not match"
+                errors["password_confirmation"] = "Passwords do not match"
 
+            # Return errors if any
+            if errors:
+                return jsonify({"errors": errors})
+            
             # Successful reset
             else:
                 # Update user's password in database
@@ -254,13 +266,11 @@ def reset_request() -> Response:
 
                 # Redirect to login page
                 flash("Success! Your password has been reset")
-                return url_for("main.index")
-
-            return jsonify({"error": error})
+                return jsonify({"url": url_for("main.index")})
 
     # Request method is GET
     else:
-        return render_template("reset-request.html")
+        return render_template("initiate-password-reset.html")
 
 
 # Displays page to update password
