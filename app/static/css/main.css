@@ -3,15 +3,16 @@
 :root {
     --accent-primary: #635bff;
     --accent-dark: #533afd;
-    --accent-greyed: #857dff;
     
     --light-grey-bg: #f8fafc;
     --light-grey-outline: #e0e1e4;
     --light-grey-text: #6c7888;
     --dark-grey-text: #414552;
 
+    --my-nav-height: 56px;
     --my-form-padding: 1rem 0.75rem;
     --my-form-height: calc(3.5rem + 2px);
+
     --my-border-radius: 5px;
     --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
 
@@ -33,26 +34,52 @@ body {
     min-height: -webkit-fill-available;
     width: 100vw;
     height: 100%;
-    background: var(--light-grey-bg);
 }
 
 main {
-    width: 100%;
-    height: calc(100vh - 56px);
     position: absolute;
+    top: 56px; /* Nav height */
     left: 0;
+    width: 100%;
+    height: calc(100% - var(--my-nav-height));
+    padding: 3rem;
+    background: var(--light-grey-bg);
 }
 
-nav {
-    width: 100%;
+
+/* Navbar */
+
+.navbar {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: 1000;
+    width: 100%;
     background: white;
     box-shadow: var(--my-box-shadow);
-    z-index: 1000;
 }
 
+.navbar-brand {
+    color: var(--dark-grey-text) !important;
+}
+
+.navbar-brand img {
+    height: 1.25rem;
+    margin-right: 3px;
+}
+
+.navbar .nav-link {
+    color: var(--light-grey-text);
+    transition: var(--my-transition);
+}
+
+.navbar .nav-link:hover {
+    color: var(--dark-grey-text);
+}
+
+.navbar .nav-link.active {
+    color: var(--accent-primary);
+}
 
 /* Text */
 
@@ -139,7 +166,8 @@ input:-webkit-autofill:focus {
     border: inherit;
 }
 
-.btn-primary {
+.btn-primary,
+.btn-primary:disabled {
     color: white;
     background: var(--accent-primary);
 }
@@ -150,13 +178,10 @@ input:-webkit-autofill:focus {
     background: var(--accent-dark);
 }
 
-.btn-primary:disabled {
-    background: var(--accent-greyed);
-}
-
 .form-floating button {
     color: var(--light-grey-text);
     padding: var(--my-form-padding);
+    height: var(--my-form-height);
     position: absolute;
     top: 0;
     right: 0;
@@ -173,41 +198,37 @@ input:-webkit-autofill:focus {
 
 /* Containers */
 
-.page-header {
-    padding: 30px;
-    padding-top: 7vh;
-    padding-bottom: 20px;
-    text-align: center;
-}
-
-.container {
+.my-container {
     color: var(--dark-grey-text);
     background: white;
     box-shadow: var(--my-box-shadow);
-    width: 35%;
+    width: 50%;
+    min-width: 200px;
+    margin: 0 auto;
     padding: 3rem;
     border-radius: var(--my-border-radius);
     border: none;
 }
 
-@media only screen and (max-width: 991px) {
-    .container {
-        width: 80%;
+@media only screen and (max-width: 768px) {
+    .my-container {
+        width: 100%;
     }
 }
 
-.container .description,
-.container .description a {
+.my-container .description,
+.my-container .description a {
     color: var(--light-grey-text);
     font-size: 0.8rem;
     margin: 12px 0;
+    line-height: 1.75;
 }
 
-.container .description a:hover {
+.my-container .description a:hover {
     color: var(--dark-grey-text);
 }
 
-.container .btn {
+.my-container .btn {
     width: 100%;
     height: var(--my-form-height);
 }

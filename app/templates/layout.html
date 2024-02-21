@@ -31,9 +31,9 @@
         <script src="{{ url_for('static', filename='js/main.js') }}"></script>
         <script src="{{ url_for('static', filename='js/forms.js') }}"></script>
 
+        <!-- Favicon and title -->
+        <link rel='icon' type='image/png' href="{{ url_for('static', filename='img/logos/logo-primary.png') }}">
         <title>{% block title %}{% endblock %} | mindli</title>
-
-        <link rel='icon' type='image/svg' href="{{ url_for('static', filename='img/logos/favicon.svg') }}">
 
     </head>
     <body>
@@ -41,20 +41,24 @@
         <!-- Navbar -->
         {% include 'navbar.html' %}
             
-        <!-- Content rendered by individual html pages -->
-        {% block content %}{% endblock %} 
         
-        <!-- Flashed messages -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                    <div class='alert flashed-message alert-dismissible fade show' role='alert'>
-                        {{ message }}
-                        <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button>
-                    </div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
+        <!-- Content rendered by individual html pages -->
+        <main>
+            {% block content %}{% endblock %} 
+
+            <!-- Flashed messages -->
+            {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class='alert flashed-message alert-dismissible fade show' role='alert'>
+                            {{ message }}
+                            <button type='button' class='btn-close btn-close-white' data-bs-dismiss='alert' aria-label='Close'></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+        </main>
         
     </body>
 

@@ -17,7 +17,6 @@ login_manager.login_message = None
 
 
 def create_app(config: Config = selected_config):
-
     app = Flask(__name__)
     app.config.from_object(config)
 
@@ -29,6 +28,7 @@ def create_app(config: Config = selected_config):
 
     # Reset database
     from app.models import User, insertDummyData
+
     if app.config["RESET_DB"]:
         with app.app_context():
             db.drop_all()
@@ -37,6 +37,7 @@ def create_app(config: Config = selected_config):
 
     # Register blueprints
     from app.views import auth, main
+
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
 

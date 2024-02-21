@@ -1,3 +1,16 @@
+// Toggles loading button
+function showLoadingBtn(isLoading) {
+    if (isLoading == true) {
+        $(":input[type='submit']").prop('disabled', true);
+        $('.btn-text').hide();
+        $('.spinner-border').show();
+    } else {
+        $(":input[type='submit']").prop('disabled', false);
+        $('.btn-text').show();
+        $('.spinner-border').hide();
+    }
+}
+
 // Function to display error messages
 function displayFormErrors(errors) {
     
@@ -16,23 +29,10 @@ function displayFormErrors(errors) {
         );
         inputField.after(errorMessage);
         inputField.addClass('input-error');
-    }   
+    }
 }
 
 $(document).ready(function() {
-
-    // Toggles loading button
-    function showLoadingBtn(isLoading) {
-        if (isLoading == true) {
-            $(":input[type='submit']").prop('disabled', true);
-            $('.btn-text').hide();
-            $('.spinner-border').show();
-        } else {
-            $(":input[type='submit']").prop('disabled', false);
-            $('.btn-text').show();
-            $('.spinner-border').hide();
-        }
-    }
 
     // Event listener for the toggle button
     $('#togglePassword').click(function() {
