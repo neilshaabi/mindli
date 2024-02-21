@@ -202,7 +202,7 @@ input:-webkit-autofill:focus {
     color: var(--dark-grey-text);
     background: white;
     box-shadow: var(--my-box-shadow);
-    width: 50%;
+    width: 40%;
     min-width: 200px;
     margin: 0 auto;
     padding: 3rem;

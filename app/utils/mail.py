@@ -1,8 +1,10 @@
 from enum import Enum, unique
 from typing import Optional
+
 from flask import render_template, url_for
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
+
 from app.models import User
 
 
@@ -13,6 +15,7 @@ class EmailSubject(Enum):
 
 
 class EmailMessage:
+    
     def __init__(
         self,
         mail: Mail,
@@ -20,8 +23,9 @@ class EmailMessage:
         recipient: User,
         serialiser: Optional[URLSafeTimedSerializer],
     ) -> None:
+        
         self.mail = mail
-        self.recipient = recipient.email
+        self.recipient = recipient
         self.subject = subject.value
         self.body = None
         self.link = None
@@ -37,12 +41,13 @@ class EmailMessage:
             self.link_text = "Reset Password"
             endpoint = "auth.reset_password"
 
-        token = serialiser.dumps(User.email) if serialiser else None
+        token = serialiser.dumps(recipient.email) if serialiser else None
         self.link = url_for(endpoint=endpoint, token=token, _external=True)
         return
 
     def send(self) -> None:
-        msg = Message(self.subject, recipients=[self.recipient])
+        # msg = Message(self.subject, recipients=[self.recipient.email])
+        msg = Message(self.subject, recipients=["neilshaabi@gmail.com"])
         msg.html = render_template("email.html", message=self)
         self.mail.send(msg)
         return

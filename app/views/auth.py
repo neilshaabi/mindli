@@ -1,27 +1,16 @@
 from datetime import date
 
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
+                   render_template, request, session, url_for)
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
 from markupsafe import escape
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, mail
-from app.models import User
+from app.models import User, UserRole
+from app.utils.mail import EmailMessage, EmailSubject
 from app.utils.password import isValidPassword
-from app.utils.mail import EmailSubject, EmailMessage
-
 
 bp = Blueprint("auth", __name__)
 
@@ -41,7 +30,9 @@ def logout() -> Response:
 
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response:
+    
     if request.method == "POST":
+        
         errors = {}
 
         # Get form data
@@ -60,9 +51,7 @@ def register() -> Response:
         elif User.query.filter_by(email=email.lower()).first():
             errors["email"] = "Email address is already in use"
         if not isValidPassword(password):
-            errors["password"] = "Please enter a valid password"
-
-        # Return errors if any
+            errors["password"] = "Password does not meet requirements"
         if errors:
             return jsonify({"errors": errors})
 
@@ -76,7 +65,9 @@ def register() -> Response:
                 first_name=first_name.capitalize(),
                 last_name=last_name.capitalize(),
                 date_joined=date.today(),
-                # role=??,
+                role=UserRole.CLIENT,
+                verified=False,
+                active=True,
             )
             db.session.add(user)
             db.session.commit()
@@ -113,16 +104,10 @@ def login() -> Response:
             errors["email"] = "Email is required"
         if not password:
             errors["password"] = "Password is required"
-
         else:
-            # Find user with this email
             user = User.query.filter_by(email=email).first()
-
-            # Check if user exists and password is correct
             if user is None or not check_password_hash(user.password_hash, password):
                 errors["password"] = "Incorrect email/password"
-
-        # Return errors if any
         if errors:
             return jsonify({"errors": errors})
 
@@ -245,15 +230,11 @@ def reset_request() -> Response:
             password = request.form.get("password")
             password_confirmation = request.form.get("password_confirmation")
 
-            # Ensure a valid password was entered
+            # Validate input
             if not isValidPassword(password):
-                errors["password"] = "Please enter a valid password"
-
-            # Ensure password and confirmation match
+                errors["password"] = "Password does not meet requirements"
             elif password != password_confirmation:
                 errors["password_confirmation"] = "Passwords do not match"
-
-            # Return errors if any
             if errors:
                 return jsonify({"errors": errors})
             

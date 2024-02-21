@@ -8,14 +8,10 @@
                 --accent-dark: #533afd;
                 
                 --light-grey-bg: #f8fafc;
-                --light-grey-outline: #e0e1e4;
                 --light-grey-text: #6c7888;
                 --dark-grey-text: #414552;
 
-                --my-form-padding: 1rem 0.75rem;
-                --my-form-height: calc(3.5rem + 2px);
                 --my-border-radius: 5px;
-
                 --my-transition: ease all 0.15s;
             }
 
@@ -46,11 +42,14 @@
             .email-brand {
                 display: flex;
                 align-items: center;
-                font-size: 1.5rem;
             }
 
             .email-brand a {
                 color: var(--dark-grey-text);
+            }
+
+            .email-brand span {
+                font-size: 1.5rem;
             }
 
             .email-logo {
@@ -88,41 +87,44 @@
             }
         </style>
     </head>
+    <body>
 
-<div class="email-container">
-    <table>
-        
-        <!-- Header -->
-        <tr>
-            <td class="email-brand">
-                <a href="#">
-                    <img src="../static/img/logos/logo-primary.png" alt="mindli logo" class="email-logo">
-                    <span>mindli</span>
-                </a>
-            </td>
-        </tr>
-        
-        <!-- Main content -->
-        <tr>
-            <td>
-                <p>Hi {{ message.recipient.first_name }},</p>
-                <p>{{ message.body }}</p>
+        <div class="email-container">
+            <table>
                 
-                {% if message.link %}
-                    <div style="margin:20px 0; ">
-                        <a href='{{ message.link }}' class='email-button'>
-                            {{ message.link_text }}
+                <!-- Header -->
+                <tr>
+                    <td class="email-brand">
+                        <a href="#">
+                            <img src="../static/img/logos/logo-primary.png" alt="mindli logo" class="email-logo">
+                            <span>mindli</span>
                         </a>
-                    </div>
-                {% endif %}
-                <p class="email-footer">
-                    {% if message.link %}
-                        This link will expire in 5 days. If you did not make this request, please disregard this email.
-                    {% endif %}
-                    For help, please <a href="#" class="email-link">contact us</a>.
-                </p>
-            </td>
-        </tr>
+                    </td>
+                </tr>
+                
+                <!-- Main content -->
+                <tr>
+                    <td>
+                        <p>Hi {{ message.recipient.first_name }},</p>
+                        <p>{{ message.body }}</p>
+                        
+                        {% if message.link %}
+                            <div style="margin:20px 0; ">
+                                <a href='{{ message.link }}' class='email-button'>
+                                    {{ message.link_text }}
+                                </a>
+                            </div>
+                        {% endif %}
+                        <p class="email-footer">
+                            {% if message.link %}
+                                This link will expire in 5 days. If you did not make this request, please disregard this email.
+                            {% endif %}
+                            For help, please <a href="#" class="email-link">contact us</a>.
+                        </p>
+                    </td>
+                </tr>
 
-    </table>
-</div>
+            </table>
+        </div>
+    </body>
+</html>
