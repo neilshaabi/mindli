@@ -233,6 +233,8 @@ def reset_request() -> Response:
             # Validate input
             if not isValidPassword(password):
                 errors["password"] = "Password does not meet requirements"
+            if not password_confirmation:
+                errors["password_confirmation"] = "Password confirmation is required"
             elif password != password_confirmation:
                 errors["password_confirmation"] = "Passwords do not match"
             if errors:
