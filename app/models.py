@@ -95,9 +95,11 @@ class Client(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), index=True)
     preferred_gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     preferred_language: so.Mapped[Optional["Language"]] = so.mapped_column(sa.Enum(Gender))
+    preferred_language_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('language.id'))
     
     user: so.Mapped["User"] = so.relationship(back_populates="client")
     issues: so.Mapped[List["Issue"]] = so.relationship(secondary=client_issue, back_populates="clients")
+    preferred_language: so.Mapped[Optional["Language"]] = so.relationship("Language")
 
 
 class Therapist(db.Model):
@@ -152,7 +154,7 @@ class SessionType(db.Model):
     session_duration: so.Mapped[int] = so.mapped_column(sa.Integer)  # In minutes
     fee_amount: so.Mapped[float] = so.mapped_column(sa.Float)
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
-    session_format: so.Mapped[Optional[SessionFormat]] = so.mapped_column(sa.Enum(SessionFormat))
+    session_format: so.Mapped[Optional["SessionFormat"]] = so.mapped_column(sa.Enum(SessionFormat))
     notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="session_types")
