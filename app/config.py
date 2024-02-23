@@ -12,7 +12,7 @@ class Config(object):
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
     # Flask Mail setup
-    MAIL_SERVER: str = "smtppro.zoho.eu"
+    MAIL_SERVER: str = "smtp.gmail.com"
     MAIL_PORT: int = 465
     MAIL_USE_SSL: bool = True
     MAIL_USE_TLS: bool = False
@@ -25,9 +25,7 @@ class Config(object):
 class DevConfig(Config):
     DEBUG: bool = True
     RESET_DB: bool = True
-    SQLALCHEMY_DATABASE_URI: str = (
-        "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
-    )
+    SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 
 
 class ProdConfig(Config):

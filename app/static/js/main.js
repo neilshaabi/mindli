@@ -9,8 +9,5 @@ $(document).ready(function() {
             break;
         }
     }
-
-    // Set home page height to window height - navbar
-    $('#home-page').css('max-height', window.innerHeight - '56px');
-
+    
 });

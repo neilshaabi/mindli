@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+    <body style="margin: 0; padding: 0; font-family: sans-serif; font-weight: 400; background-color: #f8fafc; color: #414552; line-height: 1.5;">
+
+        <table width="100%" style="max-width: 600px; background-color: white; margin: 0 auto;">
+            
+            <!-- Header -->
+            <tr>
+                <td style="display: flex; align-items: center; padding: 50px; padding-bottom: 20px">
+                    <a href="#" style="color: #414552; text-decoration: none;">
+                        <img src="{{ url_for('static', filename='img/logos/logo-primary.png') }}" alt="mindli logo" style="height: 1.25rem; margin-right: 3px;">
+                        <span style="font-size: 1.5rem; color: #414552;">mindli</span>
+                    </a>
+                </td>
+            </tr>
+            
+            <!-- Main content -->
+            <tr>
+                <td style="padding: 0 50px;">
+                    <p>Hi {{ message.recipient.first_name }},</p>
+                    <p>{{ message.body }}</p>
+                    
+                    {% if message.link %}
+                        <div style="padding: 10px 0;">
+                            <a href="{{ message.link }}" style="text-decoration: none; padding: 10px 30px; border: none; background: #635bff; color: white; border-radius: 5px;">
+                                {{ message.link_text }}
+                            </a>
+                        </div>
+                    {% endif %}
+
+                    <p style="font-size: 0.8rem; color: #6c7888; margin-top: 20px; margin-bottom: 50px;">
+                        {% if message.link %}
+                            This link will expire in 5 days. If you did not make this request, please disregard this email.
+                        {% endif %}
+                        For help, please <a href="#" style="color: #635bff; text-decoration: none;">contact us</a>.
+                    </p>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>
