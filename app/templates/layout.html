@@ -42,7 +42,7 @@
         {% if current_user.is_authenticated %}
             {% set layout_type = 'sidebar' %}
         {% else %}
-            {% set layout_type = 'sidebar' %}
+            {% set layout_type = 'navbar' %}
         {% endif %}
         {% include layout_type + '.html' %}
         
