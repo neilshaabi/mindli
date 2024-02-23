@@ -6,10 +6,8 @@
 
 {% block content %}
 
-    <div class='page-header'></div>
-
-    <div class='container'>
-        <h3>Log in</h3>
+    <div class='my-container'>
+        <h3>Sign in</h3>
         <p>Don't have an account? <a href='/register'>Register</a></p>
         <form id='login-form'>
             <div class='form-floating'>
@@ -19,11 +17,13 @@
             <div class='form-floating'>
                 <input type='password' id='password' placeholder='Password' class='form-control'>
                 <label for='password'>Password</label>
+                <button type='button' id='togglePassword'>
+                    <i class="fa-solid fa-eye"></i>
+                </button>
             </div>
             <div class='description'>
                 <a href='/reset-password'>Forgot password?</a>
             </div>
-            <div id='error-alert' class='alert alert-danger' style='display: none;'></div>
             <button type='submit' class='btn btn-primary'>
                 <span class='btn-text'>Continue</span>
                 <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>

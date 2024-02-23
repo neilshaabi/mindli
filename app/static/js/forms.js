@@ -1,47 +1,81 @@
+// Toggles loading button
+function showLoadingBtn(isLoading) {
+    if (isLoading == true) {
+        $(":input[type='submit']").prop('disabled', true);
+        $('.btn-text').hide();
+        $('.spinner-border').show();
+    } else {
+        $(":input[type='submit']").prop('disabled', false);
+        $('.btn-text').show();
+        $('.spinner-border').hide();
+    }
+}
+
+// Function to display error messages
+function displayFormErrors(errors) {
+    
+    // Clear previous errors
+    $('.error-message').remove();
+    $('.input-error').removeClass('input-error');
+
+    // Display new errors below corresponding input fields
+    for (const key in errors) {
+        const inputField = $('#' + key);
+        const errorMessage = $(
+            '<div class="error-message">' 
+                + '<i class="fa-solid fa-circle-exclamation"></i> ' 
+                + errors[key] 
+            + '</div>'
+        );
+        inputField.after(errorMessage);
+        inputField.addClass('input-error');
+    }
+}
+
+function ajaxFormResponseHandler(response) {
+    if (response.errors) {
+        displayFormErrors(response.errors);
+    } else {
+        window.location = response.url;
+    }
+}
+
 $(document).ready(function() {
 
-    // Toggles loading button
-    function showLoadingBtn(isLoading) {
-        if (isLoading == true) {
-            $(":input[type='submit']").prop('disabled', true);
-            $('.btn-text').hide();
-            $('.spinner-border').show();
+    // Event listener for the toggle button
+    $('#togglePassword').click(function() {
+        
+        // Toggle the type attribute of the password field
+        const passwordFieldType = $('#password').attr('type') === 'password' ? 'text' : 'password';
+        $('#password').attr('type', passwordFieldType);
+
+        // Toggle the icon class
+        const icon = $(this).find('i');
+        if (passwordFieldType === 'password') {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
         } else {
-            $(":input[type='submit']").prop('disabled', false);
-            $('.btn-text').show();
-            $('.spinner-border').hide();
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
         }
-    }
+    });
+    
 
 
     // Registration handler using AJAX
     $('#register-form').on('submit', function(event) {
-
+        
         event.preventDefault();
         showLoadingBtn(true);
 
-        $.post(
-            '/register', {
-                'first_name': $('#first_name').val(),
-                'last_name': $('#last_name').val(),
-                'email': $('#email').val(),
-                'password': $('#password').val()
-            },
-            function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Reload page if successful
-                else {
-                    window.location = data;
-
-                }
-            }
-        );
+        $.post('/register', {
+            'first_name': $('#first_name').val(),
+            'last_name': $('#last_name').val(),
+            'email': $('#email').val(),
+            'password': $('#password').val()
+        },
+        function(data) {
+            showLoadingBtn(false);
+            ajaxFormResponseHandler(data);
+        });
     });
 
 
@@ -57,17 +91,8 @@ $(document).ready(function() {
                 'password': $('#password').val()
             },
             function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Redirect to home page if successful
-                else {
-                    window.location = data;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });
@@ -89,28 +114,19 @@ $(document).ready(function() {
 
 
     // Password reset request handler using AJAX
-    $('#reset-request-form').on('submit', function(event) {
+    $('#initiate-password-reset-form').on('submit', function(event) {
 
         event.preventDefault();
         showLoadingBtn(true);
 
         $.post(
             '/reset-password', {
-                'form-type': 'request',
+                'form-type': 'initiate_password_reset',
                 'email': $('#email').val()
             },
             function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false);
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Redirect to home page if successful
-                else {
-                    window.location = data;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });
@@ -124,24 +140,14 @@ $(document).ready(function() {
 
         $.post(
             '/reset-password', {
-                'form-type': 'reset',
+                'form-type': 'reset_password',
                 'email': $('#email').val(),
                 'password': $('#password').val(),
                 'password_confirmation': $('#password_confirmation').val()
             },
             function(data) {
-
-                // Display error message if unsuccessful
-                if (data.error) {
-                    showLoadingBtn(false)
-                    $('#error-alert').html(data.error).show();
-                }
-
-                // Redirect to home page if successful
-                else {
-                    console.log(data)
-                    window.location = data;
-                }
+                showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });
