@@ -46,8 +46,8 @@ class EmailMessage:
         return
 
     def send(self) -> None:
-        # msg = Message(self.subject, recipients=[self.recipient.email])
-        msg = Message(self.subject, recipients=["neilshaabi@gmail.com"])
+        msg = Message(self.subject, recipients=[self.recipient.email])
+        # msg = Message(self.subject, recipients=["neilshaabi@gmail.com"])
         msg.html = render_template("email.html", message=self)
         self.mail.send(msg)
         return

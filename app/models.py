@@ -87,9 +87,10 @@ class User(UserMixin, db.Model):
 class Therapist(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    country: so.Mapped[str] = so.mapped_column(sa.String(50))
+    affilitation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     bio: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
-    country: so.Mapped[str] = so.mapped_column(sa.String(50))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
@@ -146,10 +147,10 @@ class SessionType(db.Model):
     )
     name: so.Mapped[str] = so.mapped_column(
         sa.String(255)
-    )  # e.g., "Initial Consultation"
+    )  # e.g. "Initial Consultation"
     session_duration: so.Mapped[int] = so.mapped_column(
         sa.Integer
-    )  # Duration in minutes
+    )  # In minutes
     fee_amount: so.Mapped[float] = so.mapped_column(sa.Float)
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
     notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)

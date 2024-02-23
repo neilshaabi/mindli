@@ -34,6 +34,7 @@ body {
     min-height: -webkit-fill-available;
     width: 100vw;
     height: 100%;
+    background: var(--light-grey-bg);
 }
 
 main {
@@ -43,7 +44,6 @@ main {
     width: 100%;
     min-height: calc(100% - var(--my-nav-height));
     padding: 3rem;
-    background: var(--light-grey-bg);
 }
 
 

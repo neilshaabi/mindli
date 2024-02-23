@@ -38,8 +38,10 @@
     </head>
     <body>
 
-        <!-- Navbar -->
-        {% include 'navbar.html' %}
+        <!-- Navbar shown when not logged in -->
+        {% if not current_user.is_authenticated %}
+            {% include 'navbar.html' %}
+        {% endif %}
             
         
         <!-- Content rendered by individual html pages -->
