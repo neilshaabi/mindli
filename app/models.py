@@ -94,7 +94,6 @@ class Client(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), index=True)
     preferred_gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
-    preferred_language: so.Mapped[Optional["Language"]] = so.mapped_column(sa.Enum(Gender))
     preferred_language_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('language.id'))
     
     user: so.Mapped["User"] = so.relationship(back_populates="client")

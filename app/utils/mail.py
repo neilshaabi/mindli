@@ -32,7 +32,7 @@ class EmailMessage:
         self.link_text = None
 
         if self.subject == EmailSubject.EMAIL_VERIFICATION.value:
-            self.body = "Thanks for joining mindli! To continue setting up your account, please verify that this is your email address."
+            self.body = f"Thanks for registering as a {recipient.role.value} with mindli! To continue setting up your account, please verify that this is your email address."
             self.link_text = "Verify Email"
             endpoint = "auth.email_verification"
 
@@ -46,8 +46,7 @@ class EmailMessage:
         return
 
     def send(self) -> None:
-        # msg = Message(self.subject, recipients=[self.recipient.email])
-        msg = Message(self.subject, recipients=["neilshaabi@gmail.com"])
+        msg = Message(self.subject, recipients=[self.recipient.email])
         msg.html = render_template("email.html", message=self)
         self.mail.send(msg)
         return
