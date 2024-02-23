@@ -12,7 +12,7 @@ from app import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id: str):
-    return User.query.get(int(user_id))
+    return db.session.execute(db.select(User).filter_by(id=int(user_id))).scalar_one()
 
 
 @unique

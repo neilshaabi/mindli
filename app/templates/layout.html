@@ -38,14 +38,17 @@
     </head>
     <body>
 
-        <!-- Navbar shown when not logged in -->
-        {% if not current_user.is_authenticated %}
-            {% include 'navbar.html' %}
+        <!-- Show navbar or sidebar depending on authentication status -->
+        {% if current_user.is_authenticated %}
+            {% set layout_type = 'sidebar' %}
+        {% else %}
+            {% set layout_type = 'sidebar' %}
         {% endif %}
-            
+        {% include layout_type + '.html' %}
         
-        <!-- Content rendered by individual html pages -->
-        <main>
+        <main class="{{ layout_type }}-layout">
+            
+            <!-- Content rendered by individual html pages -->
             {% block content %}{% endblock %} 
 
             <!-- Flashed messages -->
@@ -63,6 +66,5 @@
         </main>
         
     </body>
-
     
 </html>

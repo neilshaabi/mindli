@@ -67,6 +67,7 @@ $(document).ready(function() {
         showLoadingBtn(true);
 
         $.post('/register', {
+            'role': $('input[name="role"]:checked').attr('id'),
             'first_name': $('#first_name').val(),
             'last_name': $('#last_name').val(),
             'email': $('#email').val(),
@@ -108,6 +109,7 @@ $(document).ready(function() {
             '/verify-email', {},
             function(data) {
                 showLoadingBtn(false);
+                ajaxFormResponseHandler(data);
             }
         );
     });

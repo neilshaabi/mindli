@@ -36,12 +36,15 @@ def register() -> Response:
         errors = {}
 
         # Get form data
+        role = request.form.get("role")
         first_name = escape(request.form.get("first_name"))
         last_name = escape(request.form.get("last_name"))
         email = request.form.get("email")
         password = request.form.get("password")
 
         # Validate input
+        if not role:
+            errors["role"] = "Account type is required"
         if not first_name or first_name.isspace():
             errors["first_name"] = "First name is required"
         if not last_name or last_name.isspace():
@@ -65,7 +68,7 @@ def register() -> Response:
                 first_name=first_name.capitalize(),
                 last_name=last_name.capitalize(),
                 date_joined=date.today(),
-                role=UserRole.CLIENT,
+                role=UserRole(role),
                 verified=False,
                 active=True,
             )
@@ -105,7 +108,7 @@ def login() -> Response:
         if not password:
             errors["password"] = "Password is required"
         else:
-            user = User.query.filter_by(email=email).first()
+            user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
             if user is None or not check_password_hash(user.password_hash, password):
                 errors["password"] = "Incorrect email/password"
         if errors:
@@ -132,11 +135,10 @@ def login() -> Response:
 def verify_email() -> Response:
     
     # Get user with email stored in session
-    user = (
-        User.query.filter_by(email=session["email"]).first()
-        if "email" in session
-        else None
-    )
+    if "email" in session:
+        user = db.session.execute(db.select(User).filter_by(email=session["email"])).scalar_one_or_none()
+    else:
+        user = None
 
     # Redirect if the email address is invalid or already verified
     if not user or user.verified:
@@ -151,7 +153,8 @@ def verify_email() -> Response:
             serialiser=current_app.serialiser,
         )
         email_message.send()
-        return ""
+        flash(f"Email verification instructions sent to {user.email}")
+        return jsonify({"url": url_for("main.index")})
     
     else:
         return render_template("verify-email.html", email=session["email"])
@@ -168,7 +171,7 @@ def email_verification(token):
         )  # Each token is valid for 5 days
 
         # Mark user as verified
-        user = User.query.filter_by(email=email).first()
+        user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
         user.verified = True
         db.session.commit()
 
@@ -200,7 +203,7 @@ def reset_request() -> Response:
             email = request.form.get("email").lower()
 
             # Find user with this email
-            user = User.query.filter_by(email=email).first()
+            user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
 
             # Check if user with this email does not exist
             if user is None:
@@ -243,7 +246,7 @@ def reset_request() -> Response:
             # Successful reset
             else:
                 # Update user's password in database
-                user = User.query.filter_by(email=email).first()
+                user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
                 user.password_hash = generate_password_hash(password)
                 db.session.commit()
 
