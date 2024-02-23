@@ -1,15 +1,18 @@
 /* General */
 
 :root {
-    --accent-primary: #635bff;
-    --accent-dark: #533afd;
+    --colour-primary: #635bff;
+    --colour-dark: #533afd;
+    --colour-primary-rgb: 99, 91, 255;
     
     --light-grey-bg: #f8fafc;
     --light-grey-outline: #e0e1e4;
     --light-grey-text: #6c7888;
     --dark-grey-text: #414552;
 
-    --my-nav-height: 56px;
+    --navbar-height: 56px;
+    --sidebar-width: 200px;
+
     --my-form-padding: 1rem 0.75rem;
     --my-form-height: calc(3.5rem + 2px);
 
@@ -39,27 +42,42 @@ body {
 
 main {
     position: absolute;
-    top: 56px; /* Nav height */
+    top: 0;
     left: 0;
     width: 100%;
-    min-height: calc(100% - var(--my-nav-height));
+    min-height: 100%;
     padding: 3rem;
+}
+
+main.navbar-layout {
+    top: var(--navbar-height);
+}
+
+main.sidebar-layout {
+    left: var(--sidebar-width);
 }
 
 
 /* Navbar */
 
-.navbar {
+.navbar,
+.sidebar {
     position: absolute;
     top: 0;
     left: 0;
     z-index: 1000;
-    width: 100%;
     background: white;
     box-shadow: var(--my-box-shadow);
+    padding: 0.5rem 0;
+}
+
+.navbar {
+    min-height: var(--navbar-height);
+    width: 100%;
 }
 
 .navbar-brand {
+    font-size: 1.25rem;
     color: var(--dark-grey-text) !important;
 }
 
@@ -68,18 +86,27 @@ main {
     margin-right: 3px;
 }
 
-.navbar .nav-link {
+.nav-link {
     color: var(--light-grey-text);
     transition: var(--my-transition);
 }
 
-.navbar .nav-link:hover {
+.nav-link:hover {
     color: var(--dark-grey-text);
 }
 
-.navbar .nav-link.active {
-    color: var(--accent-primary);
+.nav-link.active {
+    color: var(--colour-primary);
 }
+
+/* Sidebar */
+
+.sidebar {
+    height: 100%;
+    width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+}
+
 
 /* Text */
 
@@ -89,13 +116,13 @@ h3 {
 }
 
 a {
-    color: var(--accent-primary);
+    color: var(--colour-primary);
     text-decoration: none;
     transition: var(--my-transition);
 }
 
 a:hover {
-    color: var(--accent-dark);
+    color: var(--colour-dark);
 }
 
 i {
@@ -124,7 +151,7 @@ i {
 .form-control:focus {
     color: var(--dark-grey-text);
     border-color: var(--dark-grey-text);
-    border-color: var(--accent-primary);
+    border-color: var(--colour-primary);
     outline: none;
     box-shadow: none;
 }
@@ -148,6 +175,22 @@ input:-webkit-autofill:focus {
     margin: 12px 0;
 }
 
+.radio-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    gap: 10px;
+}
+
+.radio-group.input-error {
+    border: none !important;
+}
+
+.radio-group.input-error .btn {
+    border: solid 1px red !important;
+}
+
 
 /* Buttons */
 
@@ -156,6 +199,9 @@ input:-webkit-autofill:focus {
     border: none;
     border-radius: var(--my-border-radius);
     transition: var(--my-transition);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .btn:focus,
@@ -169,13 +215,41 @@ input:-webkit-autofill:focus {
 .btn-primary,
 .btn-primary:disabled {
     color: white;
-    background: var(--accent-primary);
+    background: var(--colour-primary);
 }
 
 .btn-primary:hover, 
 .btn-primary:focus,
 .btn-primary:active {
-    background: var(--accent-dark);
+    background: var(--colour-dark);
+}
+
+.btn-outline-primary {
+    color: var(--light-grey-text);
+    background: transparent;
+    border: solid 1px var(--light-grey-outline);
+}
+
+.btn-check + .btn i {
+    color: var(--colour-primary);
+    margin-right: 7px;
+    display: none;
+}
+
+.btn-check:checked + .btn i {
+    display: inline;
+}
+
+.btn-check + .btn:hover {
+    color: var(--light-grey-text);
+    background: rgba(var(--colour-primary-rgb), 0.1);
+    border: solid 1px var(--light-grey-outline);
+}
+
+.btn-check:checked + .btn {
+    color: var(--colour-primary);
+    background: rgba(var(--colour-primary-rgb), 0.1);
+    border: solid 1px var(--colour-primary) !important;
 }
 
 .form-floating button {
@@ -276,4 +350,5 @@ input:-webkit-autofill:focus {
     width: 100%;
     border-radius: 0;
     text-align: left;
+    box-shadow: var(--my-box-shadow);
 }

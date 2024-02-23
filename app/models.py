@@ -12,7 +12,7 @@ from app import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id: str):
-    return User.query.get(int(user_id))
+    return db.session.execute(db.select(User).filter_by(id=int(user_id))).scalar_one()
 
 
 @unique
@@ -35,6 +35,13 @@ class Gender(Enum):
     NON_BINARY = "Non-Binary"
 
 
+client_issue = sa.Table(
+    "client_issue",
+    db.Model.metadata,
+    sa.Column("client_id", sa.ForeignKey("client.id"), primary_key=True),
+    sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
+)
+
 therapist_language = sa.Table(
     "therapist_language",
     db.Model.metadata,
@@ -49,13 +56,11 @@ therapist_format = sa.Table(
     sa.Column("session_format", sa.Enum(SessionFormat), primary_key=True),
 )
 
-therapist_specialisation = sa.Table(
-    "therapist_specialisation",
+therapist_issue = sa.Table(
+    "therapist_issue",
     db.Model.metadata,
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
-    sa.Column(
-        "specialisation_id", sa.ForeignKey("specialisation.id"), primary_key=True
-    ),
+    sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
 )
 
 therapist_intervention = sa.Table(
@@ -78,10 +83,22 @@ class User(UserMixin, db.Model):
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
     gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     photo_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    timezone: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))  # IANA Time Zone Database name
+    currency: so.Mapped[Optional[str]] = so.mapped_column(sa.String(3))  # ISO 4217 currency code
+    
+    client: so.Mapped[Optional["Client"]] = so.relationship(back_populates="user")
     therapist: so.Mapped[Optional["Therapist"]] = so.relationship(back_populates="user")
 
-    def __repr__(self) -> str:
-        return f"<User({self.id}: {self.email}>"
+
+class Client(db.Model):
+    id: so.Mapped[int] = so.mapped_column(primary_key=True)
+    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), index=True)
+    preferred_gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
+    preferred_language_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('language.id'))
+    
+    user: so.Mapped["User"] = so.relationship(back_populates="client")
+    issues: so.Mapped[List["Issue"]] = so.relationship(secondary=client_issue, back_populates="clients")
+    preferred_language: so.Mapped[Optional["Language"]] = so.relationship("Language")
 
 
 class Therapist(db.Model):
@@ -95,95 +112,72 @@ class Therapist(db.Model):
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     years_of_experience: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)
+    
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
-    languages: so.Mapped[List["Language"]] = so.relationship(
-        secondary=therapist_language, back_populates="therapists"
-    )
-    specialisations: so.Mapped[List["Specialisation"]] = so.relationship(
-        secondary=therapist_specialisation, back_populates="therapists"
-    )
-    interventions: so.Mapped[List["Intervention"]] = so.relationship(
-        secondary=therapist_intervention, back_populates="therapists"
-    )
-    session_types: so.Mapped[List["SessionType"]] = so.relationship(
-        back_populates="therapist"
-    )
-    availabilities: so.Mapped[List["Availability"]] = so.relationship(
-        back_populates="therapist"
-    )
-    unavailabilities: so.Mapped[List["Unavailability"]] = so.relationship(
-        back_populates="therapist"
-    )
+    languages: so.Mapped[List["Language"]] = so.relationship(secondary=therapist_language, back_populates="therapists")
+    specialisations: so.Mapped[List["Issue"]] = so.relationship(secondary=therapist_issue, back_populates="therapists")
+    interventions: so.Mapped[List["Intervention"]] = so.relationship(secondary=therapist_intervention, back_populates="therapists")
+    session_types: so.Mapped[List["SessionType"]] = so.relationship(back_populates="therapist")
+    availabilities: so.Mapped[List["Availability"]] = so.relationship(back_populates="therapist")
+    unavailabilities: so.Mapped[List["Unavailability"]] = so.relationship(back_populates="therapist")
 
 
 class Language(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
-    therapists: so.Mapped[List["Therapist"]] = so.relationship(
-        secondary="therapist_language", back_populates="languages"
-    )
+    iso639_1: so.Mapped[Optional[str]] = so.mapped_column(sa.String(2), unique=True)  # ISO 639-1 two-letter code
+    iso639_2: so.Mapped[Optional[str]] = so.mapped_column(sa.String(3), unique=True)  # ISO 639-2 three-letter code
+    
+    therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_language, back_populates="languages")
 
 
-class Specialisation(db.Model):
+class Issue(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
-    therapists: so.Mapped[List["Therapist"]] = so.relationship(
-        secondary=therapist_specialisation, back_populates="specialisations"
-    )
+    
+    clients: so.Mapped[List["Client"]] = so.relationship(secondary=client_issue, back_populates="issues")
+    therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_issue, back_populates="specialisations")
 
 
 class Intervention(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
-    therapists: so.Mapped[List["Therapist"]] = so.relationship(
-        secondary=therapist_intervention, back_populates="interventions"
-    )
+    
+    therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_intervention, back_populates="interventions")
 
 
 class SessionType(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
-    )
-    name: so.Mapped[str] = so.mapped_column(
-        sa.String(255)
-    )  # e.g. "Initial Consultation"
-    session_duration: so.Mapped[int] = so.mapped_column(
-        sa.Integer
-    )  # In minutes
+    therapist_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("therapist.id"), index=True)
+    name: so.Mapped[str] = so.mapped_column(sa.String(255))  # e.g. "Initial Consultation"
+    session_duration: so.Mapped[int] = so.mapped_column(sa.Integer)  # In minutes
     fee_amount: so.Mapped[float] = so.mapped_column(sa.Float)
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
+    session_format: so.Mapped[Optional["SessionFormat"]] = so.mapped_column(sa.Enum(SessionFormat))
     notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="session_types")
 
 
 class Availability(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
-    )
-    day_of_week: so.Mapped[Optional[int]] = so.mapped_column(
-        sa.Integer
-    )  # 0=Monday, 6=Sunday, None for specific dates
+    therapist_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("therapist.id"), index=True)
+    day_of_week: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)  # 0=Monday, 6=Sunday, None for specific dates
     start_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
     end_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
-    specific_date: so.Mapped[Optional[date]] = so.mapped_column(
-        sa.Date
-    )  # For non-recurring availability
+    specific_date: so.Mapped[Optional[date]] = so.mapped_column(sa.Date)  # For non-recurring availability
+    
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="availabilities")
 
 
 class Unavailability(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
-    )
+    therapist_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("therapist.id"), index=True)
     start_date: so.Mapped[date] = so.mapped_column(sa.Date)
     end_date: so.Mapped[date] = so.mapped_column(sa.Date)
     reason: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
-    therapist: so.Mapped["Therapist"] = so.relationship(
-        back_populates="unavailabilities"
-    )
+    
+    therapist: so.Mapped["Therapist"] = so.relationship(back_populates="unavailabilities")
 
 
 def insertDummyData() -> None:

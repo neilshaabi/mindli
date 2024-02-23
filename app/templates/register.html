@@ -6,24 +6,40 @@
 
 {% block content %}
 
-    
-
     <div class='my-container'>
         <h3>Create account</h3>
         <p>Have an account? <a href='/login'>Sign in</a></p>
+
         <form id='register-form'>
+
+            <div class="radio-group" id="role">
+                <input type="radio" class="btn-check" name="role" id="therapist" autocomplete="off">
+                <label class="btn btn-outline-primary" for="therapist">
+                    <i class="fa-solid fa-check"></i>
+                    Therapist
+                </label>
+                <input type="radio" class="btn-check" name="role" id="client" autocomplete="off">
+                <label class="btn btn-outline-primary" for="client">
+                    <i class="fa-solid fa-check"></i>
+                    Client
+                </label>
+            </div>
+
             <div class='form-floating'>
                 <input type='text' id='first_name' placeholder='First name' class='form-control'>
                 <label for='first_name'>First name</label>
             </div>
+
             <div class='form-floating'>
                 <input type='text' id='last_name' placeholder='Last name' class='form-control'>
                 <label for='last_name'>Last name</label>
             </div>
+
             <div class='form-floating'>
                 <input type='email' id='email' placeholder='Email address' class='form-control'>
                 <label for='email'>Email</label>
             </div>
+
             <div class='form-floating'>
                 <input type='password' id='password' placeholder='Password' class='form-control'>
                 <label for='password'>Password</label>
@@ -31,6 +47,7 @@
                     <i class="fa-solid fa-eye"></i>
                 </button>
             </div>
+
             <div class='description'>
                 Password requirements:
                 <ul>
@@ -40,11 +57,13 @@
                     <li>1 number (0-9)</li>
                 </ul>
             </div>
+
             <button type='submit' class='btn btn-primary'>
                 <span class='btn-text'>Register</span>
                 <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
                 <span class='visually-hidden'>Loading...</span>
             </button>
+
         </form>
     </div>
 
