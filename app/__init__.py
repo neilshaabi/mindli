@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -5,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from itsdangerous import URLSafeTimedSerializer
 
-from app.config import Config, selected_config
+from app.config import CONFIGS, Config
 
 db = SQLAlchemy()
 csrf = CSRFProtect()
@@ -15,6 +17,7 @@ login_manager = LoginManager()
 login_manager.login_view = "/"
 login_manager.login_message = None
 
+selected_config = CONFIGS[os.environ["ENV"]]
 
 def create_app(config: Config = selected_config):
     app = Flask(__name__)
@@ -26,18 +29,19 @@ def create_app(config: Config = selected_config):
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-    # Reset database
-    from app.models import User, insertDummyData
-
+    # Reset database when not in production
     if app.config["RESET_DB"]:
         with app.app_context():
             db.drop_all()
             db.create_all()
-            insertDummyData()
+            
+            # Insert fake data
+            if app.config["FAKE_DATA"]:
+                from app.models import insertDummyData
+                insertDummyData()
 
     # Register blueprints
     from app.views import auth, main
-
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
 
