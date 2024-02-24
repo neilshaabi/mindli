@@ -24,22 +24,16 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG: bool = True
-    RESET_DB: bool = True
-    FAKE_DATA: bool = True
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 
 
 class ProdConfig(Config):
     DEBUG: bool = False
-    RESET_DB: bool = False
-    FAKE_DATA: bool = False
     SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
 
 
 class TestConfig(Config):
     TESTING: bool = True
-    RESET_DB: bool = True
-    FAKE_DATA: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite://"  # Use in-memory database
 
 
