@@ -19,9 +19,11 @@ def new_user_data(fake_user_client: User, fake_user_password: str) -> dict:
     }
 
 
-def test_get_register(client: FlaskClient):
+@patch.object(Mail, "send")
+def test_get_register(mock_send_email: Mock, client: FlaskClient):
     response = client.get("/register")
     assert response.status_code == 200
+    mock_send_email.assert_not_called()
     return
 
 
