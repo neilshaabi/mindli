@@ -203,9 +203,8 @@ def email_verification(token):
     return redirect(url_for("main.index"))
 
 
-# Handles password resets by sending emails and updating the database
 @bp.route("/reset-password", methods=["GET", "POST"])
-def reset_request() -> Response:
+def initiate_password_reset() -> Response:
     if request.method == "GET":
         return render_template("initiate-password-reset.html")
 
@@ -269,7 +268,6 @@ def reset_request() -> Response:
             return jsonify({"success": True, "url": url_for("main.index")})
 
 
-# Displays page to update password
 @bp.route("/reset-password/<token>", methods=["GET"])
 def reset_password(token):
     # Get email from token
