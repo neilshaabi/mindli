@@ -211,7 +211,7 @@ def reset_request() -> Response:
 
     elif request.method == "POST":
         errors = {}
-        
+
         # Form submitted to initiate a password reset
         if request.form.get("form-id") == "initiate-password-reset-form":
             # Get form data
