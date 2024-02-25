@@ -15,10 +15,17 @@ migrate = Migrate()
 csrf = CSRFProtect()
 mail = Mail()
 
-
 login_manager = LoginManager()
 login_manager.login_view = "/"
 login_manager.login_message = None
+
+from app.models import User  # noqa: E402
+
+
+@login_manager.user_loader
+def load_user(user_id: str):
+    return db.session.execute(db.select(User).filter_by(id=int(user_id))).scalar_one()
+
 
 selected_config = CONFIGS[os.environ["ENV"]]
 
