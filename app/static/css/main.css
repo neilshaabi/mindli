@@ -343,7 +343,7 @@ input:-webkit-autofill:focus {
 
 .flashed-message {
     color: var(--dark-grey-text);
-    background: var(--light-grey-bg);
+    background: white;
     border: none;
     z-index: 99;
     margin: 0;
@@ -354,4 +354,8 @@ input:-webkit-autofill:focus {
     border-radius: 0;
     text-align: left;
     box-shadow: var(--my-box-shadow);
+}
+
+.sidebar-layout .flashed-message {
+    left: var(--sidebar-width);
 }
