@@ -211,9 +211,9 @@ def reset_request() -> Response:
 
     elif request.method == "POST":
         errors = {}
-
+        
         # Form submitted to initiate a password reset
-        if request.form.get("form-type") == "initiate_password_reset":
+        if request.form.get("form-id") == "initiate-password-reset-form":
             # Get form data
             email = request.form.get("email").lower()
 
@@ -241,7 +241,7 @@ def reset_request() -> Response:
             return jsonify({"success": True, "url": url_for("main.index")})
 
         # Form submitted to reset password
-        elif request.form.get("form-type") == "reset_password":
+        elif request.form.get("form-id") == "reset-password-form":
             # Get form data
             email = request.form.get("email")
             password = request.form.get("password")
