@@ -15,7 +15,6 @@ class EmailSubject(Enum):
 
 
 class EmailMessage:
-    
     def __init__(
         self,
         mail: Mail,
@@ -23,7 +22,6 @@ class EmailMessage:
         recipient: User,
         serialiser: Optional[URLSafeTimedSerializer],
     ) -> None:
-        
         self.mail = mail
         self.recipient = recipient
         self.subject = subject.value

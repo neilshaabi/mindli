@@ -213,7 +213,10 @@ input:-webkit-autofill:focus {
 }
 
 .btn-primary,
-.btn-primary:disabled {
+.btn-primary.active,
+.btn-primary.show,
+.btn-primary:disabled,
+:not(.btn-check)+.btn:active {
     color: white;
     background: var(--colour-primary);
 }
