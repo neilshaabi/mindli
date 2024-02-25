@@ -12,7 +12,9 @@ from app import db, login_manager
 
 @login_manager.user_loader
 def load_user(user_id: str):
-    return db.session.execute(db.select(User).filter_by(id=int(user_id))).scalar_one()
+    return db.session.execute(
+        db.select(User).filter_by(id=int(user_id))
+    ).scalar_one()
 
 
 @unique
@@ -85,7 +87,7 @@ class User(UserMixin, db.Model):
     photo_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     timezone: so.Mapped[Optional[str]] = so.mapped_column(sa.String(50))  # IANA Time Zone Database name
     currency: so.Mapped[Optional[str]] = so.mapped_column(sa.String(3))  # ISO 4217 currency code
-    
+
     client: so.Mapped[Optional["Client"]] = so.relationship(back_populates="user")
     therapist: so.Mapped[Optional["Therapist"]] = so.relationship(back_populates="user")
 
@@ -95,7 +97,7 @@ class Client(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey('user.id'), index=True)
     preferred_gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     preferred_language_id: so.Mapped[Optional[int]] = so.mapped_column(sa.ForeignKey('language.id'))
-    
+
     user: so.Mapped["User"] = so.relationship(back_populates="client")
     issues: so.Mapped[List["Issue"]] = so.relationship(secondary=client_issue, back_populates="clients")
     preferred_language: so.Mapped[Optional["Language"]] = so.relationship("Language")
@@ -112,7 +114,7 @@ class Therapist(db.Model):
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     years_of_experience: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)
-    
+
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
     languages: so.Mapped[List["Language"]] = so.relationship(secondary=therapist_language, back_populates="therapists")
     specialisations: so.Mapped[List["Issue"]] = so.relationship(secondary=therapist_issue, back_populates="therapists")
@@ -127,14 +129,14 @@ class Language(db.Model):
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
     iso639_1: so.Mapped[Optional[str]] = so.mapped_column(sa.String(2), unique=True)  # ISO 639-1 two-letter code
     iso639_2: so.Mapped[Optional[str]] = so.mapped_column(sa.String(3), unique=True)  # ISO 639-2 three-letter code
-    
+
     therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_language, back_populates="languages")
 
 
 class Issue(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
-    
+
     clients: so.Mapped[List["Client"]] = so.relationship(secondary=client_issue, back_populates="issues")
     therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_issue, back_populates="specialisations")
 
@@ -142,7 +144,7 @@ class Issue(db.Model):
 class Intervention(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
-    
+
     therapists: so.Mapped[List["Therapist"]] = so.relationship(secondary=therapist_intervention, back_populates="interventions")
 
 
@@ -155,7 +157,7 @@ class SessionType(db.Model):
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
     session_format: so.Mapped[Optional["SessionFormat"]] = so.mapped_column(sa.Enum(SessionFormat))
     notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
-    
+
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="session_types")
 
 
@@ -166,7 +168,7 @@ class Availability(db.Model):
     start_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
     end_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
     specific_date: so.Mapped[Optional[date]] = so.mapped_column(sa.Date)  # For non-recurring availability
-    
+
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="availabilities")
 
 
@@ -176,7 +178,7 @@ class Unavailability(db.Model):
     start_date: so.Mapped[date] = so.mapped_column(sa.Date)
     end_date: so.Mapped[date] = so.mapped_column(sa.Date)
     reason: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
-    
+
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="unavailabilities")
 
 

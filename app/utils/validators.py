@@ -1,5 +1,6 @@
 import re
 
+
 def isValidText(text: str) -> bool:
     return text and not text.isspace()
 

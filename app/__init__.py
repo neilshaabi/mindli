@@ -22,7 +22,9 @@ login_manager.login_message = None
 
 selected_config = CONFIGS[os.environ["ENV"]]
 
+
 def create_app(config: Config = selected_config):
+
     app = Flask(__name__)
     app.config.from_object(config)
 

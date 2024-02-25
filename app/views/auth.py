@@ -30,8 +30,11 @@ def logout() -> Response:
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response:
     
-    if request.method == "POST":
-        
+    if request.method == "GET":
+        logout_user()
+        return render_template("register.html")
+
+    else:
         errors = {}
 
         # Get form data
@@ -40,7 +43,6 @@ def register() -> Response:
         last_name = request.form.get("last_name")
         email = request.form.get("email")
         password = request.form.get("password")
-
         
         # Validate input
         if not role or (role not in set(r.value for r in UserRole)):
@@ -58,48 +60,44 @@ def register() -> Response:
         if errors:
             return jsonify({"success": False, "errors": errors})
 
-        # Proceed with successful registration
-        else:
-            # Insert new user into database
-            email = email.lower()
-            user = User(
-                email=email.lower(),
-                password_hash=generate_password_hash(password),
-                first_name=first_name.capitalize(),
-                last_name=last_name.capitalize(),
-                date_joined=date.today(),
-                role=UserRole(role),
-                verified=False,
-                active=True,
-            )
-            db.session.add(user)
-            db.session.commit()
+        # Insert new user into database
+        email = email.lower()
+        user = User(
+            email=email.lower(),
+            password_hash=generate_password_hash(password),
+            first_name=first_name.capitalize(),
+            last_name=last_name.capitalize(),
+            date_joined=date.today(),
+            role=UserRole(role),
+            verified=False,
+            active=True,
+        )
+        db.session.add(user)
+        db.session.commit()
 
-            # Send verification email
-            email_message = EmailMessage(
-                mail=mail,
-                subject=EmailSubject.EMAIL_VERIFICATION,
-                recipient=user,
-                serialiser=current_app.serialiser,
-            )
-            email_message.send()
-            
-            # Store email in session for email verification
-            session["email"] = email
-            return jsonify({"success": True, "url": url_for("auth.verify_email")})
-
-    # Request method is GET
-    else:
-        logout_user()
-        return render_template("register.html")
+        # Send verification email
+        email_message = EmailMessage(
+            mail=mail,
+            subject=EmailSubject.EMAIL_VERIFICATION,
+            recipient=user,
+            serialiser=current_app.serialiser,
+        )
+        email_message.send()
+        
+        # Store email in session for email verification
+        session["email"] = email
+        return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
 
 # Logs user in if credentials are valid
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response:
     
-    if request.method == "POST":
-        
+    if request.method == "GET":
+        logout_user()
+        return render_template("login.html")
+
+    elif request.method == "POST":
         errors = {}
 
         # Get form data
@@ -128,11 +126,6 @@ def login() -> Response:
         login_user(user)
         return jsonify({"success": True, "url": url_for("main.index")})
 
-    # Request method is GET
-    else:
-        logout_user()
-        return render_template("login.html")
-
 
 # Displays page with email verification instructions, sends verification email
 @bp.route("/verify-email", methods=["GET", "POST"])
@@ -148,8 +141,11 @@ def verify_email() -> Response:
     if not user or user.verified:
         return redirect(url_for("main.index"))
 
-    # Sends verification email to user (POST used to utilise AJAX)
-    if request.method == "POST":
+    if request.method == "GET":
+        return render_template("verify-email.html", email=session["email"])
+    
+    # Send verification email to user
+    elif request.method == "POST":
         email_message = EmailMessage(
             mail=mail,
             subject=EmailSubject.EMAIL_VERIFICATION,
@@ -159,13 +155,11 @@ def verify_email() -> Response:
         email_message.send()
         flash(f"Email verification instructions sent to {user.email}")
         return jsonify({"success": True, "url": url_for("main.index")})
-    
-    else:
-        return render_template("verify-email.html", email=session["email"])
+        
 
 
 # Handles email verification using token
-@bp.route("/email-verification/<token>")
+@bp.route("/email-verification/<token>", methods=["GET"])
 def email_verification(token):
     
     # Get email from token
@@ -196,8 +190,11 @@ def email_verification(token):
 # Handles password resets by sending emails and updating the database
 @bp.route("/reset-password", methods=["GET", "POST"])
 def reset_request() -> Response:
-    if request.method == "POST":
-        
+    
+    if request.method == "GET":
+        return render_template("initiate-password-reset.html")
+    
+    elif request.method == "POST":    
         errors = {}
         
         # Form submitted to initiate a password reset
@@ -209,25 +206,23 @@ def reset_request() -> Response:
             # Find user with this email
             user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
 
-            # Check if user with this email does not exist
+            # Validate input
             if user is None:
                 errors["email"] = "No account found with this email address"
-
-            # Return errors if any
             if errors:
                 return jsonify({"success": False, "errors": errors})
             
-            # Send reset email
-            else:
-                email_message = EmailMessage(
-                    mail=mail,
-                    subject=EmailSubject.PASSWORD_RESET,
-                    recipient=user,
-                    serialiser=current_app.serialiser,
-                )
-                email_message.send()
-                flash(f"Password reset instructions sent to {email}")
-                return jsonify({"success": True, "url": url_for("main.index")})
+            # Send email with instructions
+            email_message = EmailMessage(
+                mail=mail,
+                subject=EmailSubject.PASSWORD_RESET,
+                recipient=user,
+                serialiser=current_app.serialiser,
+            )
+            email_message.send()
+            
+            flash(f"Password reset instructions sent to {email}")
+            return jsonify({"success": True, "url": url_for("main.index")})
 
         # Form submitted to reset password
         elif request.form.get("form-type") == "reset_password":
@@ -247,25 +242,20 @@ def reset_request() -> Response:
             if errors:
                 return jsonify({"success": False, "errors": errors})
             
-            # Successful reset
-            else:
-                # Update user's password in database
-                user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
-                user.password_hash = generate_password_hash(password)
-                db.session.commit()
+            # Update user's password in database
+            user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+            user.password_hash = generate_password_hash(password)
+            db.session.commit()
 
-                # Redirect to login page
-                flash("Success! Your password has been reset")
-                return jsonify({"success": True, "url": url_for("main.index")})
-
-    # Request method is GET
-    else:
-        return render_template("initiate-password-reset.html")
+            # Redirect to login page
+            flash("Success! Your password has been reset")
+            return jsonify({"success": True, "url": url_for("main.index")})
 
 
 # Displays page to update password
-@bp.route("/reset-password/<token>")
+@bp.route("/reset-password/<token>", methods=["GET"])
 def reset_password(token):
+    
     # Get email from token
     try:
         email = current_app.serialiser.loads(
@@ -275,5 +265,6 @@ def reset_password(token):
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
-        flash("Invalid or expired reset link, " "please request another password reset")
+        flash("Invalid or expired reset link, " 
+              "please request another password reset")
         return redirect(url_for("main.index"))

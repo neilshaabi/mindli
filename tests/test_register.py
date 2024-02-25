@@ -1,8 +1,8 @@
 from unittest.mock import Mock, patch
-from flask_mail import Mail
 
-from flask.testing import FlaskClient
 import pytest
+from flask.testing import FlaskClient
+from flask_mail import Mail
 
 from app import db
 from app.models import User
