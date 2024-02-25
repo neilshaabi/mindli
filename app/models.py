@@ -222,5 +222,7 @@ class Unavailability(db.Model):
     start_date: so.Mapped[date] = so.mapped_column(sa.Date)
     end_date: so.Mapped[date] = so.mapped_column(sa.Date)
     reason: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
-    
-    therapist: so.Mapped["Therapist"] = so.relationship(back_populates="unavailabilities")
+
+    therapist: so.Mapped["Therapist"] = so.relationship(
+        back_populates="unavailabilities"
+    )
