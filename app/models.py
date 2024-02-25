@@ -183,17 +183,6 @@ class Unavailability(db.Model):
 def insertDummyData() -> None:
     users: List[User] = [
         User(
-            email="client@example.com",
-            password_hash=generate_password_hash("password"),
-            first_name="John",
-            last_name="Smith",
-            date_joined=date.today(),
-            role=UserRole.CLIENT,
-            verified=True,
-            active=True,
-            gender=Gender.MALE,
-        ),
-        User(
             email="therapist@example.com",
             password_hash=generate_password_hash("password"),
             first_name="Jane",

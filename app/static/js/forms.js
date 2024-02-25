@@ -13,12 +13,6 @@ function showLoadingBtn(isLoading) {
 
 // Function to display error messages
 function displayFormErrors(errors) {
-    
-    // Clear previous errors
-    $('.error-message').remove();
-    $('.input-error').removeClass('input-error');
-
-    // Display new errors below corresponding input fields
     for (const key in errors) {
         const inputField = $('#' + key);
         const errorMessage = $(
@@ -33,10 +27,19 @@ function displayFormErrors(errors) {
 }
 
 function ajaxFormResponseHandler(response) {
-    if (response.errors) {
-        displayFormErrors(response.errors);
+    
+    // Clear previous errors
+    $('.error-message').remove();
+    $('.input-error').removeClass('input-error');
+
+    if (response.success) {
+        if (response.url) {
+            window.location = response.url;
+        }
     } else {
-        window.location = response.url;
+        if (response.errors) {
+            displayFormErrors(response.errors);
+        }
     }
 }
 

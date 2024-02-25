@@ -4,13 +4,12 @@ from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
                    render_template, request, session, url_for)
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
-from markupsafe import escape
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db, mail
 from app.models import User, UserRole
 from app.utils.mail import EmailMessage, EmailSubject
-from app.utils.password import isValidPassword
+from app.utils.validators import isValidEmail, isValidPassword, isValidText
 
 bp = Blueprint("auth", __name__)
 
@@ -37,26 +36,27 @@ def register() -> Response:
 
         # Get form data
         role = request.form.get("role")
-        first_name = escape(request.form.get("first_name"))
-        last_name = escape(request.form.get("last_name"))
+        first_name = request.form.get("first_name")
+        last_name = request.form.get("last_name")
         email = request.form.get("email")
         password = request.form.get("password")
 
+        
         # Validate input
-        if not role:
+        if not role or (role not in set(r.value for r in UserRole)):
             errors["role"] = "Account type is required"
-        if not first_name or first_name.isspace():
+        if not isValidText(first_name):
             errors["first_name"] = "First name is required"
-        if not last_name or last_name.isspace():
+        if not isValidText(last_name):
             errors["last_name"] = "Last name is required"
-        if not email or email.isspace():
-            errors["email"] = "Email is required"
-        elif User.query.filter_by(email=email.lower()).first():
-            errors["email"] = "Email address is already in use"
         if not isValidPassword(password):
             errors["password"] = "Password does not meet requirements"
+        if not isValidEmail(email):
+            errors["email"] = "Invalid email address"
+        elif db.session.execute(db.select(User).filter_by(email=email.lower())).scalar_one_or_none() is not None:
+            errors["email"] = "Email address is already in use"
         if errors:
-            return jsonify({"errors": errors})
+            return jsonify({"success": False, "errors": errors})
 
         # Proceed with successful registration
         else:
@@ -75,7 +75,7 @@ def register() -> Response:
             db.session.add(user)
             db.session.commit()
 
-            # Send verification email and redirect
+            # Send verification email
             email_message = EmailMessage(
                 mail=mail,
                 subject=EmailSubject.EMAIL_VERIFICATION,
@@ -83,8 +83,10 @@ def register() -> Response:
                 serialiser=current_app.serialiser,
             )
             email_message.send()
+            
+            # Store email in session for email verification
             session["email"] = email
-            return jsonify({"url": url_for("auth.verify_email")})
+            return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
     # Request method is GET
     else:
@@ -95,11 +97,13 @@ def register() -> Response:
 # Logs user in if credentials are valid
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response:
+    
     if request.method == "POST":
+        
         errors = {}
 
         # Get form data
-        email = request.form.get("email").lower()
+        email = request.form.get("email")
         password = request.form.get("password")
 
         # Validate input
@@ -108,21 +112,21 @@ def login() -> Response:
         if not password:
             errors["password"] = "Password is required"
         else:
-            user = db.session.execute(db.select(User).filter_by(email=email)).scalar_one_or_none()
+            user = db.session.execute(db.select(User).filter_by(email=email.lower())).scalar_one_or_none()
             if user is None or not check_password_hash(user.password_hash, password):
                 errors["password"] = "Incorrect email/password"
         if errors:
-            return jsonify({"errors": errors})
+            return jsonify({"success": False, "errors": errors})
 
         # Ensure user's email is verified
         if not user.verified:
             # Store email in session for verification and redirect
             session["email"] = email
-            return jsonify({"url": url_for("auth.verify_email")})
+            return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
         # Log user in and redirect to home page
         login_user(user)
-        return jsonify({"url": url_for("main.index")})
+        return jsonify({"success": True, "url": url_for("main.index")})
 
     # Request method is GET
     else:
@@ -154,7 +158,7 @@ def verify_email() -> Response:
         )
         email_message.send()
         flash(f"Email verification instructions sent to {user.email}")
-        return jsonify({"url": url_for("main.index")})
+        return jsonify({"success": True, "url": url_for("main.index")})
     
     else:
         return render_template("verify-email.html", email=session["email"])
@@ -211,7 +215,7 @@ def reset_request() -> Response:
 
             # Return errors if any
             if errors:
-                return jsonify({"errors": errors})
+                return jsonify({"success": False, "errors": errors})
             
             # Send reset email
             else:
@@ -223,7 +227,7 @@ def reset_request() -> Response:
                 )
                 email_message.send()
                 flash(f"Password reset instructions sent to {email}")
-                return jsonify({"url": url_for("main.index")})
+                return jsonify({"success": True, "url": url_for("main.index")})
 
         # Form submitted to reset password
         elif request.form.get("form-type") == "reset_password":
@@ -241,7 +245,7 @@ def reset_request() -> Response:
             elif password != password_confirmation:
                 errors["password_confirmation"] = "Passwords do not match"
             if errors:
-                return jsonify({"errors": errors})
+                return jsonify({"success": False, "errors": errors})
             
             # Successful reset
             else:
@@ -252,7 +256,7 @@ def reset_request() -> Response:
 
                 # Redirect to login page
                 flash("Success! Your password has been reset")
-                return jsonify({"url": url_for("main.index")})
+                return jsonify({"success": True, "url": url_for("main.index")})
 
     # Request method is GET
     else:
