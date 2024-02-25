@@ -19,7 +19,11 @@ clean:
 	find . -type f -name '*.pyc' -delete
 
 lint:
-	@echo "Linting Python files with flake8..."
+	@echo "Reorganising imports..."
+	isort .
+	@echo "Formatting Python files..."
+	black . --exclude '/(\.venv|migrations)/'
+	@echo "Linting Python files..."
 	flake8 --exclude .venv,./migrations
 
 test:

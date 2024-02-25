@@ -6,7 +6,7 @@ from app import db
 from app.models import User
 
 
-@patch('app.views.auth.login_user')
+@patch("app.views.auth.login_user")
 def test_get_login(mock_login_user: Mock, client: FlaskClient):
     response = client.get("/login")
     assert response.status_code == 200
@@ -14,12 +14,20 @@ def test_get_login(mock_login_user: Mock, client: FlaskClient):
     return
 
 
-@patch('app.views.auth.login_user')
-def test_user_login_success(mock_login_user: Mock, client: FlaskClient, fake_user_client: User, fake_user_password: str):
-    response = client.post("/login", data={
-        "email": fake_user_client.email,
-        "password": fake_user_password,
-    })
+@patch("app.views.auth.login_user")
+def test_user_login_success(
+    mock_login_user: Mock,
+    client: FlaskClient,
+    fake_user_client: User,
+    fake_user_password: str,
+):
+    response = client.post(
+        "/login",
+        data={
+            "email": fake_user_client.email,
+            "password": fake_user_password,
+        },
+    )
     data = response.get_json()
     assert response.status_code == 200
     assert data["success"] is True
@@ -28,7 +36,7 @@ def test_user_login_success(mock_login_user: Mock, client: FlaskClient, fake_use
     return
 
 
-@patch('app.views.auth.login_user')
+@patch("app.views.auth.login_user")
 def test_user_login_missing_credentials(mock_login_user: Mock, client: FlaskClient):
     response = client.post("/login", data={})
     data = response.get_json()
@@ -40,12 +48,17 @@ def test_user_login_missing_credentials(mock_login_user: Mock, client: FlaskClie
     return
 
 
-@patch('app.views.auth.login_user')
-def test_user_login_wrong_credentials(mock_login_user: Mock, client: FlaskClient, fake_user_client: User):
-    response = client.post("/login", data={
-        "email": fake_user_client.email,
-        "password": "wrongpassword",
-    })
+@patch("app.views.auth.login_user")
+def test_user_login_wrong_credentials(
+    mock_login_user: Mock, client: FlaskClient, fake_user_client: User
+):
+    response = client.post(
+        "/login",
+        data={
+            "email": fake_user_client.email,
+            "password": "wrongpassword",
+        },
+    )
     data = response.get_json()
     assert response.status_code == 200
     assert data["success"] is False
@@ -55,14 +68,18 @@ def test_user_login_wrong_credentials(mock_login_user: Mock, client: FlaskClient
     return
 
 
-@patch('app.views.auth.login_user')
-def test_user_login_unverified(mock_login_user: Mock, client: FlaskClient, fake_user_client: User, fake_user_password: str):
+@patch("app.views.auth.login_user")
+def test_user_login_unverified(
+    mock_login_user: Mock,
+    client: FlaskClient,
+    fake_user_client: User,
+    fake_user_password: str,
+):
     fake_user_client.verified = False
     db.session.commit()
-    response = client.post("/login", data={
-        "email": fake_user_client.email,
-        "password": fake_user_password
-    })
+    response = client.post(
+        "/login", data={"email": fake_user_client.email, "password": fake_user_password}
+    )
     data = response.get_json()
     assert response.status_code == 200
     assert data["success"] is True

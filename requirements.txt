@@ -1,4 +1,5 @@
 alembic==1.12.1
+black==23.3.0
 blinker==1.6.3
 click==8.1.7
 dnspython==2.3.0

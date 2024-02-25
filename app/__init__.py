@@ -24,7 +24,6 @@ selected_config = CONFIGS[os.environ["ENV"]]
 
 
 def create_app(config: Config = selected_config):
-
     app = Flask(__name__)
     app.config.from_object(config)
 
@@ -37,6 +36,7 @@ def create_app(config: Config = selected_config):
 
     # Register blueprints
     from app.views import auth, main
+
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
 

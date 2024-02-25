@@ -24,9 +24,7 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG: bool = True
-    SQLALCHEMY_DATABASE_URI: str = (
-        "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
-    )
+    SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 
 
 class ProdConfig(Config):

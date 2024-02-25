@@ -4,9 +4,11 @@ import re
 def isValidText(text: str) -> bool:
     return text and not text.isspace()
 
+
 def isValidEmail(email: str) -> bool:
-    email_regex = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    email_regex = r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"
     return email and re.match(email_regex, email)
+
 
 def isValidPassword(password: str) -> bool:
     return (
