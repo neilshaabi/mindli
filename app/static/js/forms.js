@@ -9,10 +9,12 @@ function handleSubmitForm(formID, endpoint) {
         $('.btn-text').hide();
         $('.spinner-border').show();
 
+        // Retrieve form data with ID and CSRF token
         var formData = $(this).serialize();
         formData += "&form-id=" + $(this).attr('id');
+        formData += "&csrf_token=" + $('meta[name="csrf-token"]').attr('content');
 
-        $.post(endpoint, formData, function(data) {
+        $.post(endpoint, formData, function(response) {
             
             // Hide loading button
             $(":input[type='submit']").prop('disabled', false);
@@ -52,22 +54,6 @@ function handleSubmitForm(formID, endpoint) {
 
 
 $(document).ready(function() {
-
-    // Event listener for the toggle button
-    $('#togglePassword').click(function() {
-        
-        // Toggle the type attribute of the password field
-        const passwordFieldType = $('#password').attr('type') === 'password' ? 'text' : 'password';
-        $('#password').attr('type', passwordFieldType);
-
-        // Toggle the icon class
-        const icon = $(this).find('i');
-        if (passwordFieldType === 'password') {
-            icon.removeClass('fa-eye-slash').addClass('fa-eye');
-        } else {
-            icon.removeClass('fa-eye').addClass('fa-eye-slash');
-        }
-    });
     
     // Form handlers using AJAX
     handleSubmitForm('register-form', '/register');

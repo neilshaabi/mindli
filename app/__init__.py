@@ -12,10 +12,10 @@ from app.config import CONFIGS, Config
 
 db = SQLAlchemy()
 migrate = Migrate()
-csrf = CSRFProtect()
 mail = Mail()
-
+csrf = CSRFProtect()
 login_manager = LoginManager()
+
 login_manager.login_view = "/"
 login_manager.login_message = None
 
@@ -38,6 +38,7 @@ def create_app(config: Config = selected_config):
     db.init_app(app)
     migrate.init_app(app, db)
     mail.init_app(app)
+    csrf.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 

@@ -9,5 +9,20 @@ $(document).ready(function() {
             break;
         }
     }
-    
+
+    // Event listener for the toggle button
+    $('#togglePassword').click(function() {
+        
+        // Toggle the type attribute of the password field
+        const passwordFieldType = $('#password').attr('type') === 'password' ? 'text' : 'password';
+        $('#password').attr('type', passwordFieldType);
+
+        // Toggle the icon class
+        const icon = $(this).find('i');
+        if (passwordFieldType === 'password') {
+            icon.removeClass('fa-eye-slash').addClass('fa-eye');
+        } else {
+            icon.removeClass('fa-eye').addClass('fa-eye-slash');
+        }
+    });
 });
