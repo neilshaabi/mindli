@@ -1,0 +1,20 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Error {{ error.code }}
+{% endblock %}
+
+{% block content %}
+
+    <div class='my-container'>
+        {% if is_http_exception %}
+            <h3>{{ error.code }} {{ error.name }}</h3>
+            <p>{{ error.description }}</p>
+        {% else %}
+            <h3>Error</h3>
+            <p>Sorry, it looks like something went wrong.</p>
+        {% endif %}
+        <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
+    </div>
+
+{% endblock %}
