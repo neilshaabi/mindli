@@ -43,8 +43,9 @@ def create_app(config: Config = selected_config):
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
     # Register blueprints
-    from app.views import auth, main
+    from app.views import auth, errors, main
 
+    errors.register_error_handlers(app)
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
 
