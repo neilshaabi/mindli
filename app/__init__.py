@@ -12,8 +12,8 @@ from app.config import CONFIGS, Config
 
 db = SQLAlchemy()
 migrate = Migrate()
-mail = Mail()
 csrf = CSRFProtect()
+mail = Mail()
 login_manager = LoginManager()
 
 login_manager.login_view = "/"
@@ -37,8 +37,8 @@ def create_app(config: Config = selected_config):
     # Initialise extensions
     db.init_app(app)
     migrate.init_app(app, db)
+    csrf.init_app(app) if not app.config["TESTING"] else None
     mail.init_app(app)
-    csrf.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
