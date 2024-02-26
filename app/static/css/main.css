@@ -293,16 +293,11 @@ input:-webkit-autofill:focus {
     }
 }
 
-.my-container .description,
-.my-container .description a {
+.my-container .description {
     color: var(--light-grey-text);
     font-size: 0.8rem;
     margin: 12px 0;
     line-height: 1.75;
-}
-
-.my-container .description a:hover {
-    color: var(--dark-grey-text);
 }
 
 .my-container .btn {
