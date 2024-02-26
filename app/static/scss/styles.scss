@@ -1,0 +1,12 @@
+// Import Bootstrap's functions, variables, and mixins
+@import "../bootstrap/scss/functions";
+@import "../bootstrap/scss/variables";
+@import "../bootstrap/scss/mixins";
+
+// Optionally override Bootstrap variables here
+
+// Import Bootstrap
+@import "../bootstrap/scss/bootstrap";
+
+// Import your custom styles
+@import "custom";
