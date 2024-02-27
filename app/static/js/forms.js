@@ -9,10 +9,9 @@ function handleSubmitForm(formID, endpoint) {
         $('.btn-text').hide();
         $('.spinner-border').show();
 
-        // Retrieve form data with ID and CSRF token
+        // Retrieve form data with ID
         var formData = $(this).serialize();
         formData += "&form-id=" + $(this).attr('id');
-        formData += "&csrf_token=" + $('meta[name="csrf-token"]').attr('content');
 
         $.post(endpoint, formData, function(response) {
             
@@ -33,14 +32,15 @@ function handleSubmitForm(formID, endpoint) {
                 }
             } else {
                 
-                // Display error messages for each input field
+                // Display first error message for each input field
                 if (response.errors) {
                     for (const key in response.errors) {
+                        const firstError = response.errors[key][0];
                         const inputField = $('#' + key);
                         const errorMessage = $(
                             '<div class="error-message">' 
                                 + '<i class="fa-solid fa-circle-exclamation"></i> ' 
-                                + response.errors[key] 
+                                + firstError
                             + '</div>'
                         );
                         inputField.after(errorMessage);
