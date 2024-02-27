@@ -7,10 +7,25 @@ from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from itsdangerous import URLSafeTimedSerializer
+from sqlalchemy import MetaData
+from sqlalchemy.orm import DeclarativeBase
 
 from app.config import CONFIGS, Config, ProdConfig
 
-db = SQLAlchemy()
+
+class Base(DeclarativeBase):
+    metadata = MetaData(
+        naming_convention={
+            "ix": "ix_%(column_0_label)s",
+            "uq": "uq_%(table_name)s_%(column_0_name)s",
+            "ck": "ck_%(table_name)s_%(constraint_name)s",
+            "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+            "pk": "pk_%(table_name)s",
+        }
+    )
+
+
+db = SQLAlchemy(model_class=Base)
 migrate = Migrate()
 csrf = CSRFProtect()
 mail = Mail()
@@ -42,14 +57,22 @@ def create_app(config: Config = selected_config):
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-    # Register blueprints
-    from app.views import auth, errors, main, profile
+    # Register CLI commands
+    from app.seeds import register_cli_commands
+
+    register_cli_commands(app)
+
+    # Register blueprints with endpoints
+    from app.views import auth, main, profile
 
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
 
+    # Register handler to redirect to custom error page
+    from app.views.errors import register_error_handlers
+
     if config == ProdConfig:
-        errors.register_error_handlers(app)
+        register_error_handlers(app)
 
     return app
