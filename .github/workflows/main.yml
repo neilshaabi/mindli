@@ -15,6 +15,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      ENV: test
+      SECRET_KEY: "secret-key"
+      MAIL_USERNAME: ""
+      MAIL_PASSWORD: ""
 
     steps:
     - uses: actions/checkout@v3
