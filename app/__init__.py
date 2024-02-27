@@ -8,7 +8,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from itsdangerous import URLSafeTimedSerializer
 
-from app.config import CONFIGS, Config
+from app.config import CONFIGS, Config, ProdConfig
 
 db = SQLAlchemy()
 migrate = Migrate()
@@ -45,8 +45,10 @@ def create_app(config: Config = selected_config):
     # Register blueprints
     from app.views import auth, errors, main
 
-    errors.register_error_handlers(app)
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
+
+    if config == ProdConfig:
+        errors.register_error_handlers(app)
 
     return app

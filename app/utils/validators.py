@@ -1,10 +1,6 @@
 import re
 
-from werkzeug.security import check_password_hash
 from wtforms.validators import ValidationError
-
-from app import db
-from app.models.user import User
 
 
 def isValidEmail(email: str) -> bool:
@@ -45,19 +41,5 @@ class PasswordValidator:
 
         if error:
             raise ValidationError(error)
-
-        return
-
-
-class UserCredentialsValidator:
-    def __call__(self, form, field):
-        email = form.email.data.lower()
-
-        user = db.session.execute(
-            db.select(User).filter_by(email=email)
-        ).scalar_one_or_none()
-
-        if not user or not check_password_hash(user.password_hash, form.password.data):
-            raise ValidationError("Incorrect email or password.")
 
         return

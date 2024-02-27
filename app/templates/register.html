@@ -10,39 +10,38 @@
         <h3>Create account</h3>
         <p>Have an account? <a href='/login'>Sign in</a></p>
 
-        <form id='register-form'>
+        <form id='register-form' novalidate>
+        
+            {{ form.hidden_tag() }}
 
             <div class='radio-group' id='role'>
-                <input type='radio' class='btn-check' id='therapist' name='role' value='therapist' autocomplete='off'>
-                <label class='btn btn-outline-primary' for='therapist'>
-                    <i class='fa-solid fa-check'></i>
-                    Therapist
-                </label>
-                <input type='radio' class='btn-check' id='client' name='role' value='client' autocomplete='off'>
-                <label class='btn btn-outline-primary' for='client'>
-                    <i class='fa-solid fa-check'></i>
-                    Client
-                </label>
+                {% for subfield in form.role %}
+                    <input type='radio' class='btn-check' id='{{ subfield.id }}' name='{{ subfield.name }}' value='{{ subfield._value() }}' autocomplete='off'>
+                    <label class='btn btn-outline-primary' for='{{ subfield.id }}'>
+                        <i class='fa-solid fa-check'></i>
+                        {{ subfield.label.text }}
+                    </label>
+                {% endfor %}
             </div>
 
             <div class='form-floating'>
-                <input type='text' id='first_name' name='first_name' placeholder='First name' class='form-control'>
-                <label for='first_name'>First name</label>
+                {{ form.first_name(class_='form-control', placeholder=form.email.label.text) }}
+                {{ form.first_name.label }}
             </div>
 
             <div class='form-floating'>
-                <input type='text' id='last_name' name='last_name' placeholder='Last name' class='form-control'>
-                <label for='last_name'>Last name</label>
+                {{ form.last_name(class_='form-control', placeholder=form.email.label.text) }}
+                {{ form.last_name.label }}
             </div>
 
             <div class='form-floating'>
-                <input type='email' id='email' name='email' placeholder='Email address' class='form-control'>
-                <label for='email'>Email</label>
+                {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
+                {{ form.email.label }}
             </div>
 
             <div class='form-floating'>
-                <input type='password' id='password' name='password' placeholder='Password' class='form-control'>
-                <label for='password'>Password</label>
+                {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
+                {{ form.password.label }}
                 <button type='button' id='togglePassword'>
                     <i class='fa-solid fa-eye'></i>
                 </button>

@@ -12,8 +12,4 @@ def register_error_handlers(app: Flask) -> None:
             is_error_page=True,
         )
 
-    @app.route("/error")
-    def error() -> Response:
-        raise Exception
-
     return

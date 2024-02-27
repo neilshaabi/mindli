@@ -10,11 +10,14 @@
         <h3>Sign in</h3>
         <p>Don't have an account? <a href='/register'>Register</a></p>
         <form id='login-form' novalidate>
+            
             {{ form.hidden_tag() }}
+            
             <div class='form-floating'>
                 {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
                 {{ form.email.label }}
             </div>
+            
             <div class='form-floating'>
                 {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
                 {{ form.password.label }}
@@ -22,14 +25,17 @@
                     <i class='fa-solid fa-eye'></i>
                 </button>
             </div>
+            
             <div class='description'>
                 <a href='/reset-password'>Forgot password?</a>
             </div>
+            
             <button type='submit' class='btn btn-primary'>
                 <span class='btn-text'>Continue</span>
                 <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
                 <span class='visually-hidden'>Loading...</span>
             </button>
+        
         </form>
     </div>
 

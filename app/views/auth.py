@@ -14,13 +14,14 @@ from flask import (
 )
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
-from werkzeug.security import generate_password_hash
+from sqlalchemy.exc import IntegrityError
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
-from app.forms.auth import LoginForm
+from app.forms.auth import LoginForm, RegisterForm
 from app.models import User, UserRole
 from app.utils.mail import EmailMessage, EmailSubject
-from app.utils.validators import isValidEmail, isValidPassword, isValidText
+from app.utils.validators import isValidPassword
 
 bp = Blueprint("auth", __name__)
 
@@ -40,67 +41,48 @@ def logout() -> Response:
 
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response:
+    form = RegisterForm()
+
+    # GET request - display page
     if request.method == "GET":
         logout_user()
-        return render_template("register.html")
+        return render_template("register.html", form=form)
 
-    else:
-        errors = {}
+    # POST request - validate form
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
 
-        # Get form data
-        role = request.form.get("role")
-        first_name = request.form.get("first_name")
-        last_name = request.form.get("last_name")
-        email = request.form.get("email")
-        password = request.form.get("password")
+    user = User(
+        email=form.email.data.lower(),
+        password_hash=generate_password_hash(form.password.data),
+        first_name=form.first_name.data.capitalize(),
+        last_name=form.last_name.data.capitalize(),
+        date_joined=date.today(),
+        role=UserRole(form.role.data),
+        verified=False,
+        active=True,
+    )
 
-        # Validate input
-        if not role or (role not in set(r.value for r in UserRole)):
-            errors["role"] = "Account type is required"
-        if not isValidText(first_name):
-            errors["first_name"] = "First name is required"
-        if not isValidText(last_name):
-            errors["last_name"] = "Last name is required"
-        if not isValidPassword(password):
-            errors["password"] = "Password does not meet requirements"
-        if not isValidEmail(email):
-            errors["email"] = "Invalid email address"
-        elif (
-            db.session.execute(
-                db.select(User).filter_by(email=email.lower())
-            ).scalar_one_or_none()
-            is not None
-        ):
-            errors["email"] = "Email address is already in use"
-
-        if errors:
-            return jsonify({"success": False, "errors": errors})
-
-        # Insert new user into database
-        email = email.lower()
-        user = User(
-            email=email.lower(),
-            password_hash=generate_password_hash(password),
-            first_name=first_name.capitalize(),
-            last_name=last_name.capitalize(),
-            date_joined=date.today(),
-            role=UserRole(role),
-            verified=False,
-            active=True,
-        )
+    # Insert user into database
+    try:
         db.session.add(user)
         db.session.commit()
 
-        # Send verification email
-        email_message = EmailMessage(
-            recipient=user,
-            subject=EmailSubject.EMAIL_VERIFICATION,
-        )
-        email_message.send()
+    except IntegrityError:
+        db.session.rollback()
+        errors = {"email": ["Email address is already in use."]}
+        return jsonify({"success": False, "errors": errors})
 
-        # Store email in session for email verification
-        session["email"] = email
-        return jsonify({"success": True, "url": url_for("auth.verify_email")})
+    # Send verification email
+    email_message = EmailMessage(
+        recipient=user,
+        subject=EmailSubject.EMAIL_VERIFICATION,
+    )
+    email_message.send()
+
+    # Store email in session for email verification
+    session["email"] = user.email
+    return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
 
 # Logs user in if credentials are valid
@@ -117,16 +99,19 @@ def login() -> Response:
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    email = form.email.data.lower()
-
     # Fetch user from database
     user = db.session.execute(
-        db.select(User).filter_by(email=email)
+        db.select(User).filter_by(email=form.email.data.lower())
     ).scalar_one_or_none()
+
+    # Ensure credentials are correct
+    if not user or not check_password_hash(user.password_hash, form.password.data):
+        errors = {"password": ["Incorrect email or password."]}
+        return jsonify({"success": False, "errors": errors})
 
     # Redirect unverified users
     if not user.verified:
-        session["email"] = email
+        session["email"] = user.email
         return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
     # Successful login

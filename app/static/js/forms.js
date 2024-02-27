@@ -1,3 +1,14 @@
+$(document).ready(function() {
+    
+    // Form handlers using AJAX
+    handleSubmitForm('register-form', '/register');
+    handleSubmitForm('login-form', '/login');
+    handleSubmitForm('verify-email-form', '/verify-email');
+    handleSubmitForm('initiate-password-reset-form', '/reset-password');
+    handleSubmitForm('reset-password-form', '/reset-password');
+});
+
+
 function handleSubmitForm(formID, endpoint) {
     
     $('#' + formID).on('submit', function(event) {
@@ -51,14 +62,3 @@ function handleSubmitForm(formID, endpoint) {
         });
     });
 }
-
-
-$(document).ready(function() {
-    
-    // Form handlers using AJAX
-    handleSubmitForm('register-form', '/register');
-    handleSubmitForm('login-form', '/login');
-    handleSubmitForm('verify-email-form', '/verify-email');
-    handleSubmitForm('initiate-password-reset-form', '/reset-password');
-    handleSubmitForm('reset-password-form', '/reset-password');
-});
