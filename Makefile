@@ -12,11 +12,10 @@ app:
 	@echo "Running Flask app locally..."
 	flask run
 
-clean:
-	@echo "Cleaning up directory..."
-	rm -rf .venv
-	find . -type d -name '__pycache__' -exec rm -r {} +
-	find . -type f -name '*.pyc' -delete
+reset-db:
+	@echo "Resetting the database..."
+	flask db downgrade
+	flask db upgrade
 
 lint:
 	@echo "Reorganising imports..."
@@ -30,7 +29,13 @@ test:
 	@echo "Running tests with pytest..."
 	pytest -s
 
-help:
-	@echo "Available commands: make [help, venv, deps, app, test, clean]"
+clean:
+	@echo "Cleaning up directory..."
+	rm -rf .venv
+	find . -type d -name '__pycache__' -exec rm -r {} +
+	find . -type f -name '*.pyc' -delete
 
-.PHONY: help venv deps app lint test clean
+help:
+	@echo "Available commands: make [help, venv, deps, app, reset-db, lint, test, clean]"
+
+.PHONY: help venv deps app reset-db lint test clean
