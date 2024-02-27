@@ -26,9 +26,6 @@ class Therapist(db.Model):
     specialisations: so.Mapped[List["Issue"]] = so.relationship(
         secondary="therapist_issue", back_populates="therapists"
     )
-    interventions: so.Mapped[List["Intervention"]] = so.relationship(
-        secondary="therapist_intervention", back_populates="therapists"
-    )
     session_types: so.Mapped[List["SessionType"]] = so.relationship(
         back_populates="therapist"
     )

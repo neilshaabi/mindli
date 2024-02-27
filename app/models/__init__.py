@@ -5,7 +5,6 @@ from app import db
 from .availability import Availability
 from .client import Client
 from .enums import Gender, SessionFormat, UserRole
-from .intervention import Intervention
 from .issue import Issue
 from .language import Language
 from .session_type import SessionType
@@ -39,11 +38,4 @@ therapist_issue = sa.Table(
     db.Model.metadata,
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
     sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
-)
-
-therapist_intervention = sa.Table(
-    "therapist_intervention",
-    db.Model.metadata,
-    sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
-    sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
 )
