@@ -16,7 +16,7 @@ from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import db, mail
+from app import db
 from app.models import User, UserRole
 from app.utils.mail import EmailMessage, EmailSubject
 from app.utils.validators import isValidEmail, isValidPassword, isValidText
@@ -71,6 +71,7 @@ def register() -> Response:
             is not None
         ):
             errors["email"] = "Email address is already in use"
+
         if errors:
             return jsonify({"success": False, "errors": errors})
 
@@ -91,10 +92,8 @@ def register() -> Response:
 
         # Send verification email
         email_message = EmailMessage(
-            mail=mail,
-            subject=EmailSubject.EMAIL_VERIFICATION,
             recipient=user,
-            serialiser=current_app.serialiser,
+            subject=EmailSubject.EMAIL_VERIFICATION,
         )
         email_message.send()
 
@@ -163,14 +162,12 @@ def verify_email() -> Response:
     # Send verification email to user
     elif request.method == "POST":
         email_message = EmailMessage(
-            mail=mail,
-            subject=EmailSubject.EMAIL_VERIFICATION,
             recipient=user,
-            serialiser=current_app.serialiser,
+            subject=EmailSubject.EMAIL_VERIFICATION,
         )
         email_message.send()
         flash(f"Email verification instructions sent to {user.email}")
-        return jsonify({"success": True, "url": url_for("main.index")})
+        return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
 
 # Handles email verification using token
@@ -229,10 +226,8 @@ def initiate_password_reset() -> Response:
 
             # Send email with instructions
             email_message = EmailMessage(
-                mail=mail,
-                subject=EmailSubject.PASSWORD_RESET,
                 recipient=user,
-                serialiser=current_app.serialiser,
+                subject=EmailSubject.PASSWORD_RESET,
             )
             email_message.send()
 
