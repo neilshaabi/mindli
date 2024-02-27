@@ -9,15 +9,15 @@
     <div class='my-container'>
         <h3>Sign in</h3>
         <p>Don't have an account? <a href='/register'>Register</a></p>
-        <form id='login-form'>
+        <form id='login-form' novalidate>
             {{ form.hidden_tag() }}
             <div class='form-floating'>
-                <input type='email' id='email' name='email' placeholder='Email address' class='form-control'>
-                <label for='email'>Email address</label>
+                {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
+                {{ form.email.label }}
             </div>
             <div class='form-floating'>
-                <input type='password' id='password' name='password' placeholder='Password' class='form-control'>
-                <label for='password'>Password</label>
+                {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
+                {{ form.password.label }}
                 <button type='button' id='togglePassword'>
                     <i class='fa-solid fa-eye'></i>
                 </button>
