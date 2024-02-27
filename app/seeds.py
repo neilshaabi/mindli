@@ -29,9 +29,4 @@ def seed_languages() -> None:
             )
     db.session.add_all(languages)
     db.session.commit()
-
-    count = db.session.execute(
-        db.select(db.func.count()).select_from(Language)
-    ).scalar()
-    print(count)
     return
