@@ -5,14 +5,19 @@ from app import db
 from app.models import Client, Therapist
 from app.models.enums import UserRole
 
-# Assuming 'profile_bp' is your Blueprint
-profile_bp = Blueprint("profile", __name__)
+
+bp = Blueprint("profile", __name__)
 
 
-@profile_bp.route("/setup", methods=["GET", "POST"])
+@bp.route("/setup", methods=["GET", "POST"])
 @login_required
 def setup():
-    if request.method == "POST":
+    
+    if request.method == "GET":
+        return render_template("profile_setup.html")
+    
+    else:
+        
         if current_user.role == UserRole.THERAPIST:
             # Process form data for therapist profile setup
             bio = request.form.get("bio")
@@ -57,5 +62,3 @@ def setup():
             flash("Profile setup complete.", "success")
             return redirect(url_for("dashboard"))
 
-    # GET request or if the user's role doesn't match
-    return render_template("profile_setup.html")
