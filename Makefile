@@ -12,6 +12,12 @@ app:
 	@echo "Running Flask app locally..."
 	flask run
 
+migrate-db:
+	@echo "Generating database migrations..."
+	flask db migrate
+	@echo "Applying database migrations..."
+	flask db upgrade
+
 reset-db:
 	@echo "Resetting the database..."
 	flask db downgrade
@@ -36,6 +42,6 @@ clean:
 	find . -type f -name '*.pyc' -delete
 
 help:
-	@echo "Available commands: make [help, venv, deps, app, reset-db, lint, test, clean]"
+	@echo "Available commands: make [help, venv, deps, app, migrate-db, reset-db, lint, test, clean]"
 
-.PHONY: help venv deps app reset-db lint test clean
+.PHONY: help venv deps app migrate-db reset-db lint test clean
