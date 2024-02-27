@@ -39,7 +39,7 @@ class EmailMessage:
         elif self.subject == EmailSubject.PASSWORD_RESET.value:
             self.body = "Please use the link below to reset your account password."
             self.link_text = "Reset Password"
-            endpoint = "auth.reset_password"
+            endpoint = "auth.reset_password_get"
             with_token = True
 
         # Optionally add token to url

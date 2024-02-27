@@ -6,12 +6,11 @@
 
 {% block content %}
 
-    
-    
     <div class='my-container'>
         <h3>Verify your email</h3>
         <p>Check <strong>{{ email }}</strong> to activate your account</p>
         <form id='verify-email-form'>
+            {{ form.hidden_tag() }}
             <button type='submit' class='btn btn-primary'>
                 <span class='btn-text'>Resend Email</span>
                 <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>

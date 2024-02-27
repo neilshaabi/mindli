@@ -11,6 +11,22 @@ from app.config import TestConfig
 from app.models import Gender, User, UserRole
 
 
+def get_csrf_token(client: FlaskClient, url: str = "/login") -> str:
+    response = client.get(url)
+    csrf_token = (
+        response.data.decode()
+        .split('name="csrf_token" type="hidden" value="')[1]
+        .split('"')[0]
+    )
+    return csrf_token
+
+
+def post_with_csrf(client: FlaskClient, url: str, data: dict):
+    csrf_token = get_csrf_token(client)
+    data["csrf_token"] = csrf_token
+    return client.post(url, data=data, follow_redirects=True)
+
+
 @pytest.fixture(scope="function")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)

@@ -7,6 +7,7 @@ from flask_mail import Mail
 
 from app import db
 from app.models import User
+from tests.conftest import post_with_csrf
 
 
 @pytest.fixture(scope="function")
@@ -33,7 +34,7 @@ def test_register_success(
     mock_send_email: Mock, client: FlaskClient, new_user_data: dict
 ):
     with client:
-        response = client.post("/register", data=new_user_data)
+        response = post_with_csrf(client=client, url="/register", data=new_user_data)
         data = response.get_json()
 
         assert response.status_code == 200
@@ -56,7 +57,7 @@ def test_register_missing_fields(mock_send_email: Mock, client: FlaskClient):
         db.select(db.func.count()).select_from(User)
     ).scalar()
 
-    response = client.post("/register", data={})
+    response = post_with_csrf(client=client, url="/register", data={})
     data = response.get_json()
 
     assert response.status_code == 200
@@ -81,7 +82,7 @@ def test_register_invalid_role(
         db.select(db.func.count()).select_from(User)
     ).scalar()
 
-    response = client.post("/register", data=invalid_user_data)
+    response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -106,7 +107,7 @@ def test_register_invalid_email(
         db.select(db.func.count()).select_from(User)
     ).scalar()
 
-    response = client.post("/register", data=invalid_user_data)
+    response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -125,7 +126,7 @@ def test_register_invalid_email(
 def test_register_duplicate_email(
     mock_send_email: Mock, client: FlaskClient, new_user_data: dict
 ):
-    response_1 = client.post("/register", data=new_user_data)
+    response_1 = post_with_csrf(client=client, url="/register", data=new_user_data)
     data_1 = response_1.get_json()
     assert response_1.status_code == 200
     assert data_1["success"] is True
@@ -134,7 +135,7 @@ def test_register_duplicate_email(
         db.select(db.func.count()).select_from(User)
     ).scalar()
 
-    response_2 = client.post("/register", data=new_user_data)
+    response_2 = post_with_csrf(client=client, url="/register", data=new_user_data)
     data_2 = response_2.get_json()
 
     assert response_2.status_code == 200
@@ -159,7 +160,7 @@ def test_register_weak_password(
         db.select(db.func.count()).select_from(User)
     ).scalar()
 
-    response = client.post("/register", data=invalid_user_data)
+    response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -188,8 +189,9 @@ def test_user_login_success(
     fake_user_password: str,
 ):
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={
                 "email": fake_user_client.email,
                 "password": fake_user_password,
@@ -206,7 +208,7 @@ def test_user_login_success(
 
 def test_user_login_missing_credentials(client: FlaskClient):
     with client:
-        response = client.post("/login", data={})
+        response = post_with_csrf(client=client, url="/login", data={})
         data = response.get_json()
         assert response.status_code == 200
         assert data["success"] is False
@@ -218,8 +220,9 @@ def test_user_login_missing_credentials(client: FlaskClient):
 
 def test_user_login_wrong_credentials(client: FlaskClient, fake_user_client: User):
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={
                 "email": fake_user_client.email,
                 "password": "wrongpassword",
@@ -243,8 +246,9 @@ def test_user_login_unverified(
     db.session.commit()
 
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={"email": fake_user_client.email, "password": fake_user_password},
         )
         data = response.get_json()
@@ -261,7 +265,7 @@ def test_user_login_unverified(
 @patch.object(Mail, "send")
 def test_verify_email_sent(mock_send_email: Mock, client: FlaskClient, new_user_data):
     # Register user
-    response = client.post("/register", data=new_user_data)
+    response = post_with_csrf(client=client, url="/register", data=new_user_data)
     data = response.get_json()
     assert response.status_code == 200
     assert data["success"] is True
@@ -269,7 +273,7 @@ def test_verify_email_sent(mock_send_email: Mock, client: FlaskClient, new_user_
     mock_send_email.assert_called_once()
 
     # Trigger the verify_email route
-    response = client.post("/verify-email")
+    response = post_with_csrf(client=client, url="/verify-email", data={})
     assert response.status_code == 200
     assert mock_send_email.call_count == 2
 
