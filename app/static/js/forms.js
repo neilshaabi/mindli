@@ -4,7 +4,7 @@ $(document).ready(function() {
     handleSubmitForm('register-form', '/register');
     handleSubmitForm('login-form', '/login');
     handleSubmitForm('verify-email-form', '/verify-email');
-    handleSubmitForm('initiate-password-reset-form', '/reset-password');
+    handleSubmitForm('initiate-password-reset-form', '/initiate-password-reset');
     handleSubmitForm('reset-password-form', '/reset-password');
 });
 
@@ -22,7 +22,6 @@ function handleSubmitForm(formID, endpoint) {
 
         // Retrieve form data with ID
         var formData = $(this).serialize();
-        formData += "&form-id=" + $(this).attr('id');
 
         $.post(endpoint, formData, function(response) {
             
