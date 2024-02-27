@@ -7,6 +7,7 @@ from flask_mail import Mail
 
 from app import db
 from app.models import User
+from tests.conftest import post_with_csrf
 
 
 @pytest.fixture(scope="function")
@@ -188,8 +189,9 @@ def test_user_login_success(
     fake_user_password: str,
 ):
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={
                 "email": fake_user_client.email,
                 "password": fake_user_password,
@@ -206,7 +208,7 @@ def test_user_login_success(
 
 def test_user_login_missing_credentials(client: FlaskClient):
     with client:
-        response = client.post("/login", data={})
+        response = post_with_csrf(client=client, url="/login", data={})
         data = response.get_json()
         assert response.status_code == 200
         assert data["success"] is False
@@ -218,8 +220,9 @@ def test_user_login_missing_credentials(client: FlaskClient):
 
 def test_user_login_wrong_credentials(client: FlaskClient, fake_user_client: User):
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={
                 "email": fake_user_client.email,
                 "password": "wrongpassword",
@@ -243,8 +246,9 @@ def test_user_login_unverified(
     db.session.commit()
 
     with client:
-        response = client.post(
-            "/login",
+        response = post_with_csrf(
+            client=client,
+            url="/login",
             data={"email": fake_user_client.email, "password": fake_user_password},
         )
         data = response.get_json()

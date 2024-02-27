@@ -14,9 +14,10 @@ from flask import (
 )
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import generate_password_hash
 
 from app import db
+from app.forms.auth import LoginForm
 from app.models import User, UserRole
 from app.utils.mail import EmailMessage, EmailSubject
 from app.utils.validators import isValidEmail, isValidPassword, isValidText
@@ -105,40 +106,32 @@ def register() -> Response:
 # Logs user in if credentials are valid
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response:
+    form = LoginForm()
+
+    # GET request - display page
     if request.method == "GET":
         logout_user()
-        return render_template("login.html")
+        return render_template("login.html", form=form)
 
-    elif request.method == "POST":
-        errors = {}
+    # POST request - validate form
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
 
-        # Get form data
-        email = request.form.get("email")
-        password = request.form.get("password")
+    email = form.email.data.lower()
 
-        # Validate input
-        if not email:
-            errors["email"] = "Email is required"
-        if not password:
-            errors["password"] = "Password is required"
-        else:
-            user = db.session.execute(
-                db.select(User).filter_by(email=email.lower())
-            ).scalar_one_or_none()
-            if user is None or not check_password_hash(user.password_hash, password):
-                errors["password"] = "Incorrect email/password"
-        if errors:
-            return jsonify({"success": False, "errors": errors})
+    # Fetch user from database
+    user = db.session.execute(
+        db.select(User).filter_by(email=email)
+    ).scalar_one_or_none()
 
-        # Ensure user's email is verified
-        if not user.verified:
-            # Store email in session for verification and redirect
-            session["email"] = email
-            return jsonify({"success": True, "url": url_for("auth.verify_email")})
+    # Redirect unverified users
+    if not user.verified:
+        session["email"] = email
+        return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
-        # Log user in and redirect to home page
-        login_user(user)
-        return jsonify({"success": True, "url": url_for("main.index")})
+    # Successful login
+    login_user(user)
+    return jsonify({"success": True, "url": url_for("main.index")})
 
 
 # Displays page with email verification instructions, sends verification email
