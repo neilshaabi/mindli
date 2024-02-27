@@ -2,6 +2,7 @@ from unittest.mock import Mock, patch
 
 import pytest
 from flask.testing import FlaskClient
+from flask_login import current_user
 from flask_mail import Mail
 
 from app import db
@@ -31,20 +32,21 @@ def test_get_register(mock_send_email: Mock, client: FlaskClient):
 def test_register_success(
     mock_send_email: Mock, client: FlaskClient, new_user_data: dict
 ):
-    response = client.post("/register", data=new_user_data)
-    data = response.get_json()
+    with client:
+        response = client.post("/register", data=new_user_data)
+        data = response.get_json()
 
-    assert response.status_code == 200
-    assert data["success"] is True
-    assert "url" in data
-    assert (
-        db.session.execute(
-            db.select(User).filter_by(email=new_user_data["email"].lower())
-        ).scalar_one_or_none()
-        is not None
-    )
-    mock_send_email.assert_called_once()
-
+        assert response.status_code == 200
+        assert data["success"] is True
+        assert "url" in data
+        assert (
+            db.session.execute(
+                db.select(User).filter_by(email=new_user_data["email"].lower())
+            ).scalar_one_or_none()
+            is not None
+        )
+        mock_send_email.assert_called_once()
+        assert not current_user.is_authenticated
     return
 
 
