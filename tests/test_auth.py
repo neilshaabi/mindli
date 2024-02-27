@@ -124,22 +124,25 @@ def test_register_invalid_email(
 @patch.object(Mail, "send")
 def test_register_duplicate_email(
     mock_send_email: Mock, client: FlaskClient, new_user_data: dict
-):
-    initial_user_count = db.session.execute(
-        db.select(db.func.count()).select_from(User)
-    ).scalar()
+):    
+    response_1 = client.post("/register", data=new_user_data)
+    data_1 = response_1.get_json()
+    assert response_1.status_code == 200
+    assert data_1["success"] is True
 
-    response = client.post("/register", data=new_user_data)
-    data = response.get_json()
+    user_count = db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
 
-    assert response.status_code == 200
-    assert "errors" in data
-    assert "email" in data["errors"]
+    response_2 = client.post("/register", data=new_user_data)
+    data_2 = response_2.get_json()
+
+    assert response_2.status_code == 200
+    assert "errors" in data_2
+    assert "email" in data_2["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
-        == initial_user_count
+        == user_count
     )
-    mock_send_email.assert_not_called()
+    mock_send_email.assert_called_once()
 
     return
 
@@ -166,4 +169,107 @@ def test_register_weak_password(
     )
     mock_send_email.assert_not_called()
 
+    return
+
+
+def test_get_login(client: FlaskClient):
+    with client:
+        response = client.get("/login")
+        assert response.status_code == 200
+        assert not current_user.is_authenticated
+    return
+
+
+def test_user_login_success(
+    client: FlaskClient,
+    fake_user_client: User,
+    fake_user_password: str,
+):
+    with client:
+        response = client.post(
+            "/login",
+            data={
+                "email": fake_user_client.email,
+                "password": fake_user_password,
+            },
+        )
+        data = response.get_json()
+        assert response.status_code == 200
+        assert data["success"] is True
+        assert "url" in data and data["url"] == "/index"
+        assert current_user.is_authenticated
+        client.get("/logout")
+    return
+
+
+def test_user_login_missing_credentials(client: FlaskClient):
+    with client:
+        response = client.post("/login", data={})
+        data = response.get_json()
+        assert response.status_code == 200
+        assert data["success"] is False
+        assert "errors" in data
+        assert "email" in data["errors"] and "password" in data["errors"]
+        assert not current_user.is_authenticated
+    return
+
+
+def test_user_login_wrong_credentials(client: FlaskClient, fake_user_client: User):
+    with client:
+        response = client.post(
+            "/login",
+            data={
+                "email": fake_user_client.email,
+                "password": "wrongpassword",
+            },
+        )
+        data = response.get_json()
+        assert response.status_code == 200
+        assert data["success"] is False
+        assert "errors" in data
+        assert "password" in data["errors"]
+        assert not current_user.is_authenticated
+    return
+
+
+def test_user_login_unverified(
+    client: FlaskClient,
+    fake_user_client: User,
+    fake_user_password: str,
+):
+    fake_user_client.verified = False
+    db.session.commit()
+
+    with client:
+        response = client.post(
+            "/login",
+            data={"email": fake_user_client.email, "password": fake_user_password},
+        )
+        data = response.get_json()
+        assert response.status_code == 200
+        assert data["success"] is True
+        assert "url" in data and data["url"] == "/verify-email"
+        assert not current_user.is_authenticated
+
+    fake_user_client.verified = True
+    db.session.commit()
+    return
+
+
+@patch.object(Mail, "send")
+def test_verify_email_sent(mock_send_email: Mock, client: FlaskClient, new_user_data):
+    
+    # Register user
+    response = client.post("/register", data=new_user_data)
+    data = response.get_json()
+    assert response.status_code == 200
+    assert data["success"] is True
+    assert "url" in data and data["url"] == "/verify-email"
+    mock_send_email.assert_called_once()
+    
+    # Trigger the verify_email route
+    response = client.post("/verify-email")
+    assert response.status_code == 200
+    assert mock_send_email.call_count == 2
+    
     return

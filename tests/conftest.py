@@ -11,7 +11,7 @@ from app.config import TestConfig
 from app.models import Gender, User, UserRole
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
 
@@ -25,7 +25,7 @@ def app() -> Generator[Flask, Any, None]:
     return
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
