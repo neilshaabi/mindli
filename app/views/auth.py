@@ -36,7 +36,7 @@ def index() -> Response:
 def logout() -> Response:
     session.clear()
     logout_user()
-    return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
+    return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -124,7 +124,7 @@ def login() -> Response:
     # Successful login
     login_user(user)
     return jsonify(
-        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}.index")}
     )
 
 
@@ -143,7 +143,7 @@ def verify_email() -> Response:
 
     # Redirect if the email address is invalid or already verified
     if not user or user.verified:
-        return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
+        return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
 
     # GET request - display page
     if request.method == "GET":
@@ -189,7 +189,7 @@ def email_verification(token):
             "please sign in to request a new link"
         )
 
-    return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
+    return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
 
 
 @bp.route("/initiate-password-reset", methods=["GET", "POST"])
@@ -223,7 +223,7 @@ def initiate_password_reset() -> Response:
 
     flash(f"Password reset instructions sent to {form.email.data.lower()}")
     return jsonify(
-        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}.index")}
     )
 
 
@@ -238,7 +238,7 @@ def reset_password_get(token):
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
         flash("Invalid or expired reset link, " "please request another password reset")
-        return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
+        return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
 
     form = ResetPasswordForm(email=email)
 
@@ -269,5 +269,5 @@ def reset_password_post():
     # Redirect to login page
     flash("Success! Your password has been reset")
     return jsonify(
-        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}.index")}
     )
