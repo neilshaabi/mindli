@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import HiddenField, PasswordField, RadioField, StringField
 from wtforms.validators import DataRequired, Email, Length
 
-from app.models import UserRole
+from app.models.enums import UserRole
 from app.utils.validators import PasswordValidator
 
 

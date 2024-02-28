@@ -11,6 +11,7 @@ from .session_type import SessionType
 from .therapist import Therapist
 from .unavailability import Unavailability
 from .user import User
+from .session_format import SessionFormatModel
 
 client_issue = sa.Table(
     "client_issue",
@@ -30,7 +31,9 @@ therapist_format = sa.Table(
     "therapist_format",
     db.Model.metadata,
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
-    sa.Column("session_format", sa.Enum(SessionFormat), primary_key=True),
+    sa.Column(
+        "session_format_id", sa.ForeignKey("session_format_model.id"), primary_key=True
+    ),
 )
 
 therapist_issue = sa.Table(

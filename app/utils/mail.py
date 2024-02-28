@@ -5,7 +5,7 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
 from app import BlueprintName, mail
-from app.models import User
+from app.models.user import User
 
 
 @unique

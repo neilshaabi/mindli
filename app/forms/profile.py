@@ -9,7 +9,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.models import Gender, SessionFormat
+from app.models.enums import Gender, SessionFormat
 
 
 class TherapistForm(FlaskForm):

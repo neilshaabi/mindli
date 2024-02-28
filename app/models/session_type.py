@@ -4,7 +4,7 @@ import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 from app import db
-from app.models import SessionFormat
+from app.models.enums import SessionFormat
 
 
 class SessionType(db.Model):

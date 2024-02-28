@@ -8,7 +8,8 @@ from werkzeug.security import generate_password_hash
 
 from app import create_app, db
 from app.config import TestConfig
-from app.models import Gender, User, UserRole
+from app.models.enums import Gender, UserRole
+from app.models.user import User
 
 
 def get_csrf_token(client: FlaskClient, url: str = "/login") -> str:
@@ -53,7 +54,6 @@ def fake_user_password() -> str:
 
 @pytest.fixture(scope="function")
 def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
-    # Insert test data
     fake_user_client = User(
         email="client@example.com".lower(),
         password_hash=generate_password_hash(fake_user_password),

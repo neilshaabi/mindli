@@ -19,7 +19,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import BlueprintName, db
 from app.forms.auth import EmailForm, LoginForm, RegisterForm, ResetPasswordForm
-from app.models import User, UserRole
+from app.models.enums import UserRole
+from app.models.user import User
 from app.utils.mail import EmailMessage, EmailSubject
 
 bp = Blueprint(BlueprintName.AUTH.value, __name__)

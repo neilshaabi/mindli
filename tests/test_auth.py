@@ -6,7 +6,7 @@ from flask_login import current_user
 from flask_mail import Mail
 
 from app import db
-from app.models import User
+from app.models.user import User
 from tests.conftest import post_with_csrf
 
 

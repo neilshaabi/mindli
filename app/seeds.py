@@ -3,7 +3,7 @@ import pycountry
 from flask import Flask
 
 from app import db
-from app.models import Language
+from app.models.language import Language
 
 
 def register_cli_commands(app: Flask):

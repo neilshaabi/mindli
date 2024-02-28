@@ -3,14 +3,10 @@ from flask_login import current_user, login_required
 
 from app import BlueprintName, db
 from app.forms.profile import TherapistForm
-from app.models import (
-    Issue,
-    Language,
-    Therapist,
-    therapist_format,
-    therapist_issue,
-    therapist_language,
-)
+from app.models import therapist_format, therapist_issue, therapist_language
+from app.models.issue import Issue
+from app.models.language import Language
+from app.models.therapist import Therapist
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 
