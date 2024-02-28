@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 
 from flask import Flask
 from flask_login import LoginManager
@@ -10,16 +11,24 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app.config import CONFIGS, Config, ProdConfig
 
+
+class BlueprintName(Enum):
+    MAIN = "main"
+    AUTH = "auth"
+    PROFILE = "profile"
+
+
+# Declare extensions
 db = SQLAlchemy()
 migrate = Migrate()
 csrf = CSRFProtect()
 mail = Mail()
 login_manager = LoginManager()
 
-login_manager.login_view = "/"
+login_manager.login_view = "/login"
 login_manager.login_message = None
 
-from app.models import User  # noqa: E402
+from app.models.user import User  # noqa: E402
 
 
 @login_manager.user_loader
@@ -42,13 +51,22 @@ def create_app(config: Config = selected_config):
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-    # Register blueprints
-    from app.views import auth, errors, main
+    # Register CLI commands
+    from app.seeds import register_cli_commands
+
+    register_cli_commands(app)
+
+    # Register blueprints with endpoints
+    from app.views import auth, main, profile
 
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
+    app.register_blueprint(profile.bp)
+
+    # Register handler to redirect to custom error page
+    from app.views.errors import register_error_handlers
 
     if config == ProdConfig:
-        errors.register_error_handlers(app)
+        register_error_handlers(app)
 
     return app

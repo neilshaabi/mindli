@@ -5,9 +5,9 @@ from app import db
 from .availability import Availability
 from .client import Client
 from .enums import Gender, SessionFormat, UserRole
-from .intervention import Intervention
 from .issue import Issue
 from .language import Language
+from .session_format import SessionFormatModel
 from .session_type import SessionType
 from .therapist import Therapist
 from .unavailability import Unavailability
@@ -31,7 +31,9 @@ therapist_format = sa.Table(
     "therapist_format",
     db.Model.metadata,
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
-    sa.Column("session_format", sa.Enum(SessionFormat), primary_key=True),
+    sa.Column(
+        "session_format_id", sa.ForeignKey("session_format_model.id"), primary_key=True
+    ),
 )
 
 therapist_issue = sa.Table(
@@ -39,11 +41,4 @@ therapist_issue = sa.Table(
     db.Model.metadata,
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
     sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
-)
-
-therapist_intervention = sa.Table(
-    "therapist_intervention",
-    db.Model.metadata,
-    sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
-    sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
 )

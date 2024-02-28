@@ -9,13 +9,13 @@ class UserRole(Enum):
 
 @unique
 class SessionFormat(Enum):
-    FACE = "Face to Face"
-    AUDIO = "Audio Call"
-    VIDEO = "Video Call"
+    FACE = "face_to_face"
+    AUDIO = "audio_call"
+    VIDEO = "video_call"
 
 
 @unique
 class Gender(Enum):
-    MALE = "Male"
-    FEMALE = "Female"
-    NON_BINARY = "Non-Binary"
+    MALE = "male"
+    FEMALE = "female"
+    NON_BINARY = "non-binary"

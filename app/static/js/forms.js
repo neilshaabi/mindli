@@ -44,6 +44,7 @@ function handleSubmitForm(formID, endpoint) {
                 
                 // Display first error message for each input field
                 if (response.errors) {
+                    
                     for (const key in response.errors) {
                         const firstError = response.errors[key][0];
                         const inputField = $('#' + key);
@@ -56,6 +57,10 @@ function handleSubmitForm(formID, endpoint) {
                         inputField.after(errorMessage);
                         inputField.addClass('input-error');
                     }
+                } else {
+                    
+                    // Redirect to error page
+                    window.location = '/error';
                 }
             }
         });

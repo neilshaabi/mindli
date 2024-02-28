@@ -6,10 +6,10 @@ import sqlalchemy.orm as so
 from app import db
 
 
-class Intervention(db.Model):
+class SessionFormatModel(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
 
     therapists: so.Mapped[List["Therapist"]] = so.relationship(
-        secondary="therapist_intervention", back_populates="interventions"
+        secondary="therapist_format", back_populates="session_formats"
     )
