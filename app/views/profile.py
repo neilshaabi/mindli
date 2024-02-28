@@ -19,9 +19,6 @@ def profile():
 
     # languages = db.session.execute(db.select(Language)).scalars()
     languages = Language.query.all()
-    print(len(languages))
-    for language in languages:
-        print(language.name)
     
     therapist_form = TherapistProfileForm()
     therapist_form.languages.choices = [
@@ -54,7 +51,7 @@ def profile():
         user_id=current_user.id,
         gender=form.gender.data,
         country=form.country.data,
-        affilitation=form.affiliation.data,
+        affiliation=form.affiliation.data,
         bio=form.bio.data,
         link=form.link.data,
         location=form.location.data,
@@ -63,7 +60,8 @@ def profile():
         years_of_experience=form.years_of_experience.data,
     )
     db.session.add(therapist)
-
+    db.session.commit()
+    
     # Insert therapist's languages
     therapist_languages = [
         {"therapist_id": therapist.id, "language_id": language_id}
@@ -77,12 +75,13 @@ def profile():
         for issue_id in form.issues.data
     ]
     db.session.execute(therapist_issue.insert(), therapist_issues)
-
+    
     # Insert therapist's session formats
     therapist_formats = [
-        {"therapist_id": therapist.id, "session_format": session_format_id}
+        {"therapist_id": therapist.id, "session_format_id": session_format_id}
         for session_format_id in form.session_formats.data
     ]
+
     db.session.execute(therapist_format.insert(), therapist_formats)
 
     db.session.commit()

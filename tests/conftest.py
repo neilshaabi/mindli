@@ -16,11 +16,13 @@ from app.models.language import Language
 from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 from app.models.user import User
+from app.seeds import seed_db
 
 
 
-def get_csrf_token(client: FlaskClient, url: str = "/login") -> str:
+def get_csrf_token(client: FlaskClient, url: str) -> str:
     response = client.get(url)
+    
     csrf_token = (
         response.data.decode()
         .split('name="csrf_token" type="hidden" value="')[1]
@@ -30,17 +32,18 @@ def get_csrf_token(client: FlaskClient, url: str = "/login") -> str:
 
 
 def post_with_csrf(client: FlaskClient, url: str, data: dict) -> TestResponse:
-    csrf_token = get_csrf_token(client)
+    csrf_token = get_csrf_token(client, url)
     data["csrf_token"] = csrf_token
     return client.post(url, data=data, follow_redirects=True)
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
 
     with app.app_context():
         db.create_all()
+        seed_db()
 
         yield app
 
@@ -96,7 +99,6 @@ def user_registration_data(fake_user_client: User, fake_user_password: str) -> d
 def fake_therapist_profile(
     fake_user_therapist: User,
 ) -> Generator[Therapist, Any, None]:
-    # Assuming fake_user_client is a User object linked to the therapist
     fake_therapist = Therapist(
         user_id=fake_user_therapist.id,
         gender=Gender.FEMALE,
@@ -137,7 +139,7 @@ def therapist_profile_data(
 ) -> dict:
 
     return {
-        "gender": fake_therapist_profile.gender.value,
+        "gender": fake_therapist_profile.gender.name,
         "country": fake_therapist_profile.country,
         "affiliation": fake_therapist_profile.affiliation,
         "bio": fake_therapist_profile.bio,
@@ -170,9 +172,6 @@ def fake_user_therapist(fake_user_password: str) -> Generator[User, Any, None]:
     db.session.commit()
 
     yield fake_user_therapist
-
-    db.session.delete(fake_user_therapist)
-    db.session.commit()
     return
 
 
@@ -189,7 +188,7 @@ def logged_in_therapist(
                 "password": fake_user_password,
             },
         )
-        assert response.status_code == 200
+        assert response.status_code == 200        
         assert current_user.is_authenticated
 
         yield fake_user_therapist

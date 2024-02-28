@@ -15,7 +15,7 @@ from app.models.enums import Gender
 class TherapistProfileForm(FlaskForm):
     gender = SelectField(
         "Gender",
-        choices=[(gender.value, gender.value.capitalize()) for gender in Gender],
+        choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[DataRequired()],
     )
     country = SelectField(
