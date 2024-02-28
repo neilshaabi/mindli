@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 
 from flask import Flask
 from flask_login import LoginManager
@@ -10,6 +11,14 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app.config import CONFIGS, Config, ProdConfig
 
+
+class BlueprintName(Enum):
+    MAIN = "main"
+    AUTH = "auth"
+    PROFILE = "profile"
+
+
+# Declare extensions
 db = SQLAlchemy()
 migrate = Migrate()
 csrf = CSRFProtect()

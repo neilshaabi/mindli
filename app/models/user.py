@@ -6,7 +6,7 @@ import sqlalchemy.orm as so
 from flask_login import UserMixin
 
 from app import db
-from app.models.enums import Gender, UserRole
+from app.models.enums import UserRole
 
 
 class User(UserMixin, db.Model):
@@ -19,7 +19,6 @@ class User(UserMixin, db.Model):
     role: so.Mapped["UserRole"] = so.mapped_column(sa.Enum(UserRole))
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
-    gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     photo_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     timezone: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(50)

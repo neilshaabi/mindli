@@ -17,12 +17,12 @@ from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
-from app import db
+from app import BlueprintName, db
 from app.forms.auth import EmailForm, LoginForm, RegisterForm, ResetPasswordForm
 from app.models import User, UserRole
 from app.utils.mail import EmailMessage, EmailSubject
 
-bp = Blueprint("auth", __name__)
+bp = Blueprint(BlueprintName.AUTH.value, __name__)
 
 
 @bp.route("/")
@@ -35,7 +35,7 @@ def index() -> Response:
 def logout() -> Response:
     session.clear()
     logout_user()
-    return redirect(url_for("main.index"))
+    return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
 
 
 @bp.route("/register", methods=["GET", "POST"])
@@ -81,7 +81,9 @@ def register() -> Response:
 
     # Store email in session for email verification
     session["email"] = user.email
-    return jsonify({"success": True, "url": url_for("auth.verify_email")})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.AUTH.value}.verify_email")}
+    )
 
 
 # Logs user in if credentials are valid
@@ -111,11 +113,18 @@ def login() -> Response:
     # Redirect unverified users
     if not user.verified:
         session["email"] = user.email
-        return jsonify({"success": True, "url": url_for("auth.verify_email")})
+        return jsonify(
+            {
+                "success": True,
+                "url": url_for(f"{BlueprintName.AUTH.value}.verify_email"),
+            }
+        )
 
     # Successful login
     login_user(user)
-    return jsonify({"success": True, "url": url_for("main.index")})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+    )
 
 
 # Displays page with email verification instructions, sends verification email
@@ -133,7 +142,7 @@ def verify_email() -> Response:
 
     # Redirect if the email address is invalid or already verified
     if not user or user.verified:
-        return redirect(url_for("main.index"))
+        return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
 
     # GET request - display page
     if request.method == "GET":
@@ -147,7 +156,9 @@ def verify_email() -> Response:
     email_message.send()
 
     flash(f"Email verification instructions sent to {user.email}")
-    return jsonify({"success": True, "url": url_for("auth.verify_email")})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.AUTH.value}.verify_email")}
+    )
 
 
 # Handles email verification using token
@@ -177,7 +188,7 @@ def email_verification(token):
             "please sign in to request a new link"
         )
 
-    return redirect(url_for("main.index"))
+    return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
 
 
 @bp.route("/initiate-password-reset", methods=["GET", "POST"])
@@ -210,7 +221,9 @@ def initiate_password_reset() -> Response:
     email_message.send()
 
     flash(f"Password reset instructions sent to {form.email.data.lower()}")
-    return jsonify({"success": True, "url": url_for("main.index")})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+    )
 
 
 @bp.route("/reset-password/<token>", methods=["GET", "POST"])
@@ -224,7 +237,7 @@ def reset_password_get(token):
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
         flash("Invalid or expired reset link, " "please request another password reset")
-        return redirect(url_for("main.index"))
+        return redirect(url_for(f"{BlueprintName.MAIN.value}..index"))
 
     form = ResetPasswordForm(email=email)
 
@@ -254,4 +267,6 @@ def reset_password_post():
 
     # Redirect to login page
     flash("Success! Your password has been reset")
-    return jsonify({"success": True, "url": url_for("main.index")})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.MAIN.value}..index")}
+    )

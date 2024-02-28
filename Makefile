@@ -1,3 +1,6 @@
+help:
+	@echo "Available commands: make [help, venv, deps, app, migrate-db, reset-db, lint, test, clean]"
+
 venv:
 	@echo "Creating virtual environment..."
 	python3 -m venv .venv
@@ -33,15 +36,12 @@ lint:
 
 test:
 	@echo "Running tests with pytest..."
-	pytest -s
+	pytest -s -x
 
 clean:
 	@echo "Cleaning up directory..."
 	rm -rf .venv
 	find . -type d -name '__pycache__' -exec rm -r {} +
 	find . -type f -name '*.pyc' -delete
-
-help:
-	@echo "Available commands: make [help, venv, deps, app, migrate-db, reset-db, lint, test, clean]"
 
 .PHONY: help venv deps app migrate-db reset-db lint test clean

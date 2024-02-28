@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import HiddenField, PasswordField, RadioField, StringField
 from wtforms.validators import DataRequired, Email, Length
 
+from app.models import UserRole
 from app.utils.validators import PasswordValidator
 
 
@@ -16,14 +17,17 @@ class LoginForm(FlaskForm):
 class RegisterForm(FlaskForm):
     role = RadioField(
         "Role",
-        choices=[("therapist", "Therapist"), ("client", "Client")],
+        choices=[
+            (UserRole.THERAPIST.value, UserRole.THERAPIST.value.capitalize()),
+            (UserRole.CLIENT.value, UserRole.CLIENT.value.capitalize()),
+        ],
         validators=[DataRequired()],
     )
     first_name = StringField(
-        "First name", validators=[DataRequired(), Length(min=2, max=50)]
+        "First name", validators=[DataRequired(), Length(min=1, max=50)]
     )
     last_name = StringField(
-        "Last name", validators=[DataRequired(), Length(min=2, max=50)]
+        "Last name", validators=[DataRequired(), Length(min=1, max=50)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField(
