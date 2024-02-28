@@ -8,7 +8,7 @@ from werkzeug.security import generate_password_hash
 
 from app import create_app, db
 from app.config import TestConfig
-from app.models.enums import Gender, UserRole
+from app.models.enums import UserRole
 from app.models.user import User
 
 

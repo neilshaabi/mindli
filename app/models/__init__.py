@@ -7,11 +7,11 @@ from .client import Client
 from .enums import Gender, SessionFormat, UserRole
 from .issue import Issue
 from .language import Language
+from .session_format import SessionFormatModel
 from .session_type import SessionType
 from .therapist import Therapist
 from .unavailability import Unavailability
 from .user import User
-from .session_format import SessionFormatModel
 
 client_issue = sa.Table(
     "client_issue",
