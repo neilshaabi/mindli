@@ -15,6 +15,7 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
+
     therapist_form = TherapistProfileForm()
     therapist_form.languages.choices = [
         (language.id, language.name)
