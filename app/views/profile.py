@@ -4,9 +4,6 @@ from flask_login import current_user, login_required
 from app import BlueprintName, db
 from app.forms.profile import TherapistProfileForm
 from app.models import therapist_format, therapist_issue, therapist_language
-from app.models.issue import Issue
-from app.models.language import Language
-from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
@@ -16,9 +13,6 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @login_required
 def profile():
     therapist_form = TherapistProfileForm()
-    therapist_form.languages.populate_choices_from_model(Language)
-    therapist_form.issues.populate_choices_from_model(Issue)
-    therapist_form.session_formats.populate_choices_from_model(SessionFormatModel)
 
     form = therapist_form
 

@@ -1,15 +1,13 @@
 import pycountry
 from flask_wtf import FlaskForm
-from wtforms import (
-    IntegerField,
-    SelectField,
-    StringField,
-    TextAreaField,
-)
+from wtforms import IntegerField, SelectField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomSelectMultipleField
 from app.models.enums import Gender
+from app.models.issue import Issue
+from app.models.language import Language
+from app.models.session_format import SessionFormatModel
 from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 
 
@@ -65,3 +63,32 @@ class TherapistProfileForm(FlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
+
+    def __init__(self, *args, **kwargs):
+        super(TherapistProfileForm, self).__init__(*args, **kwargs)
+        self.languages.populate_choices_from_model(Language)
+        self.issues.populate_choices_from_model(Issue)
+        self.session_formats.populate_choices_from_model(SessionFormatModel)
+
+
+class ClientProfileForm(FlaskForm):
+    preferred_gender = SelectField(
+        "Preferred gender",
+        choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
+        validators=[Optional()],
+    )
+    preferred_language = SelectField(
+        "Preferred language",
+        validators=[Optional()],
+        coerce=int,
+    )
+    issues = CustomSelectMultipleField(
+        "Specialisations",
+        validators=[Optional()],
+        coerce=int,
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(ClientProfileForm, self).__init__(*args, **kwargs)
+        self.preferred_language.populate_choices_from_model(Language)
+        self.issues.populate_choices_from_model(Issue)
