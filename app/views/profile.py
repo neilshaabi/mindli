@@ -4,7 +4,6 @@ from flask_login import current_user, login_required
 from app import BlueprintName, db
 from app.forms.profile import TherapistProfileForm
 from app.models import therapist_format, therapist_issue, therapist_language
-from app.models.enums import SessionFormat
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.session_format import SessionFormatModel
@@ -16,10 +15,6 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-
-    # languages = db.session.execute(db.select(Language)).scalars()
-    languages = Language.query.all()
-    
     therapist_form = TherapistProfileForm()
     therapist_form.languages.choices = [
         (language.id, language.name)
@@ -41,7 +36,7 @@ def profile():
     # GET request - display page
     if request.method == "GET":
         return render_template("profile.html", form=form)
-    
+
     # POST request - validate form
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
@@ -61,7 +56,7 @@ def profile():
     )
     db.session.add(therapist)
     db.session.commit()
-    
+
     # Insert therapist's languages
     therapist_languages = [
         {"therapist_id": therapist.id, "language_id": language_id}
@@ -75,13 +70,12 @@ def profile():
         for issue_id in form.issues.data
     ]
     db.session.execute(therapist_issue.insert(), therapist_issues)
-    
+
     # Insert therapist's session formats
     therapist_formats = [
         {"therapist_id": therapist.id, "session_format_id": session_format_id}
         for session_format_id in form.session_formats.data
     ]
-
     db.session.execute(therapist_format.insert(), therapist_formats)
 
     db.session.commit()

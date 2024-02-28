@@ -19,10 +19,9 @@ from app.models.user import User
 from app.seeds import seed_db
 
 
-
 def get_csrf_token(client: FlaskClient, url: str) -> str:
     response = client.get(url)
-    
+
     csrf_token = (
         response.data.decode()
         .split('name="csrf_token" type="hidden" value="')[1]
@@ -37,7 +36,7 @@ def post_with_csrf(client: FlaskClient, url: str, data: dict) -> TestResponse:
     return client.post(url, data=data, follow_redirects=True)
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
 
@@ -137,7 +136,6 @@ def seeded_data():
 def therapist_profile_data(
     fake_therapist_profile: Therapist, seeded_data: dict
 ) -> dict:
-
     return {
         "gender": fake_therapist_profile.gender.name,
         "country": fake_therapist_profile.country,
@@ -188,7 +186,7 @@ def logged_in_therapist(
                 "password": fake_user_password,
             },
         )
-        assert response.status_code == 200        
+        assert response.status_code == 200
         assert current_user.is_authenticated
 
         yield fake_user_therapist
