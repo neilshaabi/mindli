@@ -15,22 +15,10 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-
     therapist_form = TherapistProfileForm()
-    therapist_form.languages.choices = [
-        (language.id, language.name)
-        for language in db.session.execute(db.select(Language)).scalars()
-    ]
-    therapist_form.issues.choices = [
-        (issue.id, issue.name)
-        for issue in db.session.execute(db.select(Issue)).scalars()
-    ]
-    therapist_form.session_formats.choices = [
-        (session_format.id, session_format.name)
-        for session_format in db.session.execute(
-            db.select(SessionFormatModel)
-        ).scalars()
-    ]
+    therapist_form.languages.populate_choices_from_model(Language)
+    therapist_form.issues.populate_choices_from_model(Issue)
+    therapist_form.session_formats.populate_choices_from_model(SessionFormatModel)
 
     form = therapist_form
 
@@ -59,24 +47,21 @@ def profile():
     db.session.commit()
 
     # Insert therapist's languages
-    therapist_languages = [
-        {"therapist_id": therapist.id, "language_id": language_id}
-        for language_id in form.languages.data
-    ]
+    therapist_languages = form.languages.get_association_data(
+        parent_id=therapist.id, parent_key="therapist_id", child_key="language_id"
+    )
     db.session.execute(therapist_language.insert(), therapist_languages)
 
     # Insert therapist's specialisations
-    therapist_issues = [
-        {"therapist_id": therapist.id, "issue_id": issue_id}
-        for issue_id in form.issues.data
-    ]
+    therapist_issues = form.issues.get_association_data(
+        parent_id=therapist.id, parent_key="therapist_id", child_key="issue_id"
+    )
     db.session.execute(therapist_issue.insert(), therapist_issues)
 
     # Insert therapist's session formats
-    therapist_formats = [
-        {"therapist_id": therapist.id, "session_format_id": session_format_id}
-        for session_format_id in form.session_formats.data
-    ]
+    therapist_formats = form.session_formats.get_association_data(
+        parent_id=therapist.id, parent_key="therapist_id", child_key="session_format_id"
+    )
     db.session.execute(therapist_format.insert(), therapist_formats)
 
     db.session.commit()

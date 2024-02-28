@@ -3,13 +3,12 @@ from flask_wtf import FlaskForm
 from wtforms import (
     IntegerField,
     SelectField,
-    SelectMultipleField,
     StringField,
     TextAreaField,
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
-from app.forms import CustomSelectMultipleField
 
+from app.forms import CustomSelectMultipleField
 from app.models.enums import Gender
 from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 

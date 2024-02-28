@@ -5,6 +5,7 @@ from app.models import User
 from app.models.therapist import Therapist
 from tests.conftest import post_with_csrf
 
+
 def test_get_profile_unauthenticated(client: FlaskClient):
     response = client.get("/profile")
     assert response.status_code == 302
@@ -36,9 +37,10 @@ def test_update_therapist_profile_success(
     assert "url" in data
 
     # Verify that a new Therapist profile has been created in the database
-    assert db.session.execute(
-        db.select(db.func.count()).select_from(Therapist)
-    ).scalar() == initial_therapist_count + 1
+    assert (
+        db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
+        == initial_therapist_count + 1
+    )
     return
 
 
