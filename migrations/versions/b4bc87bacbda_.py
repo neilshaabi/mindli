@@ -1,15 +1,15 @@
 """empty message
 
-Revision ID: de4bc73118bf
+Revision ID: b4bc87bacbda
 Revises: 
-Create Date: 2024-02-28 02:21:27.363332
+Create Date: 2024-02-28 02:56:32.562547
 
 """
 import sqlalchemy as sa
 from alembic import op
 
 # revision identifiers, used by Alembic.
-revision = 'de4bc73118bf'
+revision = 'b4bc87bacbda'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,9 +35,9 @@ def upgrade():
     )
     op.create_table('session_format_model',
     sa.Column('id', sa.Integer(), nullable=False),
-    sa.Column('session_format', sa.Enum('FACE', 'AUDIO', 'VIDEO', name='sessionformat'), nullable=False),
+    sa.Column('name', sa.Enum('FACE', 'AUDIO', 'VIDEO', name='sessionformat'), nullable=False),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('session_format')
+    sa.UniqueConstraint('name')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),

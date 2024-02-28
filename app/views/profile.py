@@ -2,10 +2,12 @@ from flask import Blueprint, flash, jsonify, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app import BlueprintName, db
-from app.forms.profile import TherapistForm
+from app.forms.profile import TherapistProfileForm
 from app.models import therapist_format, therapist_issue, therapist_language
+from app.models.enums import SessionFormat
 from app.models.issue import Issue
 from app.models.language import Language
+from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
@@ -14,14 +16,27 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @bp.route("/profile", methods=["GET", "POST"])
 @login_required
 def profile():
-    therapist_form = TherapistForm()
+
+    # languages = db.session.execute(db.select(Language)).scalars()
+    languages = Language.query.all()
+    print(len(languages))
+    for language in languages:
+        print(language.name)
+    
+    therapist_form = TherapistProfileForm()
     therapist_form.languages.choices = [
         (language.id, language.name)
         for language in db.session.execute(db.select(Language)).scalars()
     ]
-    therapist_form.languages.choices = [
+    therapist_form.issues.choices = [
         (issue.id, issue.name)
         for issue in db.session.execute(db.select(Issue)).scalars()
+    ]
+    therapist_form.session_formats.choices = [
+        (session_format.id, session_format.name)
+        for session_format in db.session.execute(
+            db.select(SessionFormatModel)
+        ).scalars()
     ]
 
     form = therapist_form
@@ -29,7 +44,7 @@ def profile():
     # GET request - display page
     if request.method == "GET":
         return render_template("profile.html", form=form)
-
+    
     # POST request - validate form
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
@@ -65,8 +80,8 @@ def profile():
 
     # Insert therapist's session formats
     therapist_formats = [
-        {"therapist_id": therapist.id, "session_format": session_format}
-        for session_format in form.session_formats.data
+        {"therapist_id": therapist.id, "session_format": session_format_id}
+        for session_format_id in form.session_formats.data
     ]
     db.session.execute(therapist_format.insert(), therapist_formats)
 

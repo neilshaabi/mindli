@@ -9,10 +9,10 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.models.enums import Gender, SessionFormat
+from app.models.enums import Gender
 
 
-class TherapistForm(FlaskForm):
+class TherapistProfileForm(FlaskForm):
     gender = SelectField(
         "Gender",
         choices=[(gender.value, gender.value.capitalize()) for gender in Gender],
@@ -40,10 +40,6 @@ class TherapistForm(FlaskForm):
 
     session_formats = SelectMultipleField(
         "Session formats",
-        choices=[
-            (session_format.value, session_format.value.replace("_", " ").capitalize())
-            for session_format in SessionFormat
-        ],
         validators=[DataRequired()],
         coerce=int,
     )

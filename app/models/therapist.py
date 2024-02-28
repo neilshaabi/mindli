@@ -13,7 +13,7 @@ class Therapist(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
     gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
-    affilitation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    affiliation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     bio: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
