@@ -8,6 +8,7 @@ from wtforms import (
     TextAreaField,
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
+from app.forms import CustomSelectMultipleField
 
 from app.models.enums import Gender
 from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
@@ -24,7 +25,7 @@ class TherapistProfileForm(FlaskForm):
         choices=[(country.name, country.name) for country in pycountry.countries],
         validators=[DataRequired()],
     )
-    languages = SelectMultipleField(
+    languages = CustomSelectMultipleField(
         "Languages spoken",
         validators=[DataRequired()],
         coerce=int,
@@ -54,13 +55,13 @@ class TherapistProfileForm(FlaskForm):
         "Qualifications", validators=[Optional(), WhitespaceValidator()]
     )
 
-    session_formats = SelectMultipleField(
+    session_formats = CustomSelectMultipleField(
         "Session formats",
         validators=[DataRequired()],
         coerce=int,
     )
 
-    issues = SelectMultipleField(
+    issues = CustomSelectMultipleField(
         "Specialisations",
         validators=[DataRequired()],
         coerce=int,
