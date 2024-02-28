@@ -51,13 +51,11 @@ class TherapistProfileForm(FlaskForm):
     qualifications = StringField(
         "Qualifications", validators=[Optional(), WhitespaceValidator()]
     )
-
     session_formats = CustomSelectMultipleField(
         "Session formats",
         validators=[DataRequired()],
         coerce=int,
     )
-
     issues = CustomSelectMultipleField(
         "Specialisations",
         validators=[DataRequired()],
@@ -82,6 +80,11 @@ class ClientProfileForm(FlaskForm):
         validators=[Optional()],
         coerce=int,
     )
+    session_formats = CustomSelectMultipleField(
+        "Session formats",
+        validators=[Optional()],
+        coerce=int,
+    )
     issues = CustomSelectMultipleField(
         "Specialisations",
         validators=[Optional()],
@@ -92,3 +95,4 @@ class ClientProfileForm(FlaskForm):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
         self.preferred_language.populate_choices_from_model(Language)
         self.issues.populate_choices_from_model(Issue)
+        self.session_formats.populate_choices_from_model(SessionFormatModel)

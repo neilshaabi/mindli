@@ -84,6 +84,28 @@ def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
 
 
 @pytest.fixture(scope="function")
+def logged_in_client(
+    client: FlaskClient, fake_user_client: User, fake_user_password: str
+) -> Generator[User, Any, None]:
+    with client:
+        response = post_with_csrf(
+            client=client,
+            url="/login",
+            data={
+                "email": fake_user_client.email,
+                "password": fake_user_password,
+            },
+        )
+        assert response.status_code == 200
+        assert current_user.is_authenticated
+
+        yield fake_user_client
+
+        client.get("/logout")
+        return
+
+
+@pytest.fixture(scope="function")
 def user_registration_data(fake_user_client: User, fake_user_password: str) -> dict:
     return {
         "role": fake_user_client.role.value,

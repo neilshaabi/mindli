@@ -181,6 +181,7 @@ def email_verification(token):
         # Log in user
         login_user(user)
         flash("Success! Your email address has been verified")
+        return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
@@ -188,8 +189,7 @@ def email_verification(token):
             "Invalid or expired verification link, "
             "please sign in to request a new link"
         )
-
-    return redirect(url_for(f"{BlueprintName.MAIN.value}.index"))
+        return redirect(url_for(f"{BlueprintName.AUTH.value}.login"))
 
 
 @bp.route("/initiate-password-reset", methods=["GET", "POST"])

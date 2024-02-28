@@ -13,6 +13,15 @@ from .therapist import Therapist
 from .unavailability import Unavailability
 from .user import User
 
+client_format = sa.Table(
+    "client_format",
+    db.Model.metadata,
+    sa.Column("client_id", sa.ForeignKey("client.id"), primary_key=True),
+    sa.Column(
+        "session_format_id", sa.ForeignKey("session_format_model.id"), primary_key=True
+    ),
+)
+
 client_issue = sa.Table(
     "client_issue",
     db.Model.metadata,

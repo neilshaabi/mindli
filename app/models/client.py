@@ -16,7 +16,10 @@ class Client(db.Model):
     )
 
     user: so.Mapped["User"] = so.relationship(back_populates="client")
+    preferred_language: so.Mapped[Optional["Language"]] = so.relationship("Language")
     issues: so.Mapped[List["Issue"]] = so.relationship(
         secondary="client_issue", back_populates="clients"
     )
-    preferred_language: so.Mapped[Optional["Language"]] = so.relationship("Language")
+    session_formats: so.Mapped[List["SessionFormatModel"]] = so.relationship(
+        secondary="client_format", back_populates="clients"
+    )
