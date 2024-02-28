@@ -63,7 +63,6 @@ def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
         role=UserRole.CLIENT,
         verified=True,
         active=True,
-        gender=Gender.MALE,
     )
     db.session.add(fake_user_client)
     db.session.commit()
