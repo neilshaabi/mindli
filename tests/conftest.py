@@ -149,7 +149,7 @@ def therapist_profile_data(
         "languages": [language.id for language in seeded_data["languages"]][:2],
         "session_formats": [
             session_format.id for session_format in seeded_data["session_formats"]
-        ][:2],
+        ],
         "issues": [issue.id for issue in seeded_data["issues"]][:2],
     }
 

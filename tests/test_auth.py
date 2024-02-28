@@ -69,11 +69,12 @@ def test_register_missing_fields(
 def test_register_invalid_role(
     mock_send_email: Mock, client: FlaskClient, user_registration_data: dict
 ):
-    invalid_user_data = user_registration_data.copy()
-    invalid_user_data["role"] = "invalid_role"
     initial_user_count = db.session.execute(
         db.select(db.func.count()).select_from(User)
     ).scalar()
+
+    invalid_user_data = user_registration_data.copy()
+    invalid_user_data["role"] = "invalid_role"
 
     response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
@@ -94,11 +95,12 @@ def test_register_invalid_role(
 def test_register_invalid_email(
     mock_send_email: Mock, client: FlaskClient, user_registration_data: dict
 ):
-    invalid_user_data = user_registration_data.copy()
-    invalid_user_data["email"] = "invalidemail"
     initial_user_count = db.session.execute(
         db.select(db.func.count()).select_from(User)
     ).scalar()
+
+    invalid_user_data = user_registration_data.copy()
+    invalid_user_data["email"] = "invalidemail"
 
     response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
@@ -151,11 +153,12 @@ def test_register_duplicate_email(
 def test_register_weak_password(
     mock_send_email: Mock, client: FlaskClient, user_registration_data: dict
 ):
-    invalid_user_data = user_registration_data.copy()
-    invalid_user_data["password"] = "123"
     initial_user_count = db.session.execute(
         db.select(db.func.count()).select_from(User)
     ).scalar()
+
+    invalid_user_data = user_registration_data.copy()
+    invalid_user_data["password"] = "123"
 
     response = post_with_csrf(client=client, url="/register", data=invalid_user_data)
     data = response.get_json()
