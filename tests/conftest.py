@@ -4,6 +4,7 @@ from typing import Any, Generator
 import pytest
 from flask import Flask
 from flask.testing import FlaskClient
+from flask_login import current_user
 from werkzeug.security import generate_password_hash
 
 from app import create_app, db
@@ -72,3 +73,58 @@ def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
     db.session.delete(fake_user_client)
     db.session.commit()
     return
+
+
+@pytest.fixture(scope="function")
+def new_user_data(fake_user_client: User, fake_user_password: str) -> dict:
+    return {
+        "role": fake_user_client.role.value,
+        "first_name": fake_user_client.first_name,
+        "last_name": fake_user_client.last_name,
+        "email": "different-" + fake_user_client.email,
+        "password": fake_user_password,
+    }
+
+
+@pytest.fixture(scope="function")
+def fake_user_therapist(fake_user_password: str) -> Generator[User, Any, None]:
+    fake_user_therapist = User(
+        email="therapist@example.com".lower(),
+        password_hash=generate_password_hash(fake_user_password),
+        first_name="Alice",
+        last_name="Gray",
+        date_joined=date.today(),
+        role=UserRole.THERAPIST,
+        verified=True,
+        active=True,
+    )
+    db.session.add(fake_user_therapist)
+    db.session.commit()
+
+    yield fake_user_therapist
+
+    db.session.delete(fake_user_therapist)
+    db.session.commit()
+    return
+
+
+@pytest.fixture(scope="function")
+def logged_in_therapist(
+    client: FlaskClient, fake_user_therapist: User, fake_user_password: str
+) -> Generator[User, Any, None]:
+    with client:
+        response = post_with_csrf(
+            client=client,
+            url="/login",
+            data={
+                "email": fake_user_therapist.email,
+                "password": fake_user_password,
+            },
+        )
+        assert response.status_code == 200
+        assert current_user.is_authenticated
+
+        yield fake_user_therapist
+
+        client.get("/logout")
+        return

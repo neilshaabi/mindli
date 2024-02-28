@@ -1,6 +1,5 @@
 from unittest.mock import Mock, patch
 
-import pytest
 from flask.testing import FlaskClient
 from flask_login import current_user
 from flask_mail import Mail
@@ -8,17 +7,6 @@ from flask_mail import Mail
 from app import db
 from app.models.user import User
 from tests.conftest import post_with_csrf
-
-
-@pytest.fixture(scope="function")
-def new_user_data(fake_user_client: User, fake_user_password: str) -> dict:
-    return {
-        "role": fake_user_client.role.value,
-        "first_name": fake_user_client.first_name,
-        "last_name": fake_user_client.last_name,
-        "email": "different-" + fake_user_client.email,
-        "password": fake_user_password,
-    }
 
 
 @patch.object(Mail, "send")
