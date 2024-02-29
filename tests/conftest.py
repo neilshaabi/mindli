@@ -16,7 +16,6 @@ from app.models.language import Language
 from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 from app.models.user import User
-from app.seeds import seed_db
 
 
 def get_csrf_token(client: FlaskClient, url: str) -> str:
@@ -41,13 +40,13 @@ def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
 
     with app.app_context():
-        db.create_all()
-        seed_db()
+        # db.create_all()
+        # seed_db()
 
         yield app
 
         db.session.remove()
-        db.drop_all()
+        # db.drop_all()
     return
 
 

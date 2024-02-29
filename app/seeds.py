@@ -1,20 +1,10 @@
 import pycountry
-from flask import Flask
 
 from app import db
 from app.models.enums import SessionFormat
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.session_format import SessionFormatModel
-
-
-def register_cli_commands(app: Flask):
-    @app.cli.command("seed-db")
-    def seed_db_cli() -> None:
-        seed_db()
-        return
-
-    return
 
 
 def seed_db() -> None:

@@ -36,25 +36,27 @@ def load_user(user_id: str):
     return db.session.execute(db.select(User).filter_by(id=int(user_id))).scalar_one()
 
 
-selected_config = CONFIGS[os.environ["ENV"]]
-
-
-def create_app(config: Config = selected_config):
+def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     app = Flask(__name__)
     app.config.from_object(config)
 
     # Initialise extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    csrf.init_app(app) if not app.config["TESTING"] else None
+    csrf.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-    # Register CLI commands
-    from app.seeds import register_cli_commands
+    # Reset and seed database
+    if app.config["RESET_DB"]:
+        from app.seeds import seed_db
 
-    register_cli_commands(app)
+        with app.app_context():
+            db.drop_all()
+            db.create_all()
+            db.session.commit()
+            seed_db()
 
     # Register blueprints with endpoints
     from app.views import auth, main, profile
