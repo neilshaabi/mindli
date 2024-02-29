@@ -1,6 +1,14 @@
 import sqlalchemy as sa
+from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+
+
+class SeedableMixin:
+    @classmethod
+    def seed(cls, db: SQLAlchemy) -> None:
+        pass
+
 
 from .availability import Availability
 from .client import Client

@@ -59,7 +59,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
             db.drop_all()
             db.create_all()
             db.session.commit()
-            seed_db()
+            seed_db(db)
 
     # Register blueprints with endpoints
     from app.views import auth, main, profile
