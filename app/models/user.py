@@ -27,5 +27,9 @@ class User(UserMixin, db.Model):
         sa.String(3)
     )  # ISO 4217 currency code
 
-    client: so.Mapped[Optional["Client"]] = so.relationship(back_populates="user")
-    therapist: so.Mapped[Optional["Therapist"]] = so.relationship(back_populates="user")
+    client: so.Mapped[Optional["Client"]] = so.relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )
+    therapist: so.Mapped[Optional["Therapist"]] = so.relationship(
+        back_populates="user", cascade="all, delete-orphan"
+    )

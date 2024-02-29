@@ -6,7 +6,6 @@ from flask import Flask
 from flask.testing import FlaskClient
 from flask_login import current_user
 from werkzeug.security import generate_password_hash
-from werkzeug.test import TestResponse
 
 from app import create_app, db
 from app.config import TestConfig
@@ -18,44 +17,22 @@ from app.models.therapist import Therapist
 from app.models.user import User
 
 
-def get_csrf_token(client: FlaskClient, url: str) -> str:
-    response = client.get(url)
-
-    csrf_token = (
-        response.data.decode()
-        .split('name="csrf_token" type="hidden" value="')[1]
-        .split('"')[0]
-    )
-    return csrf_token
-
-
-def post_with_csrf(client: FlaskClient, url: str, data: dict) -> TestResponse:
-    csrf_token = get_csrf_token(client, url)
-    data["csrf_token"] = csrf_token
-    return client.post(url, data=data, follow_redirects=True)
-
-
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
 
     with app.app_context():
-        # db.create_all()
-        # seed_db()
-
         yield app
 
-        db.session.remove()
-        # db.drop_all()
     return
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def fake_user_password() -> str:
     return "ValidPassword1"
 
@@ -87,9 +64,8 @@ def logged_in_client(
     client: FlaskClient, fake_user_client: User, fake_user_password: str
 ) -> Generator[User, Any, None]:
     with client:
-        response = post_with_csrf(
-            client=client,
-            url="/login",
+        response = client.post(
+            "/login",
             data={
                 "email": fake_user_client.email,
                 "password": fake_user_password,
@@ -105,12 +81,12 @@ def logged_in_client(
 
 
 @pytest.fixture(scope="function")
-def user_registration_data(fake_user_client: User, fake_user_password: str) -> dict:
+def fake_registration_data(fake_user_client: User, fake_user_password: str) -> dict:
     return {
         "role": fake_user_client.role.value,
         "first_name": fake_user_client.first_name,
         "last_name": fake_user_client.last_name,
-        "email": "different-" + fake_user_client.email,
+        "email": f"different-{fake_user_client.email}",
         "password": fake_user_password,
     }
 
@@ -191,6 +167,9 @@ def fake_user_therapist(fake_user_password: str) -> Generator[User, Any, None]:
     db.session.commit()
 
     yield fake_user_therapist
+
+    db.session.delete(fake_user_therapist)
+    db.session.commit()
     return
 
 
@@ -199,9 +178,8 @@ def logged_in_therapist(
     client: FlaskClient, fake_user_therapist: User, fake_user_password: str
 ) -> Generator[User, Any, None]:
     with client:
-        response = post_with_csrf(
-            client=client,
-            url="/login",
+        response = client.post(
+            "/login",
             data={
                 "email": fake_user_therapist.email,
                 "password": fake_user_password,

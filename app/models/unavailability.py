@@ -10,7 +10,7 @@ from app import db
 class Unavailability(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
+        sa.ForeignKey("therapist.id", ondelete="CASCADE"), index=True
     )
     start_date: so.Mapped[date] = so.mapped_column(sa.Date)
     end_date: so.Mapped[date] = so.mapped_column(sa.Date)

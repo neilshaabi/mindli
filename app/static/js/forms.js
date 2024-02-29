@@ -1,6 +1,15 @@
 $(document).ready(function() {
-    
-    // Form handlers using AJAX
+
+    // Setup CSRF token for AJAX requests
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
     handleSubmitForm('register-form', '/register');
     handleSubmitForm('login-form', '/login');
     handleSubmitForm('verify-email-form', '/verify-email');

@@ -39,6 +39,10 @@ class TherapistLocationValidator:
         face_id = db.session.execute(
             db.select(SessionFormatModel.id).filter_by(name=SessionFormat.FACE.value)
         ).scalar()
-        if not field.data and face_id in form.session_formats.data:
+        if (
+            not field.data
+            and form.session_formats.data
+            and face_id in form.session_formats.data
+        ):
             raise ValidationError("Location is required for face-to-face sessions.")
         return

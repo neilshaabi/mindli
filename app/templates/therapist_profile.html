@@ -11,7 +11,7 @@
         <p>TODO</p>
         <form id='therapist-profile-form' novalidate>
             
-            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
             
             <div class='form-floating'>
 

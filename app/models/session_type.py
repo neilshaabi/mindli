@@ -10,7 +10,7 @@ from app.models.enums import SessionFormat
 class SessionType(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
+        sa.ForeignKey("therapist.id", ondelete="CASCADE"), index=True
     )
     name: so.Mapped[str] = so.mapped_column(
         sa.String(255)

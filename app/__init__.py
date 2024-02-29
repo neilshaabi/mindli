@@ -43,10 +43,13 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     # Initialise extensions
     db.init_app(app)
     migrate.init_app(app, db)
-    csrf.init_app(app)
     mail.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+
+    # Initialise CSRF protection for forms
+    if app.config["WTF_CSRF_ENABLED"]:
+        csrf.init_app(app)
 
     # Reset and seed database
     if app.config["RESET_DB"]:
