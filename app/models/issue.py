@@ -2,6 +2,7 @@ from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from flask_sqlalchemy import SQLAlchemy
 
 from app import db
 
@@ -16,3 +17,15 @@ class Issue(db.Model):
     therapists: so.Mapped[List["Therapist"]] = so.relationship(
         secondary="therapist_issue", back_populates="specialisations"
     )
+
+    @classmethod
+    def seed(cls, db: SQLAlchemy) -> None:
+        issue_names = [
+            "Anxiety",
+            "Depression",
+            "Stress",
+        ]
+        issues = [Issue(name=issue_name) for issue_name in issue_names]
+        db.session.add_all(issues)
+        db.session.commit()
+        return

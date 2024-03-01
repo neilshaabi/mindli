@@ -8,6 +8,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 
 # Default config values
 class Config(object):
+    ENV: str = os.environ["ENV"]
     SECRET_KEY: str = os.environ["SECRET_KEY"]  # os.urandom(12).hex()
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
@@ -24,16 +25,22 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG: bool = True
+    RESET_DB: bool = True
+    WTF_CSRF_ENABLED: str = True
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 
 
 class ProdConfig(Config):
     DEBUG: bool = False
+    RESET_DB: bool = False
+    WTF_CSRF_ENABLED: str = True
     SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
 
 
 class TestConfig(Config):
-    TESTING: bool = True
+    DEBUG: bool = False
+    RESET_DB: bool = True
+    WTF_CSRF_ENABLED: str = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite://"  # Use in-memory database
 
 

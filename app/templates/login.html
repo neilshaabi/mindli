@@ -11,7 +11,7 @@
         <p>Don't have an account? <a href='/register'>Register</a></p>
         <form id='login-form' novalidate>
             
-            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
             
             <div class='form-floating'>
                 {{ form.email(class_='form-control', placeholder=form.email.label.text) }}

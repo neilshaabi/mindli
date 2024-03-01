@@ -10,7 +10,7 @@ from app import db
 class Availability(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     therapist_id: so.Mapped[int] = so.mapped_column(
-        sa.ForeignKey("therapist.id"), index=True
+        sa.ForeignKey("therapist.id", ondelete="CASCADE"), index=True
     )
     day_of_week: so.Mapped[Optional[int]] = so.mapped_column(
         sa.Integer

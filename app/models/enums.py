@@ -9,9 +9,9 @@ class UserRole(Enum):
 
 @unique
 class SessionFormat(Enum):
-    FACE = "face_to_face"
-    AUDIO = "audio_call"
-    VIDEO = "video_call"
+    FACE = "Face to Face"
+    AUDIO = "Audio Call"
+    VIDEO = "Video Call"
 
 
 @unique

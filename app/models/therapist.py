@@ -5,12 +5,13 @@ import sqlalchemy.orm as so
 
 from app import db
 from app.models.enums import Gender
-from app.models.user import User
 
 
 class Therapist(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    user_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey(User.id), index=True)
+    user_id: so.Mapped[int] = so.mapped_column(
+        sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
+    )
     gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
     affiliation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
@@ -32,11 +33,11 @@ class Therapist(db.Model):
         secondary="therapist_format", back_populates="therapists"
     )
     session_types: so.Mapped[List["SessionType"]] = so.relationship(
-        back_populates="therapist"
+        back_populates="therapist", cascade="all, delete-orphan"
     )
     availabilities: so.Mapped[List["Availability"]] = so.relationship(
-        back_populates="therapist"
+        back_populates="therapist", cascade="all, delete-orphan"
     )
     unavailabilities: so.Mapped[List["Unavailability"]] = so.relationship(
-        back_populates="therapist"
+        back_populates="therapist", cascade="all, delete-orphan"
     )

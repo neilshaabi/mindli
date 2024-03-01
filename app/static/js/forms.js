@@ -1,11 +1,25 @@
 $(document).ready(function() {
-    
-    // Form handlers using AJAX
+
+    // Setup CSRF token for AJAX requests
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+    // Auth forms
     handleSubmitForm('register-form', '/register');
     handleSubmitForm('login-form', '/login');
     handleSubmitForm('verify-email-form', '/verify-email');
     handleSubmitForm('initiate-password-reset-form', '/initiate-password-reset');
     handleSubmitForm('reset-password-form', '/reset-password');
+
+    // Profile forms
+    handleSubmitForm('therapist-profile-form', '/therapist/profile');
+    handleSubmitForm('client-profile-form', '/client/profile');
 });
 
 

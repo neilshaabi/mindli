@@ -12,7 +12,7 @@
 
         <form id='register-form' novalidate>
         
-            {{ form.hidden_tag() }}
+            {{ form.csrf_token }}
 
             <div class='radio-group' id='role'>
                 {% for subfield in form.role %}
