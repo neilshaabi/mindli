@@ -5,7 +5,6 @@ import sqlalchemy.orm as so
 
 from app import db
 from app.models.enums import Gender
-from app.models.user import User
 
 
 class Therapist(db.Model):

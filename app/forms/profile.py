@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from wtforms import IntegerField, SelectField, StringField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.forms import CustomSelectMultipleField
+from app.forms import CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
 from app.models.issue import Issue
 from app.models.language import Language
@@ -64,9 +64,10 @@ class TherapistProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
-        self.languages.populate_choices_from_model(Language)
-        self.issues.populate_choices_from_model(Issue)
-        self.session_formats.populate_choices_from_model(SessionFormatModel)
+        self.languages.populate_choices(Language)
+        self.issues.populate_choices(Issue)
+        self.session_formats.populate_choices(SessionFormatModel)
+        return
 
 
 class ClientProfileForm(FlaskForm):
@@ -75,7 +76,7 @@ class ClientProfileForm(FlaskForm):
         choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[Optional()],
     )
-    preferred_language = SelectField(
+    preferred_language = CustomSelectField(
         "Preferred language",
         validators=[Optional()],
         coerce=int,
@@ -93,6 +94,7 @@ class ClientProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
-        self.preferred_language.populate_choices_from_model(Language)
-        self.issues.populate_choices_from_model(Issue)
-        self.session_formats.populate_choices_from_model(SessionFormatModel)
+        self.preferred_language.populate_choices(Language)
+        self.issues.populate_choices(Issue)
+        self.session_formats.populate_choices(SessionFormatModel)
+        return

@@ -1,20 +1,34 @@
+from typing import List, Type
+
+from flask_sqlalchemy.model import Model
 from wtforms import SelectField, SelectMultipleField
 
 from app import db
 
 
 class SelectFieldMixin:
-    def populate_choices_from_model(self, model) -> None:
+    def populate_choices(self, model: Type[Model]) -> None:
         self.choices = [
             (row.id, row.name) for row in db.session.execute(db.select(model)).scalars()
         ]
         return
 
-    def get_association_data(
-        self, parent_id: int, parent_key: str, child_key: str
-    ) -> list:
-        child_ids = self.data if isinstance(self.data, list) else [self.data]
-        return [{parent_key: parent_id, child_key: child_id} for child_id in child_ids]
+    def preselect_choices(self, data: List[Model]) -> None:
+        self.data = [row.id for row in data]
+        return
+
+    def update_association_data(
+        self,
+        parent: Model,
+        child: Type[Model],
+        children: str,
+    ) -> None:
+        selected_data = db.session.execute(
+            db.select(child).filter(child.id.in_(self.data))
+        ).scalars()
+        getattr(parent, children).clear()
+        getattr(parent, children).extend(selected_data)
+        return
 
 
 class CustomSelectField(SelectFieldMixin, SelectField):

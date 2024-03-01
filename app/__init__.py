@@ -52,9 +52,9 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
         csrf.init_app(app)
 
     # Reset and seed database
-    if app.config["RESET_DB"]:
-        from app.seeds import seed_db
+    from app.seed import seed_db
 
+    if app.config["RESET_DB"]:
         with app.app_context():
             db.drop_all()
             db.create_all()

@@ -33,15 +33,15 @@ def client(app: Flask) -> FlaskClient:
 
 
 @pytest.fixture(scope="module")
-def fake_user_password() -> str:
+def FAKE_PASSWORD() -> str:
     return "ValidPassword1"
 
 
-@pytest.fixture(scope="function")
-def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
+@pytest.fixture(scope="module")
+def fake_user_client(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
     fake_user_client = User(
-        email="client@example.com".lower(),
-        password_hash=generate_password_hash(fake_user_password),
+        email="test_client@example.com".lower(),
+        password_hash=generate_password_hash(FAKE_PASSWORD),
         first_name="John",
         last_name="Smith",
         date_joined=date.today(),
@@ -59,16 +59,16 @@ def fake_user_client(fake_user_password: str) -> Generator[User, Any, None]:
     return
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def logged_in_client(
-    client: FlaskClient, fake_user_client: User, fake_user_password: str
+    client: FlaskClient, fake_user_client: User, FAKE_PASSWORD: str
 ) -> Generator[User, Any, None]:
     with client:
         response = client.post(
             "/login",
             data={
                 "email": fake_user_client.email,
-                "password": fake_user_password,
+                "password": FAKE_PASSWORD,
             },
         )
         assert response.status_code == 200
@@ -80,22 +80,22 @@ def logged_in_client(
         return
 
 
-@pytest.fixture(scope="function")
-def fake_registration_data(fake_user_client: User, fake_user_password: str) -> dict:
+@pytest.fixture(scope="module")
+def fake_registration_data(fake_user_client: User, FAKE_PASSWORD: str) -> dict:
     return {
         "role": fake_user_client.role.value,
         "first_name": fake_user_client.first_name,
         "last_name": fake_user_client.last_name,
-        "email": f"different-{fake_user_client.email}",
-        "password": fake_user_password,
+        "email": f"new-{fake_user_client.email}",
+        "password": FAKE_PASSWORD,
     }
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def fake_therapist_profile(
     fake_user_therapist: User,
 ) -> Generator[Therapist, Any, None]:
-    fake_therapist = Therapist(
+    fake_therapist_profile = Therapist(
         user_id=fake_user_therapist.id,
         gender=Gender.FEMALE,
         country="Singapore",
@@ -107,17 +107,17 @@ def fake_therapist_profile(
         registrations="Singapore Psychological Society (SPS)",
         qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology from the National University of Singapore (NUS)",
     )
-    db.session.add(fake_therapist)
-    db.session.commit()
+    # db.session.add(fake_therapist_profile)
+    # db.session.commit()
 
-    yield fake_therapist
+    yield fake_therapist_profile
 
-    db.session.delete(fake_therapist)
-    db.session.commit()
+    # db.session.delete(fake_therapist_profile)
+    # db.session.commit()
     return
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def seeded_data():
     languages = db.session.execute(db.select(Language)).scalars()
     session_formats = db.session.execute(db.select(SessionFormatModel)).scalars()
@@ -129,7 +129,7 @@ def seeded_data():
     }
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def therapist_profile_data(
     fake_therapist_profile: Therapist, seeded_data: dict
 ) -> dict:
@@ -151,11 +151,11 @@ def therapist_profile_data(
     }
 
 
-@pytest.fixture(scope="function")
-def fake_user_therapist(fake_user_password: str) -> Generator[User, Any, None]:
+@pytest.fixture(scope="module")
+def fake_user_therapist(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
     fake_user_therapist = User(
-        email="therapist@example.com".lower(),
-        password_hash=generate_password_hash(fake_user_password),
+        email="test_therapist@example.com".lower(),
+        password_hash=generate_password_hash(FAKE_PASSWORD),
         first_name="Alice",
         last_name="Gray",
         date_joined=date.today(),
@@ -173,22 +173,21 @@ def fake_user_therapist(fake_user_password: str) -> Generator[User, Any, None]:
     return
 
 
-@pytest.fixture(scope="function")
+@pytest.fixture(scope="module")
 def logged_in_therapist(
-    client: FlaskClient, fake_user_therapist: User, fake_user_password: str
+    client: FlaskClient, fake_user_therapist: User, FAKE_PASSWORD: str
 ) -> Generator[User, Any, None]:
-    with client:
-        response = client.post(
-            "/login",
-            data={
-                "email": fake_user_therapist.email,
-                "password": fake_user_password,
-            },
-        )
-        assert response.status_code == 200
-        assert current_user.is_authenticated
+    response = client.post(
+        "/login",
+        data={
+            "email": fake_user_therapist.email,
+            "password": FAKE_PASSWORD,
+        },
+    )
+    assert response.status_code == 200
+    assert current_user.is_authenticated
 
-        yield fake_user_therapist
+    yield fake_user_therapist
 
-        client.get("/logout")
-        return
+    client.get("/logout")
+    return

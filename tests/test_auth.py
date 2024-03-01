@@ -27,7 +27,6 @@ def test_register_success(
         assert response.status_code == 200
 
         assert data["success"] is True
-
         assert "url" in data
         assert (
             db.session.execute(
@@ -79,8 +78,8 @@ def test_register_invalid_role(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "errors" in data
-    assert "role" in data["errors"]
+    assert data["success"] is False
+    assert "errors" in data and "role" in data["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
         == initial_user_count
@@ -105,8 +104,8 @@ def test_register_invalid_email(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "errors" in data
-    assert "email" in data["errors"]
+    assert data["success"] is False
+    assert "errors" in data and "email" in data["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
         == initial_user_count
@@ -128,8 +127,8 @@ def test_register_duplicate_email(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "errors" in data
-    assert "email" in data["errors"]
+    assert data["success"] is False
+    assert "errors" in data and "email" in data["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
         == initial_user_count
@@ -154,8 +153,8 @@ def test_register_weak_password(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "errors" in data
-    assert "password" in data["errors"]
+    assert data["success"] is False
+    assert "errors" in data and "password" in data["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
         == initial_user_count
@@ -176,14 +175,14 @@ def test_get_login(client: FlaskClient):
 def test_user_login_success(
     client: FlaskClient,
     fake_user_client: User,
-    fake_user_password: str,
+    FAKE_PASSWORD: str,
 ):
     with client:
         response = client.post(
             "/login",
             data={
                 "email": fake_user_client.email,
-                "password": fake_user_password,
+                "password": FAKE_PASSWORD,
             },
         )
         data = response.get_json()
@@ -219,8 +218,7 @@ def test_user_login_wrong_credentials(client: FlaskClient, fake_user_client: Use
         data = response.get_json()
         assert response.status_code == 200
         assert data["success"] is False
-        assert "errors" in data
-        assert "password" in data["errors"]
+        assert "errors" in data and "password" in data["errors"]
         assert not current_user.is_authenticated
     return
 
@@ -228,7 +226,7 @@ def test_user_login_wrong_credentials(client: FlaskClient, fake_user_client: Use
 def test_user_login_unverified(
     client: FlaskClient,
     fake_user_client: User,
-    fake_user_password: str,
+    FAKE_PASSWORD: str,
 ):
     fake_user_client.verified = False
     db.session.commit()
@@ -236,7 +234,7 @@ def test_user_login_unverified(
     with client:
         response = client.post(
             "/login",
-            data={"email": fake_user_client.email, "password": fake_user_password},
+            data={"email": fake_user_client.email, "password": FAKE_PASSWORD},
         )
         data = response.get_json()
         assert response.status_code == 200

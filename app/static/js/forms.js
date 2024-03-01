@@ -10,11 +10,15 @@ $(document).ready(function() {
         }
     });
 
+    // Auth forms
     handleSubmitForm('register-form', '/register');
     handleSubmitForm('login-form', '/login');
     handleSubmitForm('verify-email-form', '/verify-email');
     handleSubmitForm('initiate-password-reset-form', '/initiate-password-reset');
     handleSubmitForm('reset-password-form', '/reset-password');
+
+    // Profile
+    handleSubmitForm('therapist-profile-form', '/therapist/profile');
 });
 
 

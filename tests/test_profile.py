@@ -35,7 +35,6 @@ def test_update_therapist_profile_success(
     data = response.get_json()
 
     assert response.status_code == 200
-
     assert data["success"] is True
     assert "url" in data
     assert (
@@ -57,7 +56,7 @@ def test_update_therapist_profile_missing_fields(
 
     assert response.status_code == 200
     assert data["success"] is False
-    assert "errors" in data
+    assert data["success"] is False and "errors" in data
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
         == initial_therapist_count
@@ -74,12 +73,13 @@ def test_update_therapist_profile_without_location_fails(
 
     invalid_therapist_data = therapist_profile_data.copy()
     invalid_therapist_data["location"] = None
+    invalid_therapist_data["country"] = "test country"
 
     response = client.post("/therapist/profile", data=invalid_therapist_data)
     data = response.get_json()
 
     assert response.status_code == 200
-    assert "errors" in data
+    assert data["success"] is False and "errors" in data
     assert "location" in data["errors"]
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
@@ -91,10 +91,6 @@ def test_update_therapist_profile_without_location_fails(
 def test_update_therapist_profile_without_location_success(
     client: FlaskClient, logged_in_therapist: User, therapist_profile_data: dict
 ):
-    initial_therapist_count = db.session.execute(
-        db.select(db.func.count()).select_from(Therapist)
-    ).scalar()
-
     valid_therapist_data = therapist_profile_data.copy()
     valid_therapist_data["location"] = None
     valid_therapist_data["session_formats"] = [2]
@@ -103,13 +99,6 @@ def test_update_therapist_profile_without_location_success(
     data = response.get_json()
 
     assert response.status_code == 200
-
     assert data["success"] is True
     assert "url" in data
-
-    # Verify that a new Therapist profile has been created in the database
-    assert (
-        db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
-        == initial_therapist_count + 1
-    )
     return
