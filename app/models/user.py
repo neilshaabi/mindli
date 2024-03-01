@@ -39,11 +39,11 @@ class User(UserMixin, SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
-        FAKE_PASSWORD = "ValidPassword1"
+        fake_password = "ValidPassword1"
 
-        FAKE_USER_CLIENT = User(
+        fake_user_client = User(
             email="client@example.com".lower(),
-            password_hash=generate_password_hash(FAKE_PASSWORD),
+            password_hash=generate_password_hash(fake_password),
             first_name="John",
             last_name="Smith",
             date_joined=date.today(),
@@ -52,9 +52,9 @@ class User(UserMixin, SeedableMixin, db.Model):
             active=True,
         )
 
-        FAKE_USER_THERAPIST = User(
+        fake_user_therapist = User(
             email="therapist@example.com".lower(),
-            password_hash=generate_password_hash(FAKE_PASSWORD),
+            password_hash=generate_password_hash(fake_password),
             first_name="Alice",
             last_name="Gray",
             date_joined=date.today(),
@@ -63,7 +63,7 @@ class User(UserMixin, SeedableMixin, db.Model):
             active=True,
         )
 
-        fake_users = [FAKE_USER_CLIENT, FAKE_USER_THERAPIST]
+        fake_users = [fake_user_client, fake_user_therapist]
         db.session.add_all(fake_users)
         db.session.commit()
         return

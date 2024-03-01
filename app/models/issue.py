@@ -5,9 +5,10 @@ import sqlalchemy.orm as so
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.models import SeedableMixin
 
 
-class Issue(db.Model):
+class Issue(SeedableMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     name: so.Mapped[str] = so.mapped_column(sa.String(50), unique=True)
 
