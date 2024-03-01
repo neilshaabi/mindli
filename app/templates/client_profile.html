@@ -1,0 +1,43 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+    
+    <div class='my-container'>
+        <h3>Client Profile</h3>
+        <form id='client-profile-form' novalidate>
+            
+            {{ form.csrf_token }}
+            
+            <div class='form-floating'>
+                {{ form.preferred_gender(class_='form-control form-select', placeholder=form.preferred_gender.label.text) }}
+                {{ form.preferred_gender.label }}
+            </div>
+            
+            <div class='form-floating'>
+                {{ form.preferred_language(class_='form-control form-select', placeholder=form.preferred_language.label.text) }}
+                {{ form.preferred_language.label }}
+            </div>
+            
+            <div class='form-floating'>
+                {{ form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                {{ form.session_formats.label }}
+            </div>
+            
+            <div class='form-floating'>
+                {{ form.issues(class_='form-control form-select', multiple='multiple') }}
+                {{ form.issues.label }}
+            </div>
+            
+            <button type='submit' class='btn btn-primary'>
+                <span class='btn-text'>Save</span>
+                <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                <span class='visually-hidden'>Loading...</span>
+            </button>
+        
+        </form>
+    </div>
+{% endblock %}

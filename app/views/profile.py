@@ -47,7 +47,7 @@ def therapist_profile():
         therapist.years_of_experience = form.years_of_experience.data
         therapist.registrations = form.registrations.data
         therapist.qualifications = form.qualifications.data
-    
+
     # Insert new data if no profile exists
     else:
         therapist = Therapist(
@@ -74,7 +74,7 @@ def therapist_profile():
     form.issues.update_association_data(
         parent=therapist, child=Issue, children="specialisations"
     )
-    
+
     # Update therapist's session formats
     form.session_formats.update_association_data(
         parent=therapist, child=SessionFormatModel, children="session_formats"
@@ -96,7 +96,6 @@ def therapist_profile():
 @login_required
 @client_required
 def client_profile():
-    
     client = current_user.client
 
     # GET request - display page
@@ -113,21 +112,19 @@ def client_profile():
     if client:
         client.preferred_gender = form.preferred_gender.data
         client.preferred_language_id = form.preferred_language.data
-    
+
     # Insert new data if no profile exists
     else:
         client = Client(
             user_id=current_user.id,
             preferred_gender=form.preferred_gender.data,
-            preferred_language_id=form.preferred_language.data
+            preferred_language_id=form.preferred_language.data,
         )
         db.session.add(client)
 
     # Update client's issues
-    form.issues.update_association_data(
-        parent=client, child=Issue, children="issues"
-    )
-    
+    form.issues.update_association_data(parent=client, child=Issue, children="issues")
+
     # Update client's session formats
     form.session_formats.update_association_data(
         parent=client, child=SessionFormatModel, children="session_formats"

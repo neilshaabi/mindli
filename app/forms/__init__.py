@@ -23,10 +23,14 @@ class SelectFieldMixin:
         child: Type[Model],
         children: str,
     ) -> None:
+        getattr(parent, children).clear()
+
+        if self.data is None:
+            return
+
         selected_data = db.session.execute(
             db.select(child).filter(child.id.in_(self.data))
         ).scalars()
-        getattr(parent, children).clear()
         getattr(parent, children).extend(selected_data)
         return
 

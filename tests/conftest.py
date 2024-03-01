@@ -59,7 +59,7 @@ def fake_user_client(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
     return
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def logged_in_client(
     client: FlaskClient, fake_user_client: User, FAKE_PASSWORD: str
 ) -> Generator[User, Any, None]:
@@ -107,30 +107,14 @@ def fake_therapist_profile(
         registrations="Singapore Psychological Society (SPS)",
         qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology from the National University of Singapore (NUS)",
     )
-    # db.session.add(fake_therapist_profile)
-    # db.session.commit()
 
     yield fake_therapist_profile
 
-    # db.session.delete(fake_therapist_profile)
-    # db.session.commit()
     return
 
 
 @pytest.fixture(scope="module")
-def seeded_data():
-    languages = db.session.execute(db.select(Language)).scalars()
-    session_formats = db.session.execute(db.select(SessionFormatModel)).scalars()
-    issues = db.session.execute(db.select(Issue)).scalars()
-    return {
-        "languages": languages,
-        "session_formats": session_formats,
-        "issues": issues,
-    }
-
-
-@pytest.fixture(scope="module")
-def therapist_profile_data(
+def fake_therapist_profile_data(
     fake_therapist_profile: Therapist, seeded_data: dict
 ) -> dict:
     return {
@@ -173,21 +157,47 @@ def fake_user_therapist(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
     return
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="function")
 def logged_in_therapist(
     client: FlaskClient, fake_user_therapist: User, FAKE_PASSWORD: str
 ) -> Generator[User, Any, None]:
-    response = client.post(
-        "/login",
-        data={
-            "email": fake_user_therapist.email,
-            "password": FAKE_PASSWORD,
-        },
-    )
-    assert response.status_code == 200
-    assert current_user.is_authenticated
+    with client:
+        response = client.post(
+            "/login",
+            data={
+                "email": fake_user_therapist.email,
+                "password": FAKE_PASSWORD,
+            },
+        )
 
-    yield fake_user_therapist
+        assert response.status_code == 200
+        assert current_user.is_authenticated
 
-    client.get("/logout")
+        yield fake_user_therapist
+
+        client.get("/logout")
     return
+
+
+@pytest.fixture(scope="module")
+def fake_client_profile_data(fake_user_client: User, seeded_data: dict) -> dict:
+    return {
+        "preferred_gender": Gender.MALE.name,
+        "preferred_language": seeded_data["languages"][0].id,
+        "session_formats": [
+            session_format.id for session_format in seeded_data["session_formats"]
+        ],
+        "issues": [issue.id for issue in seeded_data["issues"]][:2],
+    }
+
+
+@pytest.fixture(scope="module")
+def seeded_data():
+    languages = db.session.execute(db.select(Language)).scalars().all()
+    session_formats = db.session.execute(db.select(SessionFormatModel)).scalars().all()
+    issues = db.session.execute(db.select(Issue)).scalars().all()
+    return {
+        "languages": languages,
+        "session_formats": session_formats,
+        "issues": issues,
+    }

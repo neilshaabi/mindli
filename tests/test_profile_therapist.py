@@ -25,13 +25,13 @@ def test_get_therapist_profile_success(client: FlaskClient, logged_in_therapist:
 
 
 def test_update_therapist_profile_success(
-    client: FlaskClient, logged_in_therapist: User, therapist_profile_data: dict
+    client: FlaskClient, logged_in_therapist: User, fake_therapist_profile_data: dict
 ):
     initial_therapist_count = db.session.execute(
         db.select(db.func.count()).select_from(Therapist)
     ).scalar()
 
-    response = client.post("/therapist/profile", data=therapist_profile_data)
+    response = client.post("/therapist/profile", data=fake_therapist_profile_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -45,7 +45,7 @@ def test_update_therapist_profile_success(
 
 
 def test_update_therapist_profile_missing_fields(
-    client: FlaskClient, logged_in_therapist: User, therapist_profile_data: dict
+    client: FlaskClient, logged_in_therapist: User
 ):
     initial_therapist_count = db.session.execute(
         db.select(db.func.count()).select_from(Therapist)
@@ -65,13 +65,13 @@ def test_update_therapist_profile_missing_fields(
 
 
 def test_update_therapist_profile_without_location_fails(
-    client: FlaskClient, logged_in_therapist: User, therapist_profile_data: dict
+    client: FlaskClient, logged_in_therapist: User, fake_therapist_profile_data: dict
 ):
     initial_therapist_count = db.session.execute(
         db.select(db.func.count()).select_from(Therapist)
     ).scalar()
 
-    invalid_therapist_data = therapist_profile_data.copy()
+    invalid_therapist_data = fake_therapist_profile_data.copy()
     invalid_therapist_data["location"] = None
     invalid_therapist_data["country"] = "test country"
 
@@ -89,9 +89,9 @@ def test_update_therapist_profile_without_location_fails(
 
 
 def test_update_therapist_profile_without_location_success(
-    client: FlaskClient, logged_in_therapist: User, therapist_profile_data: dict
+    client: FlaskClient, logged_in_therapist: User, fake_therapist_profile_data: dict
 ):
-    valid_therapist_data = therapist_profile_data.copy()
+    valid_therapist_data = fake_therapist_profile_data.copy()
     valid_therapist_data["location"] = None
     valid_therapist_data["session_formats"] = [2]
 
