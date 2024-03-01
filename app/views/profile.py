@@ -101,6 +101,14 @@ def client_profile():
     # GET request - display page
     if request.method == "GET":
         form = ClientProfileForm(obj=client)
+
+        # Preselect therapist's existing profile data
+        if client:
+            form.preferred_language.preselect_choices(client.preferred_language)
+            form.preferred_gender.preselect_choices(client.preferred_gender)
+            form.issues.preselect_choices(client.issues)
+            form.session_formats.preselect_choices(client.session_formats)
+
         return render_template("client_profile.html", form=form)
 
     # POST request - validate form
@@ -121,6 +129,7 @@ def client_profile():
             preferred_language_id=form.preferred_language.data,
         )
         db.session.add(client)
+    db.session.commit()
 
     # Update client's issues
     form.issues.update_association_data(parent=client, child=Issue, children="issues")

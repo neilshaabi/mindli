@@ -71,7 +71,7 @@ class TherapistProfileForm(FlaskForm):
 
 
 class ClientProfileForm(FlaskForm):
-    preferred_gender = SelectField(
+    preferred_gender = CustomSelectField(
         "Preferred gender",
         choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[Optional()],

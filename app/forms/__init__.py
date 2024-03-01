@@ -1,4 +1,5 @@
-from typing import List, Type
+from enum import Enum
+from typing import List, Type, Union
 
 from flask_sqlalchemy.model import Model
 from wtforms import SelectField, SelectMultipleField
@@ -13,9 +14,8 @@ class SelectFieldMixin:
         ]
         return
 
-    def preselect_choices(self, data: List[Model]) -> None:
-        self.data = [row.id for row in data]
-        return
+    def preselect_choices(self, data) -> None:
+        pass
 
     def update_association_data(
         self,
@@ -36,8 +36,15 @@ class SelectFieldMixin:
 
 
 class CustomSelectField(SelectFieldMixin, SelectField):
-    pass
+    def preselect_choices(self, data: Union[Model, Enum]) -> None:
+        if isinstance(data, Enum):
+            self.data = data.name
+        else:
+            self.data = data.id
+        return
 
 
 class CustomSelectMultipleField(SelectFieldMixin, SelectMultipleField):
-    pass
+    def preselect_choices(self, data: List[Model]) -> None:
+        self.data = [row.id for row in data]
+        return
