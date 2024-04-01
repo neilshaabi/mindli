@@ -5,79 +5,96 @@
 {% endblock %}
 
 {% block content %}
-    
-    <div class='my-container'>
+
+    <div class='page-header'>
         <h3>Therapist Profile</h3>
-        <form id='therapist-profile-form' novalidate>
-            
-            {{ form.csrf_token }}
-            
-            <div class='form-floating'>
-                {{ form.gender(class_='form-control form-select', placeholder=form.gender.label.text) }}
-                {{ form.gender.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.country(class_='form-control form-select', placeholder=form.country.label.text) }}
-                {{ form.country.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.languages(class_='form-control form-select', multiple='multiple') }}
-                {{ form.languages.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.affiliation(class_='form-control', placeholder=form.affiliation.label.text) }}
-                {{ form.affiliation.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.bio(class_='form-control', placeholder=form.bio.label.text) }}
-                {{ form.bio.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.link(class_='form-control', placeholder=form.link.label.text) }}
-                {{ form.link.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.location(class_='form-control', placeholder=form.location.label.text) }}
-                {{ form.location.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.years_of_experience(class_='form-control', placeholder=form.years_of_experience.label.text) }}
-                {{ form.years_of_experience.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.registrations(class_='form-control', placeholder=form.registrations.label.text) }}
-                {{ form.registrations.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.qualifications(class_='form-control', placeholder=form.qualifications.label.text) }}
-                {{ form.qualifications.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                {{ form.session_formats.label }}
-            </div>
-            
-            <div class='form-floating'>
-                {{ form.issues(class_='form-control form-select', multiple='multiple') }}
-                {{ form.issues.label }}
-            </div>
-            
-            <button type='submit' class='btn btn-primary'>
-                <span class='btn-text'>Save</span>
-                <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
-                <span class='visually-hidden'>Loading...</span>
-            </button>
+    </div>
+    
+    <div class='page-content'>
+    
+        <div class='my-container'>
+            <h3>Personal Information</h3>
+            <form id='TODO-form' novalidate>
+                
+                {{ form.csrf_token }}
+
+
+        </div>
         
-        </form>
+        <div class='my-container'>
+            <h3>Professional Information</h3>
+            <form id='therapist-professional-info-form' novalidate>
+                
+                {{ form.csrf_token }}
+                
+                <div class='form-floating'>
+                    {{ form.gender(class_='form-control form-select', placeholder=form.gender.label.text) }}
+                    {{ form.gender.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.country(class_='form-control form-select', placeholder=form.country.label.text) }}
+                    {{ form.country.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.languages(class_='form-control form-select', multiple='multiple') }}
+                    {{ form.languages.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.affiliation(class_='form-control', placeholder=form.affiliation.label.text) }}
+                    {{ form.affiliation.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.bio(class_='form-control', placeholder=form.bio.label.text) }}
+                    {{ form.bio.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.link(class_='form-control', placeholder=form.link.label.text) }}
+                    {{ form.link.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.location(class_='form-control', placeholder=form.location.label.text) }}
+                    {{ form.location.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.years_of_experience(class_='form-control', placeholder=form.years_of_experience.label.text) }}
+                    {{ form.years_of_experience.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.registrations(class_='form-control', placeholder=form.registrations.label.text) }}
+                    {{ form.registrations.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.qualifications(class_='form-control', placeholder=form.qualifications.label.text) }}
+                    {{ form.qualifications.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                    {{ form.session_formats.label }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ form.issues(class_='form-control form-select', multiple='multiple') }}
+                    {{ form.issues.label }}
+                </div>
+                
+                <button type='submit' class='btn btn-primary'>
+                    <span class='btn-text'>Save</span>
+                    <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                    <span class='visually-hidden'>Loading...</span>
+                </button>
+            
+            </form>
+        </div>
+    
     </div>
 {% endblock %}
