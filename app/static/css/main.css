@@ -54,6 +54,7 @@ main.navbar-layout {
 }
 
 main.sidebar-layout {
+    width: calc(100% - var(--sidebar-width));
     left: var(--sidebar-width);
 }
 
@@ -102,6 +103,7 @@ main.sidebar-layout {
 /* Sidebar */
 
 .sidebar {
+    position: fixed;
     height: 100%;
     width: var(--sidebar-width);
     max-width: var(--sidebar-width);
@@ -353,4 +355,5 @@ input:-webkit-autofill:focus {
 
 .sidebar-layout .flashed-message {
     left: var(--sidebar-width);
+    
 }
