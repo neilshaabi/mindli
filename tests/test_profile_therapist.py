@@ -6,20 +6,20 @@ from app.models.therapist import Therapist
 
 
 def test_get_therapist_profile_unauthenticated(client: FlaskClient):
-    response = client.get("/therapist/profile")
+    response = client.get("/profile/therapist")
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
     return
 
 
 def test_get_therapist_profile_as_client(client: FlaskClient, logged_in_client: User):
-    response = client.get("/therapist/profile")
+    response = client.get("/profile/therapist")
     assert response.status_code == 302
     return
 
 
 def test_get_therapist_profile_success(client: FlaskClient, logged_in_therapist: User):
-    response = client.get("/therapist/profile")
+    response = client.get("/profile/therapist")
     assert response.status_code == 200
     return
 
@@ -31,7 +31,7 @@ def test_update_therapist_profile_success(
         db.select(db.func.count()).select_from(Therapist)
     ).scalar()
 
-    response = client.post("/therapist/profile", data=fake_therapist_profile_data)
+    response = client.post("/profile/therapist", data=fake_therapist_profile_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -51,7 +51,7 @@ def test_update_therapist_profile_missing_fields(
         db.select(db.func.count()).select_from(Therapist)
     ).scalar()
 
-    response = client.post("/therapist/profile", data={})
+    response = client.post("/profile/therapist", data={})
     data = response.get_json()
 
     assert response.status_code == 200
@@ -75,7 +75,7 @@ def test_update_therapist_profile_without_location_fails(
     invalid_therapist_data["location"] = None
     invalid_therapist_data["country"] = "test country"
 
-    response = client.post("/therapist/profile", data=invalid_therapist_data)
+    response = client.post("/profile/therapist", data=invalid_therapist_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -95,7 +95,7 @@ def test_update_therapist_profile_without_location_success(
     valid_therapist_data["location"] = None
     valid_therapist_data["session_formats"] = [2]
 
-    response = client.post("/therapist/profile", data=valid_therapist_data)
+    response = client.post("/profile/therapist", data=valid_therapist_data)
     data = response.get_json()
 
     assert response.status_code == 200

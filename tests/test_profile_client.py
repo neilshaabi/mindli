@@ -6,7 +6,7 @@ from app.models.client import Client
 
 
 def test_get_client_profile_unauthenticated(client: FlaskClient):
-    response = client.get("/client/profile")
+    response = client.get("/profile/client")
     assert response.status_code == 302
     assert "/login" in response.headers["Location"]
     return
@@ -15,13 +15,13 @@ def test_get_client_profile_unauthenticated(client: FlaskClient):
 def test_get_client_profile_as_therapist(
     client: FlaskClient, logged_in_therapist: User
 ):
-    response = client.get("/client/profile")
+    response = client.get("/profile/client")
     assert response.status_code == 302
     return
 
 
 def test_get_client_profile_success(client: FlaskClient, logged_in_client: User):
-    response = client.get("/client/profile")
+    response = client.get("/profile/client")
     assert response.status_code == 200
     return
 
@@ -33,7 +33,7 @@ def test_update_client_profile_success(
         db.select(db.func.count()).select_from(Client)
     ).scalar()
 
-    response = client.post("/client/profile", data=fake_client_profile_data)
+    response = client.post("/profile/client", data=fake_client_profile_data)
     data = response.get_json()
 
     assert response.status_code == 200
@@ -54,7 +54,7 @@ def test_update_client_profile_missing_fields(
         db.select(db.func.count()).select_from(Client)
     ).scalar()
 
-    response = client.post("/client/profile", data={})
+    response = client.post("/profile/client", data={})
     data = response.get_json()
 
     assert response.status_code == 200

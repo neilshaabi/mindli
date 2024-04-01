@@ -2,8 +2,9 @@ from flask import Blueprint, flash, jsonify, render_template, request, url_for
 from flask_login import current_user, login_required
 
 from app import BlueprintName, db
-from app.forms.profile import ClientProfileForm, TherapistProfileForm
+from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
 from app.models.client import Client
+from app.models.enums import UserRole
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.session_format import SessionFormatModel
@@ -12,8 +13,27 @@ from app.utils.decorators import client_required, therapist_required
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 
+@bp.route("/profile/user", methods=["POST"])
+@login_required
+def profile():
 
-@bp.route("/therapist/profile", methods=["GET", "POST"])
+    # POST request - validate form
+    form = UserProfileForm()
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Successful update - reload page
+    flash("Profile information updated!")
+    if current_user.role == UserRole.THERAPIST:
+        redirect_url = url_for(f"{BlueprintName.PROFILE.value}.therapist_profile")
+    else:
+        redirect_url = url_for(f"{BlueprintName.PROFILE.value}.client_profile")
+
+    return jsonify({"success": True, "url": redirect_url})
+
+
+
+@bp.route("/profile/therapist", methods=["GET", "POST"])
 @login_required
 @therapist_required
 def therapist_profile():
@@ -21,15 +41,18 @@ def therapist_profile():
 
     # GET request - display page
     if request.method == "GET":
-        form = TherapistProfileForm(obj=therapist)
+        
+        # Preselect existing user data
+        user_profile_form = UserProfileForm(obj=current_user)
+        therapist_profile_form = TherapistProfileForm(obj=therapist)
 
-        # Preselect therapist's existing profile data
+        # Preselect existing therapist profile data
         if therapist:
-            form.languages.preselect_choices(therapist.languages)
-            form.issues.preselect_choices(therapist.specialisations)
-            form.session_formats.preselect_choices(therapist.session_formats)
+            therapist_profile_form.languages.preselect_choices(therapist.languages)
+            therapist_profile_form.issues.preselect_choices(therapist.specialisations)
+            therapist_profile_form.session_formats.preselect_choices(therapist.session_formats)
 
-        return render_template("therapist_profile.html", form=form)
+        return render_template("therapist_profile.html", user_profile_form=user_profile_form, therapist_profile_form=therapist_profile_form)
 
     # POST request - validate form
     form = TherapistProfileForm()
@@ -92,7 +115,7 @@ def therapist_profile():
     )
 
 
-@bp.route("/client/profile", methods=["GET", "POST"])
+@bp.route("/profile/client", methods=["GET", "POST"])
 @login_required
 @client_required
 def client_profile():

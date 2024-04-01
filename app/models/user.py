@@ -22,7 +22,7 @@ class User(UserMixin, SeedableMixin, db.Model):
     role: so.Mapped["UserRole"] = so.mapped_column(sa.Enum(UserRole))
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
-    photo_url: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    profile_picture: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     timezone: so.Mapped[Optional[str]] = so.mapped_column(
         sa.String(50)
     )  # IANA Time Zone Database name

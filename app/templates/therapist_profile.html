@@ -14,77 +14,103 @@
     
         <div class='my-container'>
             <h3>Personal Information</h3>
-            <form id='TODO-form' novalidate>
+            <form id='user-profile-form' enctype="multipart/form-data" novalidate>
                 
-                {{ form.csrf_token }}
+                {{ user_profile_form.csrf_token }}
 
+                <div>
+                    {{ user_profile_form.profile_picture.label }}
+                    {{ user_profile_form.profile_picture() }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ user_profile_form.first_name(class_='form-control', placeholder=user_profile_form.email.label.text) }}
+                    {{ user_profile_form.first_name.label }}
+                </div>
+    
+                <div class='form-floating'>
+                    {{ user_profile_form.last_name(class_='form-control', placeholder=user_profile_form.email.label.text) }}
+                    {{ user_profile_form.last_name.label }}
+                </div>
+    
+                <div class='form-floating'>
+                    {{ user_profile_form.email(class_='form-control', placeholder=user_profile_form.email.label.text) }}
+                    {{ user_profile_form.email.label }}
+                </div>
 
+                <button type='submit' class='btn btn-primary'>
+                    <span class='btn-text'>Save</span>
+                    <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                    <span class='visually-hidden'>Loading...</span>
+                </button>
+            
+            </form>
         </div>
         
         <div class='my-container'>
             <h3>Professional Information</h3>
-            <form id='therapist-professional-info-form' novalidate>
+            <form id='therapist-profile-form' novalidate>
                 
-                {{ form.csrf_token }}
+                {{ therapist_profile_form.csrf_token }}
                 
                 <div class='form-floating'>
-                    {{ form.gender(class_='form-control form-select', placeholder=form.gender.label.text) }}
-                    {{ form.gender.label }}
+                    {{ therapist_profile_form.gender(class_='form-control form-select', placeholder=therapist_profile_form.gender.label.text) }}
+                    {{ therapist_profile_form.gender.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.country(class_='form-control form-select', placeholder=form.country.label.text) }}
-                    {{ form.country.label }}
+                    {{ therapist_profile_form.country(class_='form-control form-select', placeholder=therapist_profile_form.country.label.text) }}
+                    {{ therapist_profile_form.country.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.languages(class_='form-control form-select', multiple='multiple') }}
-                    {{ form.languages.label }}
+                    {{ therapist_profile_form.languages(class_='form-control form-select', multiple='multiple') }}
+                    {{ therapist_profile_form.languages.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.affiliation(class_='form-control', placeholder=form.affiliation.label.text) }}
-                    {{ form.affiliation.label }}
+                    {{ therapist_profile_form.affiliation(class_='form-control', placeholder=therapist_profile_form.affiliation.label.text) }}
+                    {{ therapist_profile_form.affiliation.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.bio(class_='form-control', placeholder=form.bio.label.text) }}
-                    {{ form.bio.label }}
+                    {{ therapist_profile_form.bio(class_='form-control', placeholder=therapist_profile_form.bio.label.text) }}
+                    {{ therapist_profile_form.bio.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.link(class_='form-control', placeholder=form.link.label.text) }}
-                    {{ form.link.label }}
+                    {{ therapist_profile_form.link(class_='form-control', placeholder=therapist_profile_form.link.label.text) }}
+                    {{ therapist_profile_form.link.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.location(class_='form-control', placeholder=form.location.label.text) }}
-                    {{ form.location.label }}
+                    {{ therapist_profile_form.location(class_='form-control', placeholder=therapist_profile_form.location.label.text) }}
+                    {{ therapist_profile_form.location.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.years_of_experience(class_='form-control', placeholder=form.years_of_experience.label.text) }}
-                    {{ form.years_of_experience.label }}
+                    {{ therapist_profile_form.years_of_experience(class_='form-control', placeholder=therapist_profile_form.years_of_experience.label.text) }}
+                    {{ therapist_profile_form.years_of_experience.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.registrations(class_='form-control', placeholder=form.registrations.label.text) }}
-                    {{ form.registrations.label }}
+                    {{ therapist_profile_form.registrations(class_='form-control', placeholder=therapist_profile_form.registrations.label.text) }}
+                    {{ therapist_profile_form.registrations.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.qualifications(class_='form-control', placeholder=form.qualifications.label.text) }}
-                    {{ form.qualifications.label }}
+                    {{ therapist_profile_form.qualifications(class_='form-control', placeholder=therapist_profile_form.qualifications.label.text) }}
+                    {{ therapist_profile_form.qualifications.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                    {{ form.session_formats.label }}
+                    {{ therapist_profile_form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                    {{ therapist_profile_form.session_formats.label }}
                 </div>
                 
                 <div class='form-floating'>
-                    {{ form.issues(class_='form-control form-select', multiple='multiple') }}
-                    {{ form.issues.label }}
+                    {{ therapist_profile_form.issues(class_='form-control form-select', multiple='multiple') }}
+                    {{ therapist_profile_form.issues.label }}
                 </div>
                 
                 <button type='submit' class='btn btn-primary'>
