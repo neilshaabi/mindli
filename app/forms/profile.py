@@ -1,8 +1,8 @@
 import pycountry
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
+from flask_wtf.file import FileAllowed, FileField
 from wtforms import IntegerField, SelectField, StringField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional 
+from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
 
 from app.forms import CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
@@ -13,7 +13,10 @@ from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 
 
 class UserProfileForm(FlaskForm):
-    profile_picture = FileField('Profile picture', validators=[FileAllowed(['jpg', 'png'], 'Uploaded file must be an image')])
+    profile_picture = FileField(
+        "Profile picture",
+        validators=[FileAllowed(["jpg", "png"], "Uploaded file must be an image")],
+    )
     first_name = StringField(
         "First name", validators=[DataRequired(), Length(min=1, max=50)]
     )
@@ -21,16 +24,14 @@ class UserProfileForm(FlaskForm):
         "Last name", validators=[DataRequired(), Length(min=1, max=50)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    # TODO: add gender to User class
-    # TODO: add timezone and currency
-
-
-class TherapistProfileForm(FlaskForm):
     gender = SelectField(
         "Gender",
         choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[DataRequired()],
     )
+
+
+class TherapistProfileForm(FlaskForm):
     country = SelectField(
         "Country",
         choices=[(country.name, country.name) for country in pycountry.countries],

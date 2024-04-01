@@ -9,7 +9,7 @@ from werkzeug.security import generate_password_hash
 
 from app import db
 from app.models import SeedableMixin
-from app.models.enums import UserRole
+from app.models.enums import Gender, UserRole
 
 
 class User(UserMixin, SeedableMixin, db.Model):
@@ -18,6 +18,7 @@ class User(UserMixin, SeedableMixin, db.Model):
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(255))
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     last_name: so.Mapped[str] = so.mapped_column(sa.String(50))
+    gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     date_joined: so.Mapped[date] = so.mapped_column(sa.Date)
     role: so.Mapped["UserRole"] = so.mapped_column(sa.Enum(UserRole))
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)

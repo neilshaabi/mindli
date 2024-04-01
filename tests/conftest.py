@@ -150,7 +150,6 @@ def fake_therapist_profile(
 ) -> Generator[Therapist, Any, None]:
     fake_therapist_profile = Therapist(
         user_id=fake_user_therapist.id,
-        gender=Gender.FEMALE,
         country="Singapore",
         affiliation="National University of Singapore",
         bio="example bio",
@@ -184,7 +183,6 @@ def fake_therapist_profile_data(
     fake_therapist_profile: Therapist, seeded_data: dict
 ) -> dict:
     return {
-        "gender": fake_therapist_profile.gender.name,
         "country": fake_therapist_profile.country,
         "affiliation": fake_therapist_profile.affiliation,
         "bio": fake_therapist_profile.bio,

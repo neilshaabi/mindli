@@ -13,24 +13,35 @@ from app.utils.decorators import client_required, therapist_required
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 
+
 @bp.route("/profile/user", methods=["POST"])
 @login_required
 def profile():
-
     # POST request - validate form
     form = UserProfileForm()
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Successful update - reload page
-    flash("Profile information updated!")
+    # Update user's data
+    current_user.first_name = form.first_name.data
+    current_user.last_name = form.last_name.data
+    current_user.gender = form.gender.data
+
+    """TODO: handle email address updates via the following:
+        1. Send verification email to new address
+        2. Only update email address after verification
+        3. Send email to old email address, tell them to contact if not requested
+        4. Require re-authentication
+    """
+
+    # Reload page
+    flash("Personal information updated!")
     if current_user.role == UserRole.THERAPIST:
         redirect_url = url_for(f"{BlueprintName.PROFILE.value}.therapist_profile")
     else:
         redirect_url = url_for(f"{BlueprintName.PROFILE.value}.client_profile")
 
     return jsonify({"success": True, "url": redirect_url})
-
 
 
 @bp.route("/profile/therapist", methods=["GET", "POST"])
@@ -41,7 +52,6 @@ def therapist_profile():
 
     # GET request - display page
     if request.method == "GET":
-        
         # Preselect existing user data
         user_profile_form = UserProfileForm(obj=current_user)
         therapist_profile_form = TherapistProfileForm(obj=therapist)
@@ -50,9 +60,15 @@ def therapist_profile():
         if therapist:
             therapist_profile_form.languages.preselect_choices(therapist.languages)
             therapist_profile_form.issues.preselect_choices(therapist.specialisations)
-            therapist_profile_form.session_formats.preselect_choices(therapist.session_formats)
+            therapist_profile_form.session_formats.preselect_choices(
+                therapist.session_formats
+            )
 
-        return render_template("therapist_profile.html", user_profile_form=user_profile_form, therapist_profile_form=therapist_profile_form)
+        return render_template(
+            "therapist_profile.html",
+            user_profile_form=user_profile_form,
+            therapist_profile_form=therapist_profile_form,
+        )
 
     # POST request - validate form
     form = TherapistProfileForm()
@@ -61,7 +77,6 @@ def therapist_profile():
 
     # Update therapist's profile data if it exists
     if therapist:
-        therapist.gender = form.gender.data
         therapist.country = form.country.data
         therapist.affiliation = form.affiliation.data
         therapist.bio = form.bio.data
@@ -75,7 +90,6 @@ def therapist_profile():
     else:
         therapist = Therapist(
             user_id=current_user.id,
-            gender=form.gender.data,
             country=form.country.data,
             affiliation=form.affiliation.data,
             bio=form.bio.data,
@@ -105,8 +119,8 @@ def therapist_profile():
 
     db.session.commit()
 
-    # Successful update - reload page
-    flash("Profile information updated!")
+    # Reload page
+    flash("Professional information updated!")
     return jsonify(
         {
             "success": True,
@@ -164,7 +178,7 @@ def client_profile():
 
     db.session.commit()
 
-    # Successful update - reload page
+    # Reload page
     flash("Profile information updated!")
     return jsonify(
         {

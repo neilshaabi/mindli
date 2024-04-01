@@ -6,7 +6,7 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app import db
 from app.models import SeedableMixin
-from app.models.enums import Gender, UserRole
+from app.models.enums import UserRole
 from app.models.user import User
 
 
@@ -15,7 +15,6 @@ class Therapist(SeedableMixin, db.Model):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
     )
-    gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
     affiliation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     bio: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
@@ -53,7 +52,6 @@ class Therapist(SeedableMixin, db.Model):
 
         fake_therapist = Therapist(
             user_id=fake_user_therapist.id,
-            gender=Gender.FEMALE,
             country="Singapore",
             affiliation="National University of Singapore (NUS)",
             bio="example bio",
