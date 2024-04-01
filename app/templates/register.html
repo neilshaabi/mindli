@@ -6,7 +6,7 @@
 
 {% block content %}
 
-    <div class='my-container'>
+    <div class='my-container centered'>
         <h3>Create account</h3>
         <p>Have an account? <a href='/login'>Sign in</a></p>
 
@@ -15,11 +15,11 @@
             {{ form.csrf_token }}
 
             <div class='radio-group' id='role'>
-                {% for subfield in form.role %}
-                    <input type='radio' class='btn-check' id='{{ subfield.id }}' name='{{ subfield.name }}' value='{{ subfield._value() }}' autocomplete='off'>
-                    <label class='btn btn-outline-primary' for='{{ subfield.id }}'>
+                {% for role in form.role %}
+                    <input type='radio' class='btn-check' id='{{ role.id }}' name='{{ role.name }}' value='{{ role._value() }}' autocomplete='off'>
+                    <label class='btn btn-outline-primary' for='{{ role.id }}'>
                         <i class='fa-solid fa-check'></i>
-                        {{ subfield.label.text }}
+                        {{ role.label.text }}
                     </label>
                 {% endfor %}
             </div>

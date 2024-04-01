@@ -18,7 +18,7 @@ $(document).ready(function() {
     handleSubmitForm('reset-password-form', '/reset-password');
 
     // Profile forms
-    handleSubmitForm('therapist-profile-form', '/therapist/profile');
+    handleSubmitForm('therapist-professional-info-form', '/therapist/profile');
     handleSubmitForm('client-profile-form', '/client/profile');
 });
 
