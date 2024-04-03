@@ -151,7 +151,6 @@ def fake_therapist_profile(
     fake_therapist_profile = Therapist(
         user_id=fake_user_therapist.id,
         country="Singapore",
-        affiliation="National University of Singapore",
         bio="example bio",
         link="http://example.com",
         location="21 Lower Kent Ridge Rd, Singapore 119077",
@@ -184,7 +183,6 @@ def fake_therapist_profile_data(
 ) -> dict:
     return {
         "country": fake_therapist_profile.country,
-        "affiliation": fake_therapist_profile.affiliation,
         "bio": fake_therapist_profile.bio,
         "link": fake_therapist_profile.link,
         "location": fake_therapist_profile.location,

@@ -45,9 +45,6 @@ class TherapistProfileForm(FlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
-    affiliation = StringField(
-        "Affiliation", validators=[Optional(), WhitespaceValidator()]
-    )
     bio = TextAreaField("Bio", validators=[Optional(), WhitespaceValidator()])
     link = StringField(
         "Link", validators=[Optional(), WhitespaceValidator(), Length(max=255)]

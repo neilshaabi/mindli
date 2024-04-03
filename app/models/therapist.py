@@ -16,7 +16,6 @@ class Therapist(SeedableMixin, db.Model):
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
     )
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
-    affiliation: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     bio: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
@@ -53,7 +52,6 @@ class Therapist(SeedableMixin, db.Model):
         fake_therapist = Therapist(
             user_id=fake_user_therapist.id,
             country="Singapore",
-            affiliation="National University of Singapore (NUS)",
             bio="example bio",
             link="http://example.com",
             location="21 Lower Kent Ridge Rd, Singapore 119077",
