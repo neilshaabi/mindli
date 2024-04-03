@@ -35,8 +35,7 @@ def test_update_therapist_profile_success(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True
-    assert "url" in data
+    assert data["success"] is True and "url" in data
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
         == initial_therapist_count + 1
@@ -99,6 +98,5 @@ def test_update_therapist_profile_without_location_success(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True
-    assert "url" in data
+    assert data["success"] is True and "url" in data
     return

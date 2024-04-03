@@ -26,8 +26,7 @@ def test_register_success(
 
         assert response.status_code == 200
 
-        assert data["success"] is True
-        assert "url" in data
+        assert data["success"] is True and "url" in data
         assert (
             db.session.execute(
                 db.select(User).filter_by(email=fake_registration_data["email"].lower())
