@@ -21,6 +21,7 @@ from app.models.language import Language
 from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 from app.utils.decorators import client_required, therapist_required
+from app.utils.files import get_file_extension
 
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 
@@ -39,21 +40,16 @@ def profile():
     current_user.gender = form.gender.data
 
     # Handle profile picture upload
-    if "profile_picture" in request.files:
-        file = request.files["profile_picture"]
-        filename = f"user_{current_user.id}.{file.filename.rsplit('.', 1)[1].lower()}"
-        filepath = os.path.join(
-            "static/img/profile_pictures", secure_filename(filename)
-        )
-        file.save(os.path.join(current_app.root_path, filepath))
-        current_user.profile_picture = filepath
+    file = request.files.get("profile_picture")
+    if file:
+        extension = get_file_extension(file)
+        filename = secure_filename(f"user_{current_user.id}.{extension}")
+        filepath = os.path.join("static", "img", "profile_pictures", filename)
+        savepath = os.path.join(current_app.root_path, filepath)
+        file.save(savepath)
+        current_user.profile_picture = filename
 
-    """TODO: handle email address updates via the following:
-        1. Send verification email to new address
-        2. Only update email address after verification
-        3. Send email to old email address, tell them to contact if not requested
-        4. Require re-authentication
-    """
+    db.session.commit()
 
     # Reload page
     flash("Personal information updated")

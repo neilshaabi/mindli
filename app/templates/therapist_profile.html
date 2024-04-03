@@ -20,7 +20,7 @@
 
                 <div id="profile-picture-container">
                     <img id="profile-picture-preview"
-                            src="{{ url_for('static', filename=current_user.profile_picture or 'img/profile_pictures/default.png') }}"
+                            src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}"
                             alt="Profile picture"
                             class="{{ 'default-pic' if not current_user.profile_picture }}">
                     <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
@@ -30,19 +30,14 @@
                 </div>
                 
                 <div class='form-floating'>
-                    {{ user_profile_form.first_name(class_='form-control', placeholder=user_profile_form.email.label.text) }}
+                    {{ user_profile_form.first_name(class_='form-control', placeholder=user_profile_form.first_name.label.text) }}
                     {{ user_profile_form.first_name.label }}
                 </div>
     
                 <div class='form-floating'>
-                    {{ user_profile_form.last_name(class_='form-control', placeholder=user_profile_form.email.label.text) }}
+                    {{ user_profile_form.last_name(class_='form-control', placeholder=user_profile_form.last_name.label.text) }}
                     {{ user_profile_form.last_name.label }}
                 </div>
-    
-                <!-- <div class='form-floating'>
-                    {{ user_profile_form.email(class_='form-control', placeholder=user_profile_form.email.label.text) }}
-                    {{ user_profile_form.email.label }}
-                </div> -->
 
                 <div class='form-floating'>
                     {{ user_profile_form.gender(class_='form-control form-select', placeholder=user_profile_form.gender.label.text) }}

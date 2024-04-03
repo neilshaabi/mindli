@@ -9,7 +9,6 @@ def register_error_handlers(app: Flask) -> None:
             "error.html",
             error=e,
             is_http_exception=isinstance(e, HTTPException),
-            is_error_page=True,
         )
 
     return

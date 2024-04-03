@@ -2,7 +2,7 @@ import pycountry
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import IntegerField, SelectField, StringField, TextAreaField
-from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
@@ -15,7 +15,7 @@ from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 class UserProfileForm(FlaskForm):
     profile_picture = FileField(
         "Profile picture",
-        validators=[FileAllowed(["jpg", "png"], "Uploaded file must be an image")],
+        validators=[FileAllowed(["jpg", "png"], "Upload must be a jpg or png file")],
     )
     first_name = StringField(
         "First name", validators=[DataRequired(), Length(min=1, max=50)]
@@ -23,7 +23,6 @@ class UserProfileForm(FlaskForm):
     last_name = StringField(
         "Last name", validators=[DataRequired(), Length(min=1, max=50)]
     )
-    email = StringField("Email", validators=[DataRequired(), Email()])
     gender = CustomSelectField(
         "Gender",
         choices=[("", "Select gender")]

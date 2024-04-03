@@ -39,10 +39,8 @@
     <body>
 
         <!-- Show navbar/sidebar depending on error and authentication status -->
-        {% if not is_error_page %}
-            {% set layout_type = 'sidebar' if current_user.is_authenticated else 'navbar' %}
-            {% include layout_type + '.html' %}
-        {% endif %}
+        {% set layout_type = 'sidebar' if current_user.is_authenticated else 'navbar' %}
+        {% include layout_type + '.html' %}
         
         <main class="{{ layout_type }}-layout">
             

@@ -1,5 +1,5 @@
 help:
-	@echo "Available commands: make [help, venv, deps, app, migrate-db, reset-db, lint, test, clean]"
+	@echo "Available commands: make [help, venv, deps, reqs, app, migrate-db, reset-db, lint, test, clean]"
 
 venv:
 	@echo "Creating virtual environment..."
@@ -10,6 +10,10 @@ venv:
 deps:
 	@echo "Installing dependencies..."
 	pip install -r requirements.txt
+
+reqs:
+	@echo "Updating requirements.txt..."
+	pip freeze > requirements.txt
 
 app:
 	@echo "Running Flask app locally..."
@@ -44,4 +48,4 @@ clean:
 	find . -type d -name '__pycache__' -exec rm -r {} +
 	find . -type f -name '*.pyc' -delete
 
-.PHONY: help venv deps app migrate-db reset-db lint test clean
+.PHONY: help venv deps reqs app migrate-db reset-db lint test clean
