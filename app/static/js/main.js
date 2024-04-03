@@ -26,3 +26,14 @@ $(document).ready(function() {
         }
     });
 });
+
+// Updates profile picture
+function previewImage(event) {
+    var reader = new FileReader();
+    reader.onload = function(){
+        var output = $('#profile-picture-preview');
+        output.attr('src', reader.result);
+        output.removeClass('default-pic');
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}

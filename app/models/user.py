@@ -56,7 +56,7 @@ class User(UserMixin, SeedableMixin, db.Model):
         fake_user_therapist = User(
             email="therapist@example.com".lower(),
             password_hash=generate_password_hash(fake_password),
-            first_name="Alice",
+            first_name="Alison",
             last_name="Gray",
             date_joined=date.today(),
             role=UserRole.THERAPIST,

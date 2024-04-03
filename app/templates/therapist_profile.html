@@ -18,9 +18,15 @@
                 
                 {{ user_profile_form.csrf_token }}
 
-                <div>
-                    {{ user_profile_form.profile_picture.label }}
-                    {{ user_profile_form.profile_picture() }}
+                <div id="profile-picture-container">
+                    <img id="profile-picture-preview"
+                            src="{{ url_for('static', filename=current_user.profile_picture or 'img/profile_pictures/default.png') }}"
+                            alt="Profile picture"
+                            class="{{ 'default-pic' if not current_user.profile_picture }}">
+                    <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
+                        <i class="fa fa-camera"></i>
+                    </label>
+                    {{ user_profile_form.profile_picture(style='display: none;', onchange="previewImage(event)") }}
                 </div>
                 
                 <div class='form-floating'>

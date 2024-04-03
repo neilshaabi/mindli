@@ -9,9 +9,13 @@ from app import db
 
 class SelectFieldMixin:
     def populate_choices(self, model: Type[Model]) -> None:
-        self.choices = [
+        choices = [
             (row.id, row.name) for row in db.session.execute(db.select(model)).scalars()
         ]
+        if self.choices is None:
+            self.choices = choices
+        else:
+            self.choices.extend(choices)
         return
 
     def preselect_choices(self, data) -> None:
@@ -37,10 +41,8 @@ class SelectFieldMixin:
 
 class CustomSelectField(SelectFieldMixin, SelectField):
     def preselect_choices(self, data: Union[Model, Enum]) -> None:
-        if isinstance(data, Enum):
-            self.data = data.name
-        else:
-            self.data = data.id
+        if data is not None:
+            self.data = data.name if isinstance(data, Enum) else data.id
         return
 
 

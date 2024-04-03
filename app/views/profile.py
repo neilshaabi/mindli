@@ -1,5 +1,16 @@
-from flask import Blueprint, flash, jsonify, render_template, request, url_for
+import os
+
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    jsonify,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
+from werkzeug.utils import secure_filename
 
 from app import BlueprintName, db
 from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
@@ -27,6 +38,16 @@ def profile():
     current_user.last_name = form.last_name.data
     current_user.gender = form.gender.data
 
+    # Handle profile picture upload
+    if "profile_picture" in request.files:
+        file = request.files["profile_picture"]
+        filename = f"user_{current_user.id}.{file.filename.rsplit('.', 1)[1].lower()}"
+        filepath = os.path.join(
+            "static/img/profile_pictures", secure_filename(filename)
+        )
+        file.save(os.path.join(current_app.root_path, filepath))
+        current_user.profile_picture = filepath
+
     """TODO: handle email address updates via the following:
         1. Send verification email to new address
         2. Only update email address after verification
@@ -35,7 +56,7 @@ def profile():
     """
 
     # Reload page
-    flash("Personal information updated!")
+    flash("Personal information updated")
     if current_user.role == UserRole.THERAPIST:
         redirect_url = url_for(f"{BlueprintName.PROFILE.value}.therapist_profile")
     else:
@@ -54,9 +75,10 @@ def therapist_profile():
     if request.method == "GET":
         # Preselect existing user data
         user_profile_form = UserProfileForm(obj=current_user)
-        therapist_profile_form = TherapistProfileForm(obj=therapist)
+        user_profile_form.gender.preselect_choices(current_user.gender)
 
         # Preselect existing therapist profile data
+        therapist_profile_form = TherapistProfileForm(obj=therapist)
         if therapist:
             therapist_profile_form.languages.preselect_choices(therapist.languages)
             therapist_profile_form.issues.preselect_choices(therapist.specialisations)
@@ -120,7 +142,7 @@ def therapist_profile():
     db.session.commit()
 
     # Reload page
-    flash("Professional information updated!")
+    flash("Professional information updated")
     return jsonify(
         {
             "success": True,
@@ -153,6 +175,12 @@ def client_profile():
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
+    # Convert default values to None
+    if form.preferred_gender.data == "":
+        form.preferred_gender.data = None
+    if form.preferred_language.data == 0:
+        form.preferred_language.data = None
+
     # Update client's profile data if it exists
     if client:
         client.preferred_gender = form.preferred_gender.data
@@ -179,7 +207,7 @@ def client_profile():
     db.session.commit()
 
     # Reload page
-    flash("Profile information updated!")
+    flash("Profile information updated")
     return jsonify(
         {
             "success": True,

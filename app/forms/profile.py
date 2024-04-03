@@ -24,18 +24,22 @@ class UserProfileForm(FlaskForm):
         "Last name", validators=[DataRequired(), Length(min=1, max=50)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    gender = SelectField(
+    gender = CustomSelectField(
         "Gender",
-        choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
+        choices=[("", "Select gender")]
+        + [(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[DataRequired()],
+        default="",
     )
 
 
 class TherapistProfileForm(FlaskForm):
     country = SelectField(
         "Country",
-        choices=[(country.name, country.name) for country in pycountry.countries],
+        choices=[("", "Select country")]
+        + [(country.name, country.name) for country in pycountry.countries],
         validators=[DataRequired()],
+        default="",
     )
     languages = CustomSelectMultipleField(
         "Languages spoken",
@@ -88,11 +92,13 @@ class TherapistProfileForm(FlaskForm):
 class ClientProfileForm(FlaskForm):
     preferred_gender = CustomSelectField(
         "Preferred gender",
-        choices=[(gender.name, gender.value.capitalize()) for gender in Gender],
+        choices=[("", "Select gender")]
+        + [(gender.name, gender.value.capitalize()) for gender in Gender],
         validators=[Optional()],
     )
     preferred_language = CustomSelectField(
         "Preferred language",
+        choices=[(0, "Select language")],
         validators=[Optional()],
         coerce=int,
     )
