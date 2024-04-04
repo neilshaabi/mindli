@@ -155,8 +155,8 @@ def fake_therapist_profile(
         link="http://example.com",
         location="21 Lower Kent Ridge Rd, Singapore 119077",
         years_of_experience=5,
-        registrations="Singapore Psychological Society (SPS)",
         qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology from the National University of Singapore (NUS)",
+        registrations="Singapore Psychological Society (SPS)",
     )
 
     yield fake_therapist_profile
@@ -187,8 +187,8 @@ def fake_therapist_profile_data(
         "link": fake_therapist_profile.link,
         "location": fake_therapist_profile.location,
         "years_of_experience": fake_therapist_profile.years_of_experience,
-        "registrations": fake_therapist_profile.registrations,
         "qualifications": fake_therapist_profile.qualifications,
+        "registrations": fake_therapist_profile.registrations,
         "languages": [language.id for language in seeded_data[Language.__tablename__]][
             :2
         ],

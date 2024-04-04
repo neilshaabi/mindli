@@ -60,11 +60,11 @@ class TherapistProfileForm(FlaskForm):
     years_of_experience = IntegerField(
         "Years of experience", validators=[Optional(), NumberRange(min=0)]
     )
-    registrations = StringField(
-        "Registrations", validators=[Optional(), WhitespaceValidator()]
-    )
     qualifications = StringField(
         "Qualifications", validators=[Optional(), WhitespaceValidator()]
+    )
+    registrations = StringField(
+        "Registrations", validators=[Optional(), WhitespaceValidator()]
     )
     session_formats = CustomSelectMultipleField(
         "Session formats",

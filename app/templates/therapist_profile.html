@@ -12,7 +12,7 @@
     
     <div class='page-content'>
     
-        <div class='my-container'>
+        <div class='my-container' style="width: 60%">
             <h3>Personal Information</h3>
             <form id='user-profile-form' enctype="multipart/form-data" novalidate>
                 
@@ -90,13 +90,13 @@
                 </div>
                 
                 <div class='form-floating'>
-                    {{ therapist_profile_form.registrations(class_='form-control', placeholder=therapist_profile_form.registrations.label.text) }}
-                    {{ therapist_profile_form.registrations.label }}
-                </div>
-                
-                <div class='form-floating'>
                     {{ therapist_profile_form.qualifications(class_='form-control', placeholder=therapist_profile_form.qualifications.label.text) }}
                     {{ therapist_profile_form.qualifications.label }}
+                </div>
+
+                <div class='form-floating'>
+                    {{ therapist_profile_form.registrations(class_='form-control', placeholder=therapist_profile_form.registrations.label.text) }}
+                    {{ therapist_profile_form.registrations.label }}
                 </div>
                 
                 <div class='form-floating'>

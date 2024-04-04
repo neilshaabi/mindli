@@ -100,8 +100,8 @@ def therapist_profile():
         therapist.link = form.link.data
         therapist.location = form.location.data
         therapist.years_of_experience = form.years_of_experience.data
-        therapist.registrations = form.registrations.data
         therapist.qualifications = form.qualifications.data
+        therapist.registrations = form.registrations.data
 
     # Insert new data if no profile exists
     else:
@@ -112,8 +112,8 @@ def therapist_profile():
             link=form.link.data,
             location=form.location.data,
             years_of_experience=form.years_of_experience.data,
-            registrations=form.registrations.data,
             qualifications=form.qualifications.data,
+            registrations=form.registrations.data,
         )
         db.session.add(therapist)
     db.session.commit()

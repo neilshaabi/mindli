@@ -20,8 +20,8 @@ class Therapist(SeedableMixin, db.Model):
     link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     years_of_experience: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)
-    registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
 
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
     languages: so.Mapped[List["Language"]] = so.relationship(
@@ -56,8 +56,8 @@ class Therapist(SeedableMixin, db.Model):
             link="http://example.com",
             location="21 Lower Kent Ridge Rd, Singapore 119077",
             years_of_experience=5,
-            registrations="Singapore Psychological Society (SPS)",
             qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology, National University of Singapore (NUS)",
+            registrations="Singapore Psychological Society (SPS)",
         )
         db.session.add(fake_therapist)
         db.session.commit()
