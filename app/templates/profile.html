@@ -1,0 +1,162 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Profile
+{% endblock %}
+
+{% block content %}
+
+    <div class='page-header'>
+        <h3>{{ current_user.role.value.capitalize() }} Profile</h3>
+    </div>
+    
+    <div class='page-content'>
+    
+        <div class='my-container' style="width: 60%">
+            <h3>Personal Information</h3>
+            <form id='user-profile-form' enctype="multipart/form-data" novalidate>
+                
+                {{ user_form.csrf_token }}
+
+                <div id="profile-picture-container">
+                    <img id="profile-picture-preview"
+                            src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}"
+                            alt="Profile picture"
+                            class="{{ 'default-pic' if not current_user.profile_picture }}">
+                    <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
+                        <i class="fa fa-camera"></i>
+                    </label>
+                    {{ user_form.profile_picture(style='display: none;', onchange="previewImage(event)") }}
+                </div>
+                
+                <div class='form-floating'>
+                    {{ user_form.first_name(class_='form-control', placeholder=user_form.first_name.label.text) }}
+                    {{ user_form.first_name.label }}
+                </div>
+    
+                <div class='form-floating'>
+                    {{ user_form.last_name(class_='form-control', placeholder=user_form.last_name.label.text) }}
+                    {{ user_form.last_name.label }}
+                </div>
+
+                <div class='form-floating'>
+                    {{ user_form.gender(class_='form-control form-select', placeholder=user_form.gender.label.text) }}
+                    {{ user_form.gender.label }}
+                </div>
+
+                <button type='submit' class='btn btn-primary'>
+                    <span class='btn-text'>Save</span>
+                    <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                    <span class='visually-hidden'>Loading...</span>
+                </button>
+            
+            </form>
+        </div>
+        
+        <div class='my-container'>
+
+            {% if current_user.role == UserRole.THERAPIST %}
+
+                <h3>Professional Information</h3>
+                <form id='therapist-profile-form' novalidate>
+                    
+                    {{ therapist_form.csrf_token }}
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.country(class_='form-control form-select', placeholder=therapist_form.country.label.text) }}
+                        {{ therapist_form.country.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.languages(class_='form-control form-select', multiple='multiple') }}
+                        {{ therapist_form.languages.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.bio(class_='form-control', placeholder=therapist_form.bio.label.text) }}
+                        {{ therapist_form.bio.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.link(class_='form-control', placeholder=therapist_form.link.label.text) }}
+                        {{ therapist_form.link.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.location(class_='form-control', placeholder=therapist_form.location.label.text) }}
+                        {{ therapist_form.location.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.years_of_experience(class_='form-control', placeholder=therapist_form.years_of_experience.label.text) }}
+                        {{ therapist_form.years_of_experience.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.qualifications(class_='form-control', placeholder=therapist_form.qualifications.label.text) }}
+                        {{ therapist_form.qualifications.label }}
+                    </div>
+
+                    <div class='form-floating'>
+                        {{ therapist_form.registrations(class_='form-control', placeholder=therapist_form.registrations.label.text) }}
+                        {{ therapist_form.registrations.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                        {{ therapist_form.session_formats.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ therapist_form.issues(class_='form-control form-select', multiple='multiple') }}
+                        {{ therapist_form.issues.label }}
+                    </div>
+                    
+                    <button type='submit' class='btn btn-primary'>
+                        <span class='btn-text'>Save</span>
+                        <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                        <span class='visually-hidden'>Loading...</span>
+                    </button>
+                
+                </form>
+            
+            {% elif current_user.role == UserRole.CLIENT %}
+                
+                <h3>Client Preferences</h3>
+                <form id='client-profile-form' novalidate>
+                    
+                    {{ client_form.csrf_token }}
+                    
+                    <div class='form-floating'>
+                        {{ client_form.preferred_gender(class_='form-control form-select', placeholder=client_form.preferred_gender.label.text) }}
+                        {{ client_form.preferred_gender.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ client_form.preferred_language(class_='form-control form-select', placeholder=client_form.preferred_language.label.text) }}
+                        {{ client_form.preferred_language.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ client_form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                        {{ client_form.session_formats.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ client_form.issues(class_='form-control form-select', multiple='multiple') }}
+                        {{ client_form.issues.label }}
+                    </div>
+                    
+                    <button type='submit' class='btn btn-primary'>
+                        <span class='btn-text'>Save</span>
+                        <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
+                        <span class='visually-hidden'>Loading...</span>
+                    </button>
+                
+                </form>
+            
+            {% endif %}
+        </div>
+    
+    </div>
+{% endblock %}

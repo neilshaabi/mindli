@@ -104,7 +104,7 @@ class ClientProfileForm(FlaskForm):
         coerce=int,
     )
     issues = CustomSelectMultipleField(
-        "Specialisations",
+        "Issues",
         validators=[Optional()],
         coerce=int,
     )

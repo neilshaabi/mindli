@@ -26,10 +26,52 @@ from app.utils.files import get_file_extension
 bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 
 
-@bp.route("/profile/user", methods=["POST"])
+@bp.route("/profile", methods=["GET"])
 @login_required
 def profile():
-    # POST request - validate form
+    # Generate form for personal information common to all users
+    user_form = UserProfileForm(obj=current_user)
+    user_form.gender.preselect_choices(current_user.gender)
+
+    # Declare forms for specific roles
+    therapist_form = None
+    client_form = None
+
+    if current_user.role == UserRole.THERAPIST:
+        # Generate form for therapist's professional information
+        therapist = current_user.therapist
+        therapist_form = TherapistProfileForm(obj=therapist)
+
+        # Preselect data from therapist's profile if it exists
+        if therapist:
+            therapist_form.languages.preselect_choices(therapist.languages)
+            therapist_form.issues.preselect_choices(therapist.specialisations)
+            therapist_form.session_formats.preselect_choices(therapist.session_formats)
+
+    elif current_user.role == UserRole.CLIENT:
+        # Generate form for client's preferences
+        client = current_user.client
+        client_form = ClientProfileForm(obj=client)
+
+        # Preselect data from client's profile if it exists
+        if client:
+            client_form.preferred_language.preselect_choices(client.preferred_language)
+            client_form.preferred_gender.preselect_choices(client.preferred_gender)
+            client_form.issues.preselect_choices(client.issues)
+            client_form.session_formats.preselect_choices(client.session_formats)
+
+    return render_template(
+        "profile.html",
+        UserRole=UserRole,
+        user_form=user_form,
+        therapist_form=therapist_form,
+        client_form=client_form,
+    )
+
+
+@bp.route("/profile/user", methods=["POST"])
+@login_required
+def user_profile():
     form = UserProfileForm()
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
@@ -53,47 +95,23 @@ def profile():
 
     # Reload page
     flash("Personal information updated")
-    if current_user.role == UserRole.THERAPIST:
-        redirect_url = url_for(f"{BlueprintName.PROFILE.value}.therapist_profile")
-    else:
-        redirect_url = url_for(f"{BlueprintName.PROFILE.value}.client_profile")
-
-    return jsonify({"success": True, "url": redirect_url})
+    return jsonify(
+        {"success": True, "url": url_for(f"{BlueprintName.PROFILE.value}.profile")}
+    )
 
 
-@bp.route("/profile/therapist", methods=["GET", "POST"])
+@bp.route("/profile/therapist", methods=["POST"])
 @login_required
 @therapist_required
 def therapist_profile():
     therapist = current_user.therapist
-
-    # GET request - display page
-    if request.method == "GET":
-        # Preselect existing user data
-        user_profile_form = UserProfileForm(obj=current_user)
-        user_profile_form.gender.preselect_choices(current_user.gender)
-
-        # Preselect existing therapist profile data
-        therapist_profile_form = TherapistProfileForm(obj=therapist)
-        if therapist:
-            therapist_profile_form.languages.preselect_choices(therapist.languages)
-            therapist_profile_form.issues.preselect_choices(therapist.specialisations)
-            therapist_profile_form.session_formats.preselect_choices(
-                therapist.session_formats
-            )
-
-        return render_template(
-            "therapist_profile.html",
-            user_profile_form=user_profile_form,
-            therapist_profile_form=therapist_profile_form,
-        )
 
     # POST request - validate form
     form = TherapistProfileForm()
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Update therapist's profile data if it exists
+    # Update therapist's profile if it exists
     if therapist:
         therapist.country = form.country.data
         therapist.bio = form.bio.data
@@ -116,6 +134,7 @@ def therapist_profile():
             registrations=form.registrations.data,
         )
         db.session.add(therapist)
+
     db.session.commit()
 
     # Update therapist's languages
@@ -140,42 +159,29 @@ def therapist_profile():
     return jsonify(
         {
             "success": True,
-            "url": url_for(f"{BlueprintName.PROFILE.value}.therapist_profile"),
+            "url": url_for(f"{BlueprintName.PROFILE.value}.profile"),
         }
     )
 
 
-@bp.route("/profile/client", methods=["GET", "POST"])
+@bp.route("/profile/client", methods=["POST"])
 @login_required
 @client_required
 def client_profile():
     client = current_user.client
-
-    # GET request - display page
-    if request.method == "GET":
-        form = ClientProfileForm(obj=client)
-
-        # Preselect therapist's existing profile data
-        if client:
-            form.preferred_language.preselect_choices(client.preferred_language)
-            form.preferred_gender.preselect_choices(client.preferred_gender)
-            form.issues.preselect_choices(client.issues)
-            form.session_formats.preselect_choices(client.session_formats)
-
-        return render_template("client_profile.html", form=form)
 
     # POST request - validate form
     form = ClientProfileForm()
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Convert default values to None
+    # Convert form's default values to None
     if form.preferred_gender.data == "":
         form.preferred_gender.data = None
     if form.preferred_language.data == 0:
         form.preferred_language.data = None
 
-    # Update client's profile data if it exists
+    # Update client's profile if it exists
     if client:
         client.preferred_gender = form.preferred_gender.data
         client.preferred_language_id = form.preferred_language.data
@@ -201,10 +207,10 @@ def client_profile():
     db.session.commit()
 
     # Reload page
-    flash("Profile information updated")
+    flash("Client preferences updated")
     return jsonify(
         {
             "success": True,
-            "url": url_for(f"{BlueprintName.PROFILE.value}.client_profile"),
+            "url": url_for(f"{BlueprintName.PROFILE.value}.profile"),
         }
     )
