@@ -1,12 +1,12 @@
-from flask_wtf import FlaskForm
 from wtforms import HiddenField, PasswordField, RadioField, StringField, SubmitField
 from wtforms.validators import DataRequired, Email, Length
 
+from app.forms import CustomFlaskForm
 from app.models.enums import UserRole
 from app.utils.validators import PasswordValidator
 
 
-class LoginForm(FlaskForm):
+class LoginForm(CustomFlaskForm):
     email = StringField("Email address", validators=[DataRequired(), Email()])
     password = PasswordField(
         "Password",
@@ -15,7 +15,7 @@ class LoginForm(FlaskForm):
     submit = SubmitField("Continue")
 
 
-class RegisterForm(FlaskForm):
+class RegisterForm(CustomFlaskForm):
     role = RadioField(
         "Role",
         choices=[
@@ -37,17 +37,17 @@ class RegisterForm(FlaskForm):
     submit = SubmitField("Register")
 
 
-class VerifyEmailForm(FlaskForm):
+class VerifyEmailForm(CustomFlaskForm):
     email = StringField("Email address", validators=[DataRequired(), Email()])
     submit = SubmitField("Resend Email")
 
 
-class InitiatePasswordResetForm(FlaskForm):
+class InitiatePasswordResetForm(CustomFlaskForm):
     email = StringField("Email address", validators=[DataRequired(), Email()])
     submit = SubmitField("Continue")
 
 
-class ResetPasswordForm(FlaskForm):
+class ResetPasswordForm(CustomFlaskForm):
     email = HiddenField("Email address", validators=[DataRequired(), Email()])
     password = PasswordField(
         "New password", validators=[DataRequired(), PasswordValidator()]

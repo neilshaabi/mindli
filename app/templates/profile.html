@@ -55,61 +55,61 @@
 
                 <h3>Professional Information</h3>
                 
-                <form id="{{ therapist_form.id }}" action="{{ therapist_form.endpoint }}" novalidate>
+                <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
                     
-                    {{ therapist_form.csrf_token }}
+                    {{ role_form.csrf_token }}
                     
                     <div class='form-floating'>
-                        {{ therapist_form.country(class_='form-control form-select', placeholder=therapist_form.country.label.text) }}
-                        {{ therapist_form.country.label }}
+                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
+                        {{ role_form.country.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.languages(class_='form-control form-select', multiple='multiple') }}
-                        {{ therapist_form.languages.label }}
+                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.languages.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.bio(class_='form-control', placeholder=therapist_form.bio.label.text) }}
-                        {{ therapist_form.bio.label }}
+                        {{ role_form.bio(class_='form-control', placeholder=role_form.bio.label.text) }}
+                        {{ role_form.bio.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.link(class_='form-control', placeholder=therapist_form.link.label.text) }}
-                        {{ therapist_form.link.label }}
+                        {{ role_form.link(class_='form-control', placeholder=role_form.link.label.text) }}
+                        {{ role_form.link.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.location(class_='form-control', placeholder=therapist_form.location.label.text) }}
-                        {{ therapist_form.location.label }}
+                        {{ role_form.location(class_='form-control', placeholder=role_form.location.label.text) }}
+                        {{ role_form.location.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.years_of_experience(class_='form-control', placeholder=therapist_form.years_of_experience.label.text) }}
-                        {{ therapist_form.years_of_experience.label }}
+                        {{ role_form.years_of_experience(class_='form-control', placeholder=role_form.years_of_experience.label.text) }}
+                        {{ role_form.years_of_experience.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.qualifications(class_='form-control', placeholder=therapist_form.qualifications.label.text) }}
-                        {{ therapist_form.qualifications.label }}
+                        {{ role_form.qualifications(class_='form-control', placeholder=role_form.qualifications.label.text) }}
+                        {{ role_form.qualifications.label }}
                     </div>
 
                     <div class='form-floating'>
-                        {{ therapist_form.registrations(class_='form-control', placeholder=therapist_form.registrations.label.text) }}
-                        {{ therapist_form.registrations.label }}
+                        {{ role_form.registrations(class_='form-control', placeholder=role_form.registrations.label.text) }}
+                        {{ role_form.registrations.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                        {{ therapist_form.session_formats.label }}
+                        {{ role_form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.session_formats.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ therapist_form.issues(class_='form-control form-select', multiple='multiple') }}
-                        {{ therapist_form.issues.label }}
+                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.issues.label }}
                     </div>
                     
-                    {{ submit_button(therapist_form.submit) }}
+                    {{ submit_button(role_form.submit) }}
                 
                 </form>
             
@@ -117,31 +117,31 @@
                 
                 <h3>Preferences and Background</h3>
 
-                <form id="{{ client_form.id }}" action="{{ client_form.endpoint }}" novalidate>
+                <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
                     
-                    {{ client_form.csrf_token }}
+                    {{ role_form.csrf_token }}
                     
                     <div class='form-floating'>
-                        {{ client_form.preferred_gender(class_='form-control form-select', placeholder=client_form.preferred_gender.label.text) }}
-                        {{ client_form.preferred_gender.label }}
+                        {{ role_form.preferred_gender(class_='form-control form-select', placeholder=role_form.preferred_gender.label.text) }}
+                        {{ role_form.preferred_gender.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ client_form.preferred_language(class_='form-control form-select', placeholder=client_form.preferred_language.label.text) }}
-                        {{ client_form.preferred_language.label }}
+                        {{ role_form.preferred_language(class_='form-control form-select', placeholder=role_form.preferred_language.label.text) }}
+                        {{ role_form.preferred_language.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ client_form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                        {{ client_form.session_formats.label }}
+                        {{ role_form.session_formats(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.session_formats.label }}
                     </div>
                     
                     <div class='form-floating'>
-                        {{ client_form.issues(class_='form-control form-select', multiple='multiple') }}
-                        {{ client_form.issues.label }}
+                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.issues.label }}
                     </div>
                     
-                    {{ submit_button(client_form.submit) }}
+                    {{ submit_button(role_form.submit) }}
                 
                 </form>
             

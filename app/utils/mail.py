@@ -4,7 +4,7 @@ from flask import current_app, render_template, url_for
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
-from app import BlueprintName, mail
+from app import mail
 from app.models.user import User
 
 
@@ -33,13 +33,13 @@ class EmailMessage:
         if self.subject == EmailSubject.EMAIL_VERIFICATION.value:
             self.body = f"Thanks for registering as a {recipient.role.value} with mindli! To continue setting up your account, please verify that this is your email address."
             self.link_text = "Verify Email"
-            endpoint = f"{BlueprintName.AUTH.value}.email_verification"
+            endpoint = "auth.email_verification"
             with_token = True
 
         elif self.subject == EmailSubject.PASSWORD_RESET.value:
             self.body = "Please use the link below to reset your account password."
             self.link_text = "Reset Password"
-            endpoint = f"{BlueprintName.AUTH.value}.reset_password_get"
+            endpoint = "auth.reset_password_get"
             with_token = True
 
         # Optionally add token to url

@@ -12,7 +12,7 @@ from flask import (
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
-from app import BlueprintName, db
+from app import db
 from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
 from app.models.client import Client
 from app.models.enums import UserRole
@@ -23,39 +23,34 @@ from app.models.therapist import Therapist
 from app.utils.decorators import client_required, therapist_required
 from app.utils.files import get_file_extension
 
-bp = Blueprint(BlueprintName.PROFILE.value, __name__)
+bp = Blueprint("profile", __name__)
 
 
 @bp.route("/profile", methods=["GET"])
 @login_required
 def profile():
-    user_form = UserProfileForm(obj=current_user)
-    user_form.id = "user-profile"
-    user_form.endpoint = url_for(f"{BlueprintName.PROFILE.value}.user_profile")
-
-    therapist_form = None
-    client_form = None
+    user_form = UserProfileForm(
+        obj=current_user,
+        id="user-profile",
+        endpoint=url_for("profile.user_profile"),
+    )
 
     if current_user.role == UserRole.THERAPIST:
-        therapist = current_user.therapist
-        therapist_form = TherapistProfileForm(obj=therapist)
-        therapist_form.id = "therapist-profile"
-        therapist_form.endpoint = url_for(
-            f"{BlueprintName.PROFILE.value}.therapist_profile"
+        role_form = TherapistProfileForm(
+            obj=current_user.therapist,
+            id="therapist-profile",
+            endpoint=url_for("profile.therapist_profile"),
         )
 
     elif current_user.role == UserRole.CLIENT:
-        client = current_user.client
-        client_form = ClientProfileForm(obj=client)
-        client_form.id = "client-profile"
-        client_form.endpoint = url_for(f"{BlueprintName.PROFILE.value}.client_profile")
+        role_form = ClientProfileForm(
+            obj=current_user.client,
+            id="client-profile",
+            endpoint=url_for("profile.client_profile"),
+        )
 
     return render_template(
-        "profile.html",
-        UserRole=UserRole,
-        user_form=user_form,
-        therapist_form=therapist_form,
-        client_form=client_form,
+        "profile.html", UserRole=UserRole, user_form=user_form, role_form=role_form
     )
 
 
@@ -88,9 +83,7 @@ def user_profile():
 
     # Reload page
     flash("Personal information updated")
-    return jsonify(
-        {"success": True, "url": url_for(f"{BlueprintName.PROFILE.value}.profile")}
-    )
+    return jsonify({"success": True, "url": url_for("profile.profile")})
 
 
 @bp.route("/profile/therapist", methods=["POST"])
@@ -153,7 +146,7 @@ def therapist_profile():
     return jsonify(
         {
             "success": True,
-            "url": url_for(f"{BlueprintName.PROFILE.value}.profile"),
+            "url": url_for("profile.profile"),
         }
     )
 
@@ -207,6 +200,6 @@ def client_profile():
     return jsonify(
         {
             "success": True,
-            "url": url_for(f"{BlueprintName.PROFILE.value}.profile"),
+            "url": url_for("profile.profile"),
         }
     )

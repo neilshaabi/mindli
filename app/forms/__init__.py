@@ -2,9 +2,17 @@ from enum import Enum
 from typing import List, Type, Union
 
 from flask_sqlalchemy.model import Model
+from flask_wtf import FlaskForm
 from wtforms import SelectField, SelectMultipleField
 
 from app import db
+
+
+class CustomFlaskForm(FlaskForm):
+    def __init__(self, *args, form_id=None, endpoint=None, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.form_id = form_id
+        self.endpoint = endpoint
 
 
 class SelectFieldMixin:

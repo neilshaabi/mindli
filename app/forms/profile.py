@@ -1,15 +1,9 @@
-from flask_login import current_user
-
-
-
-
 import pycountry
-from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.forms import CustomSelectField, CustomSelectMultipleField
+from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
 from app.models.issue import Issue
 from app.models.language import Language
@@ -17,7 +11,7 @@ from app.models.session_format import SessionFormatModel
 from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 
 
-class UserProfileForm(FlaskForm):
+class UserProfileForm(CustomFlaskForm):
     profile_picture = FileField(
         "Profile picture",
         validators=[
@@ -41,13 +35,13 @@ class UserProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
-        user = kwargs.get('obj')
+        user = kwargs.get("obj")
         if user:
             self.gender.preselect_choices(user.gender)
         return
 
 
-class TherapistProfileForm(FlaskForm):
+class TherapistProfileForm(CustomFlaskForm):
     country = SelectField(
         "Country",
         choices=[("", "Select country")]
@@ -95,12 +89,12 @@ class TherapistProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
-        
+
         self.languages.populate_choices(Language)
         self.issues.populate_choices(Issue)
         self.session_formats.populate_choices(SessionFormatModel)
-        
-        therapist = kwargs.get('obj')
+
+        therapist = kwargs.get("obj")
         if therapist:
             self.languages.preselect_choices(therapist.languages)
             self.issues.preselect_choices(therapist.specialisations)
@@ -109,7 +103,7 @@ class TherapistProfileForm(FlaskForm):
         return
 
 
-class ClientProfileForm(FlaskForm):
+class ClientProfileForm(CustomFlaskForm):
     preferred_gender = CustomSelectField(
         "Preferred gender",
         choices=[("", "Select gender")]
@@ -136,12 +130,12 @@ class ClientProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
-        
+
         self.preferred_language.populate_choices(Language)
         self.issues.populate_choices(Issue)
         self.session_formats.populate_choices(SessionFormatModel)
-        
-        client = kwargs.get('obj')
+
+        client = kwargs.get("obj")
         if client:
             self.preferred_language.preselect_choices(client.preferred_language)
             self.preferred_gender.preselect_choices(client.preferred_gender)
