@@ -15,7 +15,7 @@ from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 class UserProfileForm(FlaskForm):
     profile_picture = FileField(
         "Profile picture",
-        validators=[FileAllowed(["jpg", "png"], "Upload must be a jpg or png file")],
+        validators=[FileAllowed(["jpg", "png"], "Uploaded file must be in jpg or png format.")],
     )
     first_name = StringField(
         "First name", validators=[DataRequired(), Length(min=1, max=50)]
