@@ -44,11 +44,7 @@
                     {{ user_form.gender.label }}
                 </div>
 
-                <button type='submit' class='btn btn-primary'>
-                    <span class='btn-text'>Save</span>
-                    <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
-                    <span class='visually-hidden'>Loading...</span>
-                </button>
+                {{ submit_button(user_form.submit) }}
             
             </form>
         </div>
@@ -112,17 +108,13 @@
                         {{ therapist_form.issues.label }}
                     </div>
                     
-                    <button type='submit' class='btn btn-primary'>
-                        <span class='btn-text'>Save</span>
-                        <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
-                        <span class='visually-hidden'>Loading...</span>
-                    </button>
+                    {{ submit_button(therapist_form.submit) }}
                 
                 </form>
             
             {% elif current_user.role == UserRole.CLIENT %}
                 
-                <h3>Client Preferences</h3>
+                <h3>Preferences and Background</h3>
                 <form id='client-profile-form' novalidate>
                     
                     {{ client_form.csrf_token }}
@@ -147,11 +139,7 @@
                         {{ client_form.issues.label }}
                     </div>
                     
-                    <button type='submit' class='btn btn-primary'>
-                        <span class='btn-text'>Save</span>
-                        <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
-                        <span class='visually-hidden'>Loading...</span>
-                    </button>
+                    {{ submit_button(client_form.submit) }}
                 
                 </form>
             

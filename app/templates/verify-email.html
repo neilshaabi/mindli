@@ -6,16 +6,12 @@
 
 {% block content %}
 
-    <div class='my-container'>
+    <div class='my-container centered'>
         <h3>Verify your email</h3>
         <p>Check <strong>{{ email }}</strong> to activate your account</p>
         <form id='verify-email-form'>
             {{ form.csrf_token }}
-            <button type='submit' class='btn btn-primary'>
-                <span class='btn-text'>Resend Email</span>
-                <span class='spinner-border spinner-border-sm' role='status' aria-hidden='true' style='display: none;'></span>
-                <span class='visually-hidden'>Loading...</span>
-            </button>
+            {{ submit_button(form.submit) }}
         </form>
         <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
     </div>

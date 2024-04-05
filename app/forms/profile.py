@@ -1,7 +1,7 @@
 import pycountry
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import IntegerField, SelectField, StringField, TextAreaField
+from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomSelectField, CustomSelectMultipleField
@@ -15,7 +15,9 @@ from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
 class UserProfileForm(FlaskForm):
     profile_picture = FileField(
         "Profile picture",
-        validators=[FileAllowed(["jpg", "png"], "Uploaded file must be in jpg or png format.")],
+        validators=[
+            FileAllowed(["jpg", "png"], "Uploaded file must be in jpg or png format.")
+        ],
     )
     first_name = StringField(
         "First name", validators=[DataRequired(), Length(min=1, max=50)]
@@ -30,6 +32,7 @@ class UserProfileForm(FlaskForm):
         validators=[DataRequired()],
         default="",
     )
+    submit = SubmitField("Save")
 
 
 class TherapistProfileForm(FlaskForm):
@@ -76,6 +79,8 @@ class TherapistProfileForm(FlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
+    submit = SubmitField("Save")
+
 
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
@@ -108,6 +113,7 @@ class ClientProfileForm(FlaskForm):
         validators=[Optional()],
         coerce=int,
     )
+    submit = SubmitField("Save")
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)

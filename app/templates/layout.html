@@ -38,9 +38,12 @@
     </head>
     <body>
 
+        <!-- Macro for reusing submit buttons across forms -->
+        {% from "_macros.html" import submit_button %}
+        
         <!-- Show navbar/sidebar depending on error and authentication status -->
         {% set layout_type = 'sidebar' if current_user.is_authenticated else 'navbar' %}
-        {% include layout_type + '.html' %}
+        {% include '_' + layout_type + '.html' %}
         
         <main class="{{ layout_type }}-layout">
             

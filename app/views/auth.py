@@ -18,7 +18,13 @@ from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import BlueprintName, db
-from app.forms.auth import EmailForm, LoginForm, RegisterForm, ResetPasswordForm
+from app.forms.auth import (
+    InitiatePasswordResetForm,
+    LoginForm,
+    RegisterForm,
+    ResetPasswordForm,
+    VerifyEmailForm,
+)
 from app.models.enums import UserRole
 from app.models.user import User
 from app.utils.mail import EmailMessage, EmailSubject
@@ -131,7 +137,7 @@ def login() -> Response:
 # Displays page with email verification instructions, sends verification email
 @bp.route("/verify-email", methods=["GET", "POST"])
 def verify_email() -> Response:
-    form = EmailForm()
+    form = VerifyEmailForm()
 
     # Get user with email stored in session
     if "email" in session:
@@ -194,7 +200,7 @@ def email_verification(token):
 
 @bp.route("/initiate-password-reset", methods=["GET", "POST"])
 def initiate_password_reset() -> Response:
-    form = EmailForm()
+    form = InitiatePasswordResetForm()
 
     # GET request - display page
     if request.method == "GET":
@@ -227,7 +233,7 @@ def initiate_password_reset() -> Response:
     )
 
 
-@bp.route("/reset-password/<token>", methods=["GET", "POST"])
+@bp.route("/reset-password/<token>", methods=["GET"])
 def reset_password_get(token):
     # Get email from token
     try:
