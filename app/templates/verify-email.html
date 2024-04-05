@@ -7,12 +7,15 @@
 {% block content %}
 
     <div class='my-container centered'>
+        
         <h3>Verify your email</h3>
         <p>Check <strong>{{ email }}</strong> to activate your account</p>
-        <form id='verify-email-form'>
+        
+        <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
             {{ form.csrf_token }}
             {{ submit_button(form.submit) }}
         </form>
+        
         <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
     </div>
 

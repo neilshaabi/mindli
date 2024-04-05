@@ -1,3 +1,8 @@
+from flask_login import current_user
+
+
+
+
 import pycountry
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
@@ -33,6 +38,13 @@ class UserProfileForm(FlaskForm):
         default="",
     )
     submit = SubmitField("Save")
+
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        user = kwargs.get('obj')
+        if user:
+            self.gender.preselect_choices(user.gender)
+        return
 
 
 class TherapistProfileForm(FlaskForm):
@@ -81,12 +93,19 @@ class TherapistProfileForm(FlaskForm):
     )
     submit = SubmitField("Save")
 
-
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
+        
         self.languages.populate_choices(Language)
         self.issues.populate_choices(Issue)
         self.session_formats.populate_choices(SessionFormatModel)
+        
+        therapist = kwargs.get('obj')
+        if therapist:
+            self.languages.preselect_choices(therapist.languages)
+            self.issues.preselect_choices(therapist.specialisations)
+            self.session_formats.preselect_choices(therapist.session_formats)
+
         return
 
 
@@ -117,7 +136,15 @@ class ClientProfileForm(FlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
+        
         self.preferred_language.populate_choices(Language)
         self.issues.populate_choices(Issue)
         self.session_formats.populate_choices(SessionFormatModel)
+        
+        client = kwargs.get('obj')
+        if client:
+            self.preferred_language.preselect_choices(client.preferred_language)
+            self.preferred_gender.preselect_choices(client.preferred_gender)
+            self.issues.preselect_choices(client.issues)
+            self.session_formats.preselect_choices(client.session_formats)
         return

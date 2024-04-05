@@ -10,7 +10,7 @@
         <h3>Create account</h3>
         <p>Have an account? <a href='/login'>Sign in</a></p>
 
-        <form id='register-form' novalidate>
+        <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
         
             {{ form.csrf_token }}
 

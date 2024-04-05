@@ -29,36 +29,26 @@ bp = Blueprint(BlueprintName.PROFILE.value, __name__)
 @bp.route("/profile", methods=["GET"])
 @login_required
 def profile():
-    # Generate form for personal information common to all users
     user_form = UserProfileForm(obj=current_user)
-    user_form.gender.preselect_choices(current_user.gender)
+    user_form.id = "user-profile"
+    user_form.endpoint = url_for(f"{BlueprintName.PROFILE.value}.user_profile")
 
-    # Declare forms for specific roles
     therapist_form = None
     client_form = None
 
     if current_user.role == UserRole.THERAPIST:
-        # Generate form for therapist's professional information
         therapist = current_user.therapist
         therapist_form = TherapistProfileForm(obj=therapist)
-
-        # Preselect data from therapist's profile if it exists
-        if therapist:
-            therapist_form.languages.preselect_choices(therapist.languages)
-            therapist_form.issues.preselect_choices(therapist.specialisations)
-            therapist_form.session_formats.preselect_choices(therapist.session_formats)
+        therapist_form.id = "therapist-profile"
+        therapist_form.endpoint = url_for(
+            f"{BlueprintName.PROFILE.value}.therapist_profile"
+        )
 
     elif current_user.role == UserRole.CLIENT:
-        # Generate form for client's preferences
         client = current_user.client
         client_form = ClientProfileForm(obj=client)
-
-        # Preselect data from client's profile if it exists
-        if client:
-            client_form.preferred_language.preselect_choices(client.preferred_language)
-            client_form.preferred_gender.preselect_choices(client.preferred_gender)
-            client_form.issues.preselect_choices(client.issues)
-            client_form.session_formats.preselect_choices(client.session_formats)
+        client_form.id = "client-profile"
+        client_form.endpoint = url_for(f"{BlueprintName.PROFILE.value}.client_profile")
 
     return render_template(
         "profile.html",
@@ -72,7 +62,10 @@ def profile():
 @bp.route("/profile/user", methods=["POST"])
 @login_required
 def user_profile():
+    # Generate form for personal information common to all users
     form = UserProfileForm()
+
+    # Invalid form submission - return errors
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
@@ -104,13 +97,14 @@ def user_profile():
 @login_required
 @therapist_required
 def therapist_profile():
-    therapist = current_user.therapist
-
-    # POST request - validate form
+    # Generate form for therapist-specific information
     form = TherapistProfileForm()
+
+    # Invalid form submission - return errors
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
+    therapist = current_user.therapist
     # Update therapist's profile if it exists
     if therapist:
         therapist.country = form.country.data
@@ -168,10 +162,10 @@ def therapist_profile():
 @login_required
 @client_required
 def client_profile():
-    client = current_user.client
-
-    # POST request - validate form
+    # Generate form for client-specific information
     form = ClientProfileForm()
+
+    # Invalid form submission - return errors
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
@@ -180,6 +174,8 @@ def client_profile():
         form.preferred_gender.data = None
     if form.preferred_language.data == 0:
         form.preferred_language.data = None
+
+    client = current_user.client
 
     # Update client's profile if it exists
     if client:

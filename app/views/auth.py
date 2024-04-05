@@ -48,6 +48,8 @@ def logout() -> Response:
 @bp.route("/register", methods=["GET", "POST"])
 def register() -> Response:
     form = RegisterForm()
+    form.id = "register"
+    form.endpoint = url_for(f"{BlueprintName.AUTH.value}.register")
 
     # GET request - display page
     if request.method == "GET":
@@ -97,6 +99,8 @@ def register() -> Response:
 @bp.route("/login", methods=["GET", "POST"])
 def login() -> Response:
     form = LoginForm()
+    form.id = "login"
+    form.endpoint = url_for(f"{BlueprintName.AUTH.value}.login")
 
     # GET request - display page
     if request.method == "GET":
@@ -138,6 +142,8 @@ def login() -> Response:
 @bp.route("/verify-email", methods=["GET", "POST"])
 def verify_email() -> Response:
     form = VerifyEmailForm()
+    form.id = "verify-email"
+    form.endpoint = url_for(f"{BlueprintName.AUTH.value}.verify_email")
 
     # Get user with email stored in session
     if "email" in session:
@@ -201,6 +207,8 @@ def email_verification(token):
 @bp.route("/initiate-password-reset", methods=["GET", "POST"])
 def initiate_password_reset() -> Response:
     form = InitiatePasswordResetForm()
+    form.id = "initiate-password-reset"
+    form.endpoint = url_for(f"{BlueprintName.AUTH.value}.initiate_password_reset")
 
     # GET request - display page
     if request.method == "GET":
@@ -234,7 +242,7 @@ def initiate_password_reset() -> Response:
 
 
 @bp.route("/reset-password/<token>", methods=["GET"])
-def reset_password_get(token):
+def reset_password_with_token(token):
     # Get email from token
     try:
         email = current_app.serialiser.loads(
@@ -253,8 +261,10 @@ def reset_password_get(token):
 
 
 @bp.route("/reset-password", methods=["POST"])
-def reset_password_post():
+def reset_password():
     form = ResetPasswordForm()
+    form.id = "reset-password"
+    form.endpoint = url_for(f"{BlueprintName.AUTH.value}.reset_password")
 
     # POST request - validate form
     if not form.validate_on_submit():

@@ -10,34 +10,26 @@ $(document).ready(function() {
         }
     });
 
-    // Auth forms
-    handleSubmitForm('register-form', '/register');
-    handleSubmitForm('login-form', '/login');
-    handleSubmitForm('verify-email-form', '/verify-email');
-    handleSubmitForm('initiate-password-reset-form', '/initiate-password-reset');
-    handleSubmitForm('reset-password-form', '/reset-password');
-
-    // Profile forms
-    handleSubmitForm('user-profile-form', '/profile/user');
-    handleSubmitForm('therapist-profile-form', '/profile/therapist');
-    handleSubmitForm('client-profile-form', '/profile/client');
+    // Register submission handlers for all forms using AJAX
+    registerFormHandlers();
 });
 
 
-function handleSubmitForm(formID, endpoint) {
+function registerFormHandlers() {
     
-    $('#' + formID).on('submit', function(event) {
+    $('form').on('submit', function(event) {
         
         event.preventDefault();
 
-        var submitBtn = $(this).find(":input[type='submit']");
-        var btnText = $(this).find('.btn-text');
-        var btnSpinner = $(this).find('.spinner-border');
-        var errorMessages = $(this).find('.error-message');
-        var errorInputs = $(this).find('.input-error');
+        var form = $(this);
+        var submitBtn = $(form).find(":input[type='submit']");
+        var btnText = $(form).find('.btn-text');
+        var btnSpinner = $(form).find('.spinner-border');
+        var errorMessages = $(form).find('.error-message');
+        var errorInputs = $(form).find('.input-error');
 
         $.ajax({
-            url: endpoint,
+            url: $(form).attr('action'),
             type: 'POST',
             data: new FormData(this),
             processData: false,

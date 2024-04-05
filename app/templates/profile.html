@@ -14,7 +14,7 @@
     
         <div class='my-container' style="width: 60%">
             <h3>Personal Information</h3>
-            <form id='user-profile-form' enctype="multipart/form-data" novalidate>
+            <form id="{{ user_form.id }}" action="{{ user_form.endpoint }}" enctype="multipart/form-data" novalidate>
                 
                 {{ user_form.csrf_token }}
 
@@ -54,7 +54,8 @@
             {% if current_user.role == UserRole.THERAPIST %}
 
                 <h3>Professional Information</h3>
-                <form id='therapist-profile-form' novalidate>
+                
+                <form id="{{ therapist_form.id }}" action="{{ therapist_form.endpoint }}" novalidate>
                     
                     {{ therapist_form.csrf_token }}
                     
@@ -115,7 +116,8 @@
             {% elif current_user.role == UserRole.CLIENT %}
                 
                 <h3>Preferences and Background</h3>
-                <form id='client-profile-form' novalidate>
+
+                <form id="{{ client_form.id }}" action="{{ client_form.endpoint }}" novalidate>
                     
                     {{ client_form.csrf_token }}
                     
@@ -145,6 +147,6 @@
             
             {% endif %}
         </div>
-    
+        
     </div>
 {% endblock %}
