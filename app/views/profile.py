@@ -101,7 +101,6 @@ def therapist_profile():
     # Update therapist's profile if it exists
     if therapist:
         therapist.country = form.country.data
-        therapist.bio = form.bio.data
         therapist.link = form.link.data
         therapist.location = form.location.data
         therapist.years_of_experience = form.years_of_experience.data
@@ -113,7 +112,6 @@ def therapist_profile():
         therapist = Therapist(
             user_id=current_user.id,
             country=form.country.data,
-            bio=form.bio.data,
             link=form.link.data,
             location=form.location.data,
             years_of_experience=form.years_of_experience.data,

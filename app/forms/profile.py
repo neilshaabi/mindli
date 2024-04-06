@@ -1,6 +1,6 @@
 import pycountry
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import IntegerField, SelectField, StringField, SubmitField, TextAreaField
+from wtforms import IntegerField, SelectField, StringField, SubmitField
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
@@ -54,7 +54,6 @@ class TherapistProfileForm(CustomFlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
-    bio = TextAreaField("Bio", validators=[Optional(), WhitespaceValidator()])
     link = StringField(
         "Link", validators=[Optional(), WhitespaceValidator(), Length(max=255)]
     )
