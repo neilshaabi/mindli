@@ -12,13 +12,11 @@ class Gender(Enum):
     MALE = "Male"
     FEMALE = "Female"
     NON_BINARY = "Non-Binary"
-
-
-@unique
-class ProfessionalTitle(Enum):
-    THERAPIST = "Therapist"
-    PSYCHOLOGIST = "Psychologist"
-    COACH = "Coach"
+    TRANSMASCULINE = "Transmasculine"
+    TRANSFEMININE = "Transfeminine"
+    AGENDER = "Agender"
+    OTHER = "Other"
+    PREFER_NOT_TO_SAY = "Prefer not to say"
 
 
 @unique

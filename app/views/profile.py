@@ -136,7 +136,7 @@ def therapist_profile():
     form.interventions.update_association_data(
         parent=therapist, child=Intervention, children="interventions"
     )
-    
+
     db.session.commit()
 
     # Reload page

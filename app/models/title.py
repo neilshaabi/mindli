@@ -6,7 +6,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app import db
 from app.models import SeedableMixin
-from app.models.enums import ProfessionalTitle
 
 
 class Title(SeedableMixin, db.Model):
@@ -19,7 +18,8 @@ class Title(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
-        titles = [Title(name=title.value) for title in ProfessionalTitle]
+        title_names = ["Therapist", "Psychologist", "Coach"]
+        titles = [Title(name=title) for title in title_names]
         db.session.add_all(titles)
         db.session.commit()
         return

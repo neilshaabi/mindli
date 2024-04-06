@@ -17,7 +17,7 @@ from .associations import (
 )
 from .availability import Availability
 from .client import Client
-from .enums import Gender, ProfessionalTitle, TherapyMode, UserRole
+from .enums import Gender, TherapyMode, UserRole
 from .intervention import Intervention
 from .issue import Issue
 from .language import Language
