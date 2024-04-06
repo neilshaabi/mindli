@@ -29,10 +29,7 @@ class Therapist(SeedableMixin, db.Model):
     specialisations: so.Mapped[List["Issue"]] = so.relationship(
         secondary="therapist_issue", back_populates="therapists"
     )
-    session_formats: so.Mapped[List["SessionFormatModel"]] = so.relationship(
-        secondary="therapist_format", back_populates="therapists"
-    )
-    session_types: so.Mapped[List["SessionType"]] = so.relationship(
+    appointment_types: so.Mapped[List["AppointmentType"]] = so.relationship(
         back_populates="therapist", cascade="all, delete-orphan"
     )
     availabilities: so.Mapped[List["Availability"]] = so.relationship(

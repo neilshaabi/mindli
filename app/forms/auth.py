@@ -19,8 +19,8 @@ class RegisterForm(CustomFlaskForm):
     role = RadioField(
         "Role",
         choices=[
-            (UserRole.THERAPIST.value, UserRole.THERAPIST.value.capitalize()),
-            (UserRole.CLIENT.value, UserRole.CLIENT.value.capitalize()),
+            (UserRole.THERAPIST.value, UserRole.THERAPIST.value),
+            (UserRole.CLIENT.value, UserRole.CLIENT.value),
         ],
         validators=[DataRequired()],
     )

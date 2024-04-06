@@ -24,6 +24,3 @@ class Client(db.Model):
     issues: so.Mapped[List["Issue"]] = so.relationship(
         secondary="client_issue", back_populates="clients"
     )
-    session_formats: so.Mapped[List["SessionFormatModel"]] = so.relationship(
-        secondary="client_format", back_populates="clients"
-    )

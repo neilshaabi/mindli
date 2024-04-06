@@ -7,8 +7,7 @@ from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleFi
 from app.models.enums import Gender
 from app.models.issue import Issue
 from app.models.language import Language
-from app.models.session_format import SessionFormatModel
-from app.utils.validators import TherapistLocationValidator, WhitespaceValidator
+from app.utils.validators import WhitespaceValidator
 
 
 class UserProfileForm(CustomFlaskForm):
@@ -27,7 +26,7 @@ class UserProfileForm(CustomFlaskForm):
     gender = CustomSelectField(
         "Gender",
         choices=[("", "Select gender")]
-        + [(gender.name, gender.value.capitalize()) for gender in Gender],
+        + [(gender.name, gender.value) for gender in Gender],
         validators=[DataRequired()],
         default="",
     )
@@ -62,7 +61,6 @@ class TherapistProfileForm(CustomFlaskForm):
         validators=[
             WhitespaceValidator(),
             Length(max=255),
-            TherapistLocationValidator(),
         ],
     )
     years_of_experience = IntegerField(
@@ -73,11 +71,6 @@ class TherapistProfileForm(CustomFlaskForm):
     )
     registrations = StringField(
         "Registrations", validators=[Optional(), WhitespaceValidator()]
-    )
-    session_formats = CustomSelectMultipleField(
-        "Session formats",
-        validators=[DataRequired()],
-        coerce=int,
     )
     issues = CustomSelectMultipleField(
         "Specialisations",
@@ -91,13 +84,11 @@ class TherapistProfileForm(CustomFlaskForm):
 
         self.languages.populate_choices(Language)
         self.issues.populate_choices(Issue)
-        self.session_formats.populate_choices(SessionFormatModel)
 
         therapist = kwargs.get("obj")
         if therapist:
             self.languages.preselect_choices(therapist.languages)
             self.issues.preselect_choices(therapist.specialisations)
-            self.session_formats.preselect_choices(therapist.session_formats)
 
         return
 
@@ -106,17 +97,12 @@ class ClientProfileForm(CustomFlaskForm):
     preferred_gender = CustomSelectField(
         "Preferred gender",
         choices=[("", "Select gender")]
-        + [(gender.name, gender.value.capitalize()) for gender in Gender],
+        + [(gender.name, gender.value) for gender in Gender],
         validators=[Optional()],
     )
     preferred_language = CustomSelectField(
         "Preferred language",
         choices=[(0, "Select language")],
-        validators=[Optional()],
-        coerce=int,
-    )
-    session_formats = CustomSelectMultipleField(
-        "Session formats",
         validators=[Optional()],
         coerce=int,
     )
@@ -132,12 +118,10 @@ class ClientProfileForm(CustomFlaskForm):
 
         self.preferred_language.populate_choices(Language)
         self.issues.populate_choices(Issue)
-        self.session_formats.populate_choices(SessionFormatModel)
 
         client = kwargs.get("obj")
         if client:
             self.preferred_language.preselect_choices(client.preferred_language)
             self.preferred_gender.preselect_choices(client.preferred_gender)
             self.issues.preselect_choices(client.issues)
-            self.session_formats.preselect_choices(client.session_formats)
         return

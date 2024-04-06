@@ -13,7 +13,6 @@ from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
 from app.models.issue import Issue
 from app.models.language import Language
-from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 from app.models.user import User
 
@@ -168,10 +167,6 @@ def fake_client_profile_data(seeded_data: dict) -> dict:
     return {
         "preferred_gender": Gender.MALE.name,
         "preferred_language": seeded_data[Language.__tablename__][0].id,
-        "session_formats": [
-            session_format.id
-            for session_format in seeded_data[SessionFormatModel.__tablename__]
-        ],
         "issues": [issue.id for issue in seeded_data[Issue.__tablename__]][:2],
     }
 
@@ -189,10 +184,6 @@ def fake_therapist_profile_data(
         "registrations": fake_therapist_profile.registrations,
         "languages": [language.id for language in seeded_data[Language.__tablename__]][
             :2
-        ],
-        "session_formats": [
-            session_format.id
-            for session_format in seeded_data[SessionFormatModel.__tablename__]
         ],
         "issues": [issue.id for issue in seeded_data[Issue.__tablename__]][:2],
     }

@@ -7,7 +7,7 @@
 {% block content %}
 
     <div class='page-header'>
-        <h3>{{ current_user.role.value.capitalize() }} Profile</h3>
+        <h3>{{ current_user.role.value }} Profile</h3>
     </div>
     
     <div class='page-content'>
@@ -95,11 +95,6 @@
                     </div>
                     
                     <div class='form-floating'>
-                        {{ role_form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.session_formats.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
                         {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.issues.label }}
                     </div>
@@ -124,11 +119,6 @@
                     <div class='form-floating'>
                         {{ role_form.preferred_language(class_='form-control form-select', placeholder=role_form.preferred_language.label.text) }}
                         {{ role_form.preferred_language.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.session_formats(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.session_formats.label }}
                     </div>
                     
                     <div class='form-floating'>

@@ -1,8 +1,7 @@
 from wtforms.validators import ValidationError
 
 from app import db
-from app.models.enums import SessionFormat
-from app.models.session_format import SessionFormatModel
+from app.models.enums import TherapyMode
 
 
 class WhitespaceValidator:
@@ -31,18 +30,4 @@ class PasswordValidator:
         if error:
             raise ValidationError(error)
 
-        return
-
-
-class TherapistLocationValidator:
-    def __call__(self, form, field):
-        face_id = db.session.execute(
-            db.select(SessionFormatModel.id).filter_by(name=SessionFormat.FACE.value)
-        ).scalar()
-        if (
-            not field.data
-            and form.session_formats.data
-            and face_id in form.session_formats.data
-        ):
-            raise ValidationError("Location is required for face-to-face sessions.")
         return

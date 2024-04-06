@@ -18,7 +18,6 @@ from app.models.client import Client
 from app.models.enums import UserRole
 from app.models.issue import Issue
 from app.models.language import Language
-from app.models.session_format import SessionFormatModel
 from app.models.therapist import Therapist
 from app.utils.decorators import client_required, therapist_required
 from app.utils.files import get_file_extension
@@ -132,11 +131,6 @@ def therapist_profile():
         parent=therapist, child=Issue, children="specialisations"
     )
 
-    # Update therapist's session formats
-    form.session_formats.update_association_data(
-        parent=therapist, child=SessionFormatModel, children="session_formats"
-    )
-
     db.session.commit()
 
     # Reload page
@@ -185,11 +179,6 @@ def client_profile():
 
     # Update client's issues
     form.issues.update_association_data(parent=client, child=Issue, children="issues")
-
-    # Update client's session formats
-    form.session_formats.update_association_data(
-        parent=client, child=SessionFormatModel, children="session_formats"
-    )
 
     db.session.commit()
 
