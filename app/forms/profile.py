@@ -87,7 +87,8 @@ class TherapistProfileForm(CustomFlaskForm):
         coerce=int,
     )
     link = StringField(
-        "Professional website", validators=[Optional(), WhitespaceValidator(), Length(max=255)]
+        "Professional website",
+        validators=[Optional(), WhitespaceValidator(), Length(max=255)],
     )
     submit = SubmitField("Save")
 
