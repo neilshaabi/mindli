@@ -5,8 +5,10 @@ from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
+from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
+from app.models.title import Title
 from app.utils.validators import WhitespaceValidator
 
 
@@ -41,6 +43,11 @@ class UserProfileForm(CustomFlaskForm):
 
 
 class TherapistProfileForm(CustomFlaskForm):
+    titles = CustomSelectMultipleField(
+        "Professional titles",
+        validators=[DataRequired()],
+        coerce=int,
+    )
     country = SelectField(
         "Country",
         choices=[("", "Select country")]
@@ -57,17 +64,17 @@ class TherapistProfileForm(CustomFlaskForm):
         "Link", validators=[Optional(), WhitespaceValidator(), Length(max=255)]
     )
     location = StringField(
-        "Location",
+        "Location (in-person appointments)",
         validators=[
             WhitespaceValidator(),
             Length(max=255),
         ],
     )
     years_of_experience = IntegerField(
-        "Years of experience", validators=[Optional(), NumberRange(min=0)]
+        "Years of experience", validators=[DataRequired(), NumberRange(min=0)]
     )
     qualifications = StringField(
-        "Qualifications", validators=[Optional(), WhitespaceValidator()]
+        "Qualifications", validators=[DataRequired(), WhitespaceValidator()]
     )
     registrations = StringField(
         "Registrations", validators=[Optional(), WhitespaceValidator()]
@@ -77,19 +84,27 @@ class TherapistProfileForm(CustomFlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
+    interventions = CustomSelectMultipleField(
+        "Interventions",
+        validators=[DataRequired()],
+        coerce=int,
+    )
     submit = SubmitField("Save")
 
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
 
+        self.titles.populate_choices(Title)
         self.languages.populate_choices(Language)
         self.issues.populate_choices(Issue)
+        self.interventions.populate_choices(Intervention)
 
         therapist = kwargs.get("obj")
         if therapist:
+            self.titles.preselect_choices(therapist.titles)
             self.languages.preselect_choices(therapist.languages)
             self.issues.preselect_choices(therapist.specialisations)
-
+            self.interventions.preselect_choices(therapist.interventions)
         return
 
 

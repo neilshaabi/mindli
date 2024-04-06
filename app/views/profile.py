@@ -16,9 +16,11 @@ from app import db
 from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
 from app.models.client import Client
 from app.models.enums import UserRole
+from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.therapist import Therapist
+from app.models.title import Title
 from app.utils.decorators import client_required, therapist_required
 from app.utils.files import get_file_extension
 
@@ -121,14 +123,24 @@ def therapist_profile():
 
     db.session.commit()
 
+    # Update therapist's titles
+    form.titles.update_association_data(
+        parent=therapist, child=Title, children="titles"
+    )
+
     # Update therapist's languages
     form.languages.update_association_data(
         parent=therapist, child=Language, children="languages"
     )
 
-    # Update therapist's specialisations (issues)
+    # Update therapist's specialisations
     form.issues.update_association_data(
         parent=therapist, child=Issue, children="specialisations"
+    )
+
+    # Update therapist's specialisations
+    form.interventions.update_association_data(
+        parent=therapist, child=Intervention, children="interventions"
     )
 
     db.session.commit()

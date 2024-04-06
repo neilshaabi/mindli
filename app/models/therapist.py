@@ -23,11 +23,17 @@ class Therapist(SeedableMixin, db.Model):
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
 
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
+    titles: so.Mapped[List["Title"]] = so.relationship(
+        secondary="therapist_title", back_populates="therapists"
+    )
     languages: so.Mapped[List["Language"]] = so.relationship(
         secondary="therapist_language", back_populates="therapists"
     )
     specialisations: so.Mapped[List["Issue"]] = so.relationship(
         secondary="therapist_issue", back_populates="therapists"
+    )
+    interventions: so.Mapped[List["Intervention"]] = so.relationship(
+        secondary="therapist_intervention", back_populates="therapists"
     )
     appointment_types: so.Mapped[List["AppointmentType"]] = so.relationship(
         back_populates="therapist", cascade="all, delete-orphan"

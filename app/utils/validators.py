@@ -1,8 +1,5 @@
 from wtforms.validators import ValidationError
 
-from app import db
-from app.models.enums import TherapyMode
-
 
 class WhitespaceValidator:
     def __call__(self, form, field):

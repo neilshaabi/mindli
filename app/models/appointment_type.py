@@ -23,4 +23,6 @@ class AppointmentType(db.Model):
     )
     notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
 
-    therapist: so.Mapped["Therapist"] = so.relationship(back_populates="appointment_types")
+    therapist: so.Mapped["Therapist"] = so.relationship(
+        back_populates="appointment_types"
+    )

@@ -60,6 +60,11 @@
                     {{ role_form.csrf_token }}
                     
                     <div class='form-floating'>
+                        {{ role_form.titles(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.titles.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
                         {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
                         {{ role_form.country.label }}
                     </div>
@@ -97,6 +102,11 @@
                     <div class='form-floating'>
                         {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.issues.label }}
+                    </div>
+
+                    <div class='form-floating'>
+                        {{ role_form.interventions(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.interventions.label }}
                     </div>
                     
                     {{ submit_button(role_form.submit) }}

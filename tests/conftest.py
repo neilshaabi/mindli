@@ -11,9 +11,11 @@ from app import create_app, db
 from app.config import TestConfig
 from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
+from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.therapist import Therapist
+from app.models.title import Title
 from app.models.user import User
 
 
@@ -176,6 +178,7 @@ def fake_therapist_profile_data(
     fake_therapist_profile: Therapist, seeded_data: dict
 ) -> dict:
     return {
+        "titles": [title.id for title in seeded_data[Title.__tablename__]][:2],
         "country": fake_therapist_profile.country,
         "link": fake_therapist_profile.link,
         "location": fake_therapist_profile.location,
@@ -186,4 +189,7 @@ def fake_therapist_profile_data(
             :2
         ],
         "issues": [issue.id for issue in seeded_data[Issue.__tablename__]][:2],
+        "interventions": [
+            intervention.id for intervention in seeded_data[Intervention.__tablename__]
+        ][:2],
     }
