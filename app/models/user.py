@@ -14,7 +14,7 @@ from app.models.enums import Gender, UserRole
 
 class User(UserMixin, SeedableMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    email: so.Mapped[str] = so.mapped_column(sa.String(254), index=True, unique=True)
+    email: so.Mapped[str] = so.mapped_column(sa.String(255), index=True, unique=True)
     password_hash: so.Mapped[str] = so.mapped_column(sa.String(255))
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     last_name: so.Mapped[str] = so.mapped_column(sa.String(50))
