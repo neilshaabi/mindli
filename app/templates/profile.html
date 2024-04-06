@@ -63,32 +63,12 @@
                         {{ role_form.titles(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.titles.label }}
                     </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
-                        {{ role_form.country.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.languages.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.link(class_='form-control', placeholder=role_form.link.label.text) }}
-                        {{ role_form.link.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.location(class_='form-control', placeholder=role_form.location.label.text) }}
-                        {{ role_form.location.label }}
-                    </div>
-                    
+
                     <div class='form-floating'>
                         {{ role_form.years_of_experience(class_='form-control', placeholder=role_form.years_of_experience.label.text) }}
                         {{ role_form.years_of_experience.label }}
                     </div>
-                    
+
                     <div class='form-floating'>
                         {{ role_form.qualifications(class_='form-control', placeholder=role_form.qualifications.label.text) }}
                         {{ role_form.qualifications.label }}
@@ -100,6 +80,21 @@
                     </div>
                     
                     <div class='form-floating'>
+                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
+                        {{ role_form.country.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
+                        {{ role_form.location(class_='form-control', placeholder=role_form.location.label.text) }}
+                        {{ role_form.location.label }}
+                    </div>
+
+                    <div class='form-floating'>
+                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
+                        {{ role_form.languages.label }}
+                    </div>
+                    
+                    <div class='form-floating'>
                         {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.issues.label }}
                     </div>
@@ -107,6 +102,11 @@
                     <div class='form-floating'>
                         {{ role_form.interventions(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.interventions.label }}
+                    </div>
+
+                    <div class='form-floating'>
+                        {{ role_form.link(class_='form-control', placeholder=role_form.link.label.text) }}
+                        {{ role_form.link.label }}
                     </div>
                     
                     {{ submit_button(role_form.submit) }}

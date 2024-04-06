@@ -152,10 +152,9 @@ def fake_therapist_profile(
     fake_therapist_profile = Therapist(
         user_id=fake_user_therapist.id,
         country="Singapore",
-        link="http://example.com",
         location="21 Lower Kent Ridge Rd, Singapore 119077",
         years_of_experience=5,
-        qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology from the National University of Singapore (NUS)",
+        qualifications="Doctor of Psychology in Clinical Psychology, NUS",
         registrations="Singapore Psychological Society (SPS)",
     )
 
@@ -179,12 +178,11 @@ def fake_therapist_profile_data(
 ) -> dict:
     return {
         "titles": [title.id for title in seeded_data[Title.__tablename__]][:2],
-        "country": fake_therapist_profile.country,
-        "link": fake_therapist_profile.link,
-        "location": fake_therapist_profile.location,
         "years_of_experience": fake_therapist_profile.years_of_experience,
         "qualifications": fake_therapist_profile.qualifications,
         "registrations": fake_therapist_profile.registrations,
+        "country": fake_therapist_profile.country,
+        "location": fake_therapist_profile.location,
         "languages": [language.id for language in seeded_data[Language.__tablename__]][
             :2
         ],
@@ -192,4 +190,5 @@ def fake_therapist_profile_data(
         "interventions": [
             intervention.id for intervention in seeded_data[Intervention.__tablename__]
         ][:2],
+        "link": fake_therapist_profile.link,
     }

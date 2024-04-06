@@ -15,12 +15,12 @@ class Therapist(SeedableMixin, db.Model):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
     )
-    country: so.Mapped[str] = so.mapped_column(sa.String(50))
-    link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
-    location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     years_of_experience: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)
     qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    country: so.Mapped[str] = so.mapped_column(sa.String(50))
+    location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
 
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
     titles: so.Mapped[List["Title"]] = so.relationship(
@@ -53,11 +53,10 @@ class Therapist(SeedableMixin, db.Model):
 
         fake_therapist = Therapist(
             user_id=fake_user_therapist.id,
-            country="Singapore",
-            link="http://example.com",
-            location="21 Lower Kent Ridge Rd, Singapore 119077",
             years_of_experience=5,
-            qualifications="Doctor of Psychology (Psy.D.) in Clinical Psychology, National University of Singapore (NUS)",
+            country="Singapore",
+            location="21 Lower Kent Ridge Rd, Singapore 119077",
+            qualifications="Doctor of Psychology in Clinical Psychology, NUS",
             registrations="Singapore Psychological Society (SPS)",
         )
         db.session.add(fake_therapist)

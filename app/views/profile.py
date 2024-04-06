@@ -123,26 +123,20 @@ def therapist_profile():
 
     db.session.commit()
 
-    # Update therapist's titles
+    # Update data in association tables
     form.titles.update_association_data(
         parent=therapist, child=Title, children="titles"
     )
-
-    # Update therapist's languages
     form.languages.update_association_data(
         parent=therapist, child=Language, children="languages"
     )
-
-    # Update therapist's specialisations
     form.issues.update_association_data(
         parent=therapist, child=Issue, children="specialisations"
     )
-
-    # Update therapist's specialisations
     form.interventions.update_association_data(
         parent=therapist, child=Intervention, children="interventions"
     )
-
+    
     db.session.commit()
 
     # Reload page

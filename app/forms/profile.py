@@ -48,28 +48,6 @@ class TherapistProfileForm(CustomFlaskForm):
         validators=[DataRequired()],
         coerce=int,
     )
-    country = SelectField(
-        "Country",
-        choices=[("", "Select country")]
-        + [(country.name, country.name) for country in pycountry.countries],
-        validators=[DataRequired()],
-        default="",
-    )
-    languages = CustomSelectMultipleField(
-        "Languages spoken",
-        validators=[DataRequired()],
-        coerce=int,
-    )
-    link = StringField(
-        "Link", validators=[Optional(), WhitespaceValidator(), Length(max=255)]
-    )
-    location = StringField(
-        "Location (in-person appointments)",
-        validators=[
-            WhitespaceValidator(),
-            Length(max=255),
-        ],
-    )
     years_of_experience = IntegerField(
         "Years of experience", validators=[DataRequired(), NumberRange(min=0)]
     )
@@ -78,6 +56,25 @@ class TherapistProfileForm(CustomFlaskForm):
     )
     registrations = StringField(
         "Registrations", validators=[Optional(), WhitespaceValidator()]
+    )
+    country = SelectField(
+        "Country",
+        choices=[("", "Select country")]
+        + [(country.name, country.name) for country in pycountry.countries],
+        validators=[DataRequired()],
+        default="",
+    )
+    location = StringField(
+        "Location (in-person appointments)",
+        validators=[
+            WhitespaceValidator(),
+            Length(max=255),
+        ],
+    )
+    languages = CustomSelectMultipleField(
+        "Languages spoken",
+        validators=[DataRequired()],
+        coerce=int,
     )
     issues = CustomSelectMultipleField(
         "Specialisations",
@@ -88,6 +85,9 @@ class TherapistProfileForm(CustomFlaskForm):
         "Interventions",
         validators=[DataRequired()],
         coerce=int,
+    )
+    link = StringField(
+        "Professional website", validators=[Optional(), WhitespaceValidator(), Length(max=255)]
     )
     submit = SubmitField("Save")
 
