@@ -114,7 +114,6 @@ def test_update_therapist_profile_missing_fields(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is False
     assert data["success"] is False and "errors" in data
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
@@ -140,6 +139,8 @@ def test_update_client_profile_success(
     data = response.get_json()
 
     assert response.status_code == 200
+    print(data)
+
     assert data["success"] is True and "url" in data
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Client)).scalar()
@@ -160,7 +161,7 @@ def test_update_client_profile_missing_fields(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True and "url" in data
+    assert data["success"] is False and "errors" in data
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Client)).scalar()
         == initial_client_count

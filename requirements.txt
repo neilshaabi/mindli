@@ -27,6 +27,7 @@ mccabe==0.7.0
 mypy-extensions==1.0.0
 packaging==23.2
 pathspec==0.11.2
+phonenumbers==8.13.34
 platformdirs==4.0.0
 pluggy==1.2.0
 pycodestyle==2.9.1

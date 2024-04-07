@@ -60,7 +60,7 @@ function registerFormHandlers() {
                                 + firstError
                             + '</div>'
                         );
-                        if (key === 'profile_picture') {
+                        if (['profile_picture', 'consent'].includes(key)) {
                             inputField = inputField.parent();
                         }
                         inputField.after(errorMessage);

@@ -160,25 +160,29 @@ def client_profile():
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Convert form's default values to None
-    if form.preferred_gender.data == "":
-        form.preferred_gender.data = None
-    if form.preferred_language.data == 0:
-        form.preferred_language.data = None
-
     client = current_user.client
 
     # Update client's profile if it exists
     if client:
-        client.preferred_gender = form.preferred_gender.data
-        client.preferred_language_id = form.preferred_language.data
+        client.date_of_birth = form.date_of_birth.data
+        client.occupation = form.occupation.data
+        client.address = form.address.data
+        client.phone = form.phone.data
+        client.emergency_contact_name = form.emergency_contact_name.data
+        client.emergency_contact_phone = form.emergency_contact_phone.data
+        client.referral_source = form.referral_source.data
 
     # Insert new data if no profile exists
     else:
         client = Client(
             user_id=current_user.id,
-            preferred_gender=form.preferred_gender.data,
-            preferred_language_id=form.preferred_language.data,
+            date_of_birth=form.date_of_birth.data,
+            occupation=form.occupation.data,
+            address=form.address.data,
+            phone=form.phone.data,
+            emergency_contact_name=form.emergency_contact_name.data,
+            emergency_contact_phone=form.emergency_contact_phone.data,
+            referral_source=form.referral_source.data,
         )
         db.session.add(client)
     db.session.commit()

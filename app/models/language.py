@@ -19,9 +19,6 @@ class Language(SeedableMixin, db.Model):
         sa.String(3), unique=True
     )  # ISO 639-2 three-letter code
 
-    clients: so.Mapped[List["Client"]] = so.relationship(
-        back_populates="preferred_language"
-    )
     therapists: so.Mapped[List["Therapist"]] = so.relationship(
         secondary="therapist_language", back_populates="languages"
     )

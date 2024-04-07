@@ -153,10 +153,9 @@ i {
 
 .form-control:focus {
     color: var(--dark-grey-text);
-    border-color: var(--dark-grey-text);
     border-color: var(--colour-primary);
     outline: none;
-    box-shadow: none;
+    box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
 }
 
 input:-webkit-autofill,
@@ -192,6 +191,18 @@ input:-webkit-autofill:focus {
 
 .radio-group.input-error .btn {
     border: solid 1px red !important;
+}
+
+.form-check {
+    color: var(--dark-grey-text);
+    font-size: 0.9rem;
+    margin: 12px 0;
+}
+
+.form-check-input:checked {
+    background-color: var(--colour-primary);
+    border-color: var(--colour-primary);
+    box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
 }
 
 

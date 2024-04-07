@@ -1,3 +1,4 @@
+import phonenumbers
 from wtforms.validators import ValidationError
 
 
@@ -27,4 +28,17 @@ class PasswordValidator:
         if error:
             raise ValidationError(error)
 
+        return
+
+
+class PhoneNumberValidator:
+    def __call__(self, form, field):
+        try:
+            input_number = phonenumbers.parse(field.data, None)
+        except phonenumbers.NumberParseException:
+            raise ValidationError(
+                "Please enter a valid phone number with the country code (e.g. +123456789)."
+            )
+        if not phonenumbers.is_valid_number(input_number):
+            raise ValidationError("Invalid phone number.")
         return

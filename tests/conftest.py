@@ -54,6 +54,7 @@ def fake_user_client(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
         password_hash=generate_password_hash(FAKE_PASSWORD),
         first_name="John",
         last_name="Smith",
+        gender=Gender.MALE,
         date_joined=date.today(),
         role=UserRole.CLIENT,
         verified=True,
@@ -166,9 +167,15 @@ def fake_therapist_profile(
 @pytest.fixture(scope="module")
 def fake_client_profile_data(seeded_data: dict) -> dict:
     return {
-        "preferred_gender": Gender.MALE.name,
-        "preferred_language": seeded_data[Language.__tablename__][0].id,
+        "date_of_birth": "1990-01-01",
+        "occupation": "student",
+        "address": "123 Main St, Anytown, AT 12345",
+        "phone": "+6585781481",
+        "emergency_contact_name": "Jane Doe",
+        "emergency_contact_phone": "+6596697927",
+        "referral_source": "mindli",
         "issues": [issue.id for issue in seeded_data[Issue.__tablename__]][:2],
+        "consent": True,
     }
 
 

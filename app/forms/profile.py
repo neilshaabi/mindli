@@ -1,6 +1,13 @@
 import pycountry
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import IntegerField, SelectField, StringField, SubmitField
+from wtforms import (
+    BooleanField,
+    DateField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
+)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
@@ -9,7 +16,7 @@ from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.title import Title
-from app.utils.validators import WhitespaceValidator
+from app.utils.validators import PhoneNumberValidator, WhitespaceValidator
 
 
 class UserProfileForm(CustomFlaskForm):
@@ -110,34 +117,70 @@ class TherapistProfileForm(CustomFlaskForm):
 
 
 class ClientProfileForm(CustomFlaskForm):
-    preferred_gender = CustomSelectField(
-        "Preferred gender",
-        choices=[("", "Select gender")]
-        + [(gender.name, gender.value) for gender in Gender],
-        validators=[Optional()],
+    date_of_birth = DateField(
+        "Date of birth",
+        validators=[DataRequired()],
     )
-    preferred_language = CustomSelectField(
-        "Preferred language",
-        choices=[(0, "Select language")],
-        validators=[Optional()],
-        coerce=int,
+    occupation = SelectField(
+        "Occupation",
+        choices=[
+            ("", "Select occupation"),
+            ("healthcare", "Healthcare"),
+            ("education", "Education"),
+            ("it", "IT/Technology"),
+            ("finance", "Finance"),
+            ("arts", "Arts & entertainment"),
+            ("student", "Student"),
+            ("unemployed", "Unemployed"),
+            ("other", "Other"),
+        ],
+        default="",
+        validators=[DataRequired()],
+    )
+    address = StringField(
+        "Address", validators=[DataRequired(), WhitespaceValidator(), Length(max=255)]
+    )
+    phone = StringField(
+        "Phone Number", validators=[DataRequired(), PhoneNumberValidator()]
+    )
+    emergency_contact_name = StringField(
+        "Emergency contact name",
+        validators=[DataRequired(), WhitespaceValidator(), Length(max=100)],
+    )
+    emergency_contact_phone = StringField(
+        "Emergency contact phone", validators=[DataRequired(), PhoneNumberValidator()]
+    )
+    referral_source = SelectField(
+        "Referral source",
+        choices=[
+            ("", "Select referral source"),
+            ("mindli", "Mindli"),
+            ("internet", "Internet"),
+            ("friend_family", "Friend/family"),
+            ("healthcare_provider", "Healthcare provider"),
+            ("social_media", "Social media"),
+            ("other", "Other"),
+        ],
+        default="",
+        validators=[DataRequired(), Length(max=100)],
     )
     issues = CustomSelectMultipleField(
-        "Issues",
-        validators=[Optional()],
+        "Current challenges",
+        validators=[DataRequired()],
         coerce=int,
+    )
+    consent = BooleanField(
+        "I consent to the collection of my personal information for the purposes of coordinating care",
+        validators=[DataRequired()],
     )
     submit = SubmitField("Save")
 
     def __init__(self, *args, **kwargs):
         super(ClientProfileForm, self).__init__(*args, **kwargs)
 
-        self.preferred_language.populate_choices(Language)
         self.issues.populate_choices(Issue)
 
         client = kwargs.get("obj")
         if client:
-            self.preferred_language.preselect_choices(client.preferred_language)
-            self.preferred_gender.preselect_choices(client.preferred_gender)
             self.issues.preselect_choices(client.issues)
         return

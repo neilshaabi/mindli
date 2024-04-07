@@ -115,30 +115,61 @@
             
             {% elif current_user.role == UserRole.CLIENT %}
                 
-                <h3>Preferences and Background</h3>
+                <h3>Background Information</h3>
 
                 <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
-                    
+                
                     {{ role_form.csrf_token }}
-                    
+                
                     <div class='form-floating'>
-                        {{ role_form.preferred_gender(class_='form-control form-select', placeholder=role_form.preferred_gender.label.text) }}
-                        {{ role_form.preferred_gender.label }}
+                        {{ role_form.date_of_birth(class_='form-control', placeholder=role_form.date_of_birth.label.text) }}
+                        {{ role_form.date_of_birth.label }}
                     </div>
-                    
+                
                     <div class='form-floating'>
-                        {{ role_form.preferred_language(class_='form-control form-select', placeholder=role_form.preferred_language.label.text) }}
-                        {{ role_form.preferred_language.label }}
+                        {{ role_form.occupation(class_='form-control form-select', placeholder=role_form.occupation.label.text) }}
+                        {{ role_form.occupation.label }}
                     </div>
-                    
+                
+                    <div class='form-floating'>
+                        {{ role_form.address(class_='form-control', placeholder=role_form.address.label.text) }}
+                        {{ role_form.address.label }}
+                    </div>
+                
+                    <div class='form-floating'>
+                        {{ role_form.phone(class_='form-control', placeholder=role_form.phone.label.text) }}
+                        {{ role_form.phone.label }}
+                    </div>
+                
+                    <div class='form-floating'>
+                        {{ role_form.emergency_contact_name(class_='form-control', placeholder=role_form.emergency_contact_name.label.text) }}
+                        {{ role_form.emergency_contact_name.label }}
+                    </div>
+                
+                    <div class='form-floating'>
+                        {{ role_form.emergency_contact_phone(class_='form-control', placeholder=role_form.emergency_contact_phone.label.text) }}
+                        {{ role_form.emergency_contact_phone.label }}
+                    </div>
+                
+                    <div class='form-floating'>
+                        {{ role_form.referral_source(class_='form-control form-select', placeholder=role_form.referral_source.label.text) }}
+                        {{ role_form.referral_source.label }}
+                    </div>
+                
                     <div class='form-floating'>
                         {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
                         {{ role_form.issues.label }}
                     </div>
+
+                    <div class="form-check">
+                        {{ role_form.consent(class_='form-check-input') }}
+                        {{ role_form.consent.label(class_='form-check-label') }}
+                    </div>
                     
                     {{ submit_button(role_form.submit) }}
-                
+
                 </form>
+                
             
             {% endif %}
         </div>

@@ -1,10 +1,10 @@
-from typing import List, Optional
+from datetime import date
+from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 from app import db
-from app.models.enums import Gender
 
 
 class Client(db.Model):
@@ -12,15 +12,15 @@ class Client(db.Model):
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
     )
-    preferred_gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
-    preferred_language_id: so.Mapped[Optional[int]] = so.mapped_column(
-        sa.ForeignKey("language.id")
-    )
+    date_of_birth: so.Mapped[date] = so.mapped_column(sa.Date)
+    occupation: so.Mapped[str] = so.mapped_column(sa.String(50))
+    address: so.Mapped[str] = so.mapped_column(sa.String(255))
+    phone: so.Mapped[str] = so.mapped_column(sa.String(20))
+    emergency_contact_name: so.Mapped[str] = so.mapped_column(sa.String(100))
+    emergency_contact_phone: so.Mapped[str] = so.mapped_column(sa.String(20))
+    referral_source: so.Mapped[str] = so.mapped_column(sa.String(100))
 
     user: so.Mapped["User"] = so.relationship(back_populates="client")
-    preferred_language: so.Mapped[Optional["Language"]] = so.relationship(
-        back_populates="clients"
-    )
     issues: so.Mapped[List["Issue"]] = so.relationship(
         secondary="client_issue", back_populates="clients"
     )

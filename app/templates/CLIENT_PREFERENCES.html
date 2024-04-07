@@ -1,0 +1,22 @@
+<form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
+                    
+    {{ role_form.csrf_token }}
+    
+    <div class='form-floating'>
+        {{ role_form.preferred_gender(class_='form-control form-select', placeholder=role_form.preferred_gender.label.text) }}
+        {{ role_form.preferred_gender.label }}
+    </div>
+    
+    <div class='form-floating'>
+        {{ role_form.preferred_language(class_='form-control form-select', placeholder=role_form.preferred_language.label.text) }}
+        {{ role_form.preferred_language.label }}
+    </div>
+    
+    <div class='form-floating'>
+        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+        {{ role_form.issues.label }}
+    </div>
+    
+    {{ submit_button(role_form.submit) }}
+
+</form>
