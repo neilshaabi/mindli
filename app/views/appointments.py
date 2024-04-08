@@ -29,7 +29,7 @@ def appointments():
             obj=appointment_type,
             prefix=str(appointment_type.id),
             id=f"appointment_type_{appointment_type.id}",
-            endpoint=url_for('appointments.update_appointment_type', appointment_type_id=123)
+            endpoint=url_for('appointments.update_appointment_type', appointment_type_id=appointment_type.id)
         )
         for appointment_type in appointment_types
     ]
@@ -52,26 +52,32 @@ def appointments():
 @therapist_required
 def update_appointment_type(appointment_type_id):
     
+    print(appointment_type_id)
+
     # Find the appointment type by ID
-    appointment_type = (
+    appointment_type: AppointmentType = (
         db.session.execute(
             db.select(AppointmentType).filter_by(id=appointment_type_id, therapist_id=current_user.id)
         )
-        .first()
+        .scalar_one()
     )
 
     # Redirect if appointment type not found
     if appointment_type is None:
-        return redirect('appointments.appointments')
+        return redirect(url_for('appointments.appointments'))
     
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors, "form-prefix": appointment_type_id})
+        return jsonify({"success": False, "errors": form.errors, "form_prefix": appointment_type_id})
 
     # Update the appointment type with form data
-    form.populate_obj(appointment_type)
+    appointment_type.therapy_type = form.therapy_type.data
+    appointment_type.therapy_mode = form.therapy_mode.data
+    appointment_type.duration = form.duration.data
+    appointment_type.fee_amount = form.fee_amount.data
+    appointment_type.fee_currency = form.fee_currency.data
     db.session.commit()
     
     flash("Appointment type updated")

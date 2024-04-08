@@ -13,8 +13,9 @@
     --navbar-height: 56px;
     --sidebar-width: 200px;
 
-    --my-form-padding: 1rem 0.75rem;
     --my-form-height: calc(3.5rem + 2px);
+    --my-form-padding: 1rem 0.75rem;
+    --my-form-margin: 12px 0;
 
     --my-border-radius: 5px;
     --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
@@ -142,12 +143,12 @@ i {
 
 .form-floating .form-control {
     height: var(--my-form-height);
+    margin: var(--my-form-margin);
     padding: var(--my-form-padding);
     color: var(--dark-grey-text);
     background: white;
     border-color: var(--light-grey-outline);
     font-size: 0.9rem;
-    margin: 12px 0;
     border-radius: var(--my-border-radius);
 }
 
@@ -156,6 +157,12 @@ i {
     border-color: var(--colour-primary);
     outline: none;
     box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
+}
+
+.form-control:disabled,
+.form-floating>.form-control:disabled~label::after, 
+.form-floating>:disabled~label::after {
+    background: var(--light-grey-bg);
 }
 
 input:-webkit-autofill,
@@ -174,7 +181,7 @@ input:-webkit-autofill:focus {
 .error-message {
     color: red;
     font-size: 0.8rem;
-    margin: 12px 0;
+    margin: var(--my-form-margin);
 }
 
 .radio-group {
@@ -196,7 +203,7 @@ input:-webkit-autofill:focus {
 .form-check {
     color: var(--dark-grey-text);
     font-size: 0.9rem;
-    margin: 12px 0;
+    margin: var(--my-form-margin);
 }
 
 .form-check-input:checked {
@@ -287,6 +294,41 @@ input:-webkit-autofill:focus {
 }
 
 
+/* Tables */
+
+.my-table {
+    width: 100%;
+    vertical-align: center;
+}
+
+.my-table tr {
+    border-bottom: solid 1px var(--light-grey-outline);
+}
+
+.my-table td {
+    padding: 8px;
+}
+
+.my-table .btn-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-icon {
+    font-size: 1.4rem;
+    color: var(--light-grey-text);
+    background: none !important;
+    height: auto !important;
+    padding: 0;
+}
+
+.btn-icon:hover {
+    color: var(--dark-grey-text) !important;
+}
+
+
 /* Containers */
 
 .page-header {
@@ -325,7 +367,7 @@ input:-webkit-autofill:focus {
 .my-container .description {
     color: var(--light-grey-text);
     font-size: 0.8rem;
-    margin: 12px 0;
+    margin: var(--my-form-margin);
     line-height: 1.75;
 }
 
@@ -368,6 +410,11 @@ input:-webkit-autofill:focus {
     margin-bottom: 10px;
     text-align: center;
 }
+
+.my-tooltip {
+    --bs-tooltip-bg: var(--light-grey-bg);
+    --bs-tooltip-color: var(--dark-grey-text);
+  }
 
 .flashed-message {
     color: var(--dark-grey-text);

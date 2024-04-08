@@ -59,11 +59,6 @@ def user_profile():
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Update user's data
-    current_user.first_name = form.first_name.data
-    current_user.last_name = form.last_name.data
-    current_user.gender = form.gender.data
-
     # Handle profile picture upload
     file = request.files.get("profile_picture")
     if file:
@@ -74,6 +69,10 @@ def user_profile():
         file.save(savepath)
         current_user.profile_picture = filename
 
+    # Update user's data
+    current_user.first_name = form.first_name.data
+    current_user.last_name = form.last_name.data
+    current_user.gender = form.gender.data
     db.session.commit()
 
     # Reload page

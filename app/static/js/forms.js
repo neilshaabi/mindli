@@ -15,6 +15,18 @@ $(document).ready(function() {
 });
 
 
+function enableFields(button) {
+    
+    // Get the form ID from the edit button
+    var formId = $(button).attr('form');
+    $(':input[form="' + formId + '"]').prop('disabled', false);
+    
+    // Toggle button visibility
+    $(button).addClass('hidden');
+    $('button[data-bs-target="#exampleModal"][form="' + formId + '"]').removeClass('hidden');
+    $('button[type="submit"][form="' + formId + '"]').removeClass('hidden');
+}
+
 function registerFormHandlers() {
     
     $('form').on('submit', function(event) {
@@ -51,6 +63,7 @@ function registerFormHandlers() {
                 $('.flashed-message').remove();
             },
             success: function(response) {
+
                 if (response.success) { // Redirect user
                     window.location = response.url;
                 } else if (response.errors) { // Display form errors
