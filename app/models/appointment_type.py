@@ -1,10 +1,8 @@
-from typing import Optional
-
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 
 from app import db
-from app.models.enums import TherapyMode
+from app.models.enums import TherapyMode, TherapyType
 
 
 class AppointmentType(db.Model):
@@ -12,16 +10,11 @@ class AppointmentType(db.Model):
     therapist_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("therapist.id", ondelete="CASCADE"), index=True
     )
-    name: so.Mapped[str] = so.mapped_column(
-        sa.String(255)
-    )  # e.g. "Initial Consultation"
-    session_duration: so.Mapped[int] = so.mapped_column(sa.Integer)  # In minutes
+    therapy_type: so.Mapped["TherapyType"] = so.mapped_column(sa.Enum(TherapyType))
+    therapy_mode: so.Mapped["TherapyMode"] = so.mapped_column(sa.Enum(TherapyMode))
+    duration: so.Mapped[int] = so.mapped_column(sa.Integer)
     fee_amount: so.Mapped[float] = so.mapped_column(sa.Float)
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
-    therapy_mode: so.Mapped[Optional["TherapyMode"]] = so.mapped_column(
-        sa.Enum(TherapyMode)
-    )
-    notes: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
 
     therapist: so.Mapped["Therapist"] = so.relationship(
         back_populates="appointment_types"

@@ -1,4 +1,5 @@
-from wtforms import HiddenField, PasswordField, RadioField, StringField, SubmitField
+from wtforms import (HiddenField, PasswordField, RadioField, StringField,
+                     SubmitField)
 from wtforms.validators import DataRequired, Email, Length
 
 from app.forms import CustomFlaskForm

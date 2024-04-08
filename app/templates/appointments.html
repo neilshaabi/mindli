@@ -1,0 +1,125 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Appointments
+{% endblock %}
+
+{% block content %}
+
+    <div class='page-header'>
+        <h3>Appointments</h3>
+    </div>
+    
+    <div class='page-content'>
+    
+        <div class='my-container'>
+            <h3>Appointment Types</h3>
+            
+            <!-- Define forms outside of the table to be valid HTML -->
+            {% for form in appointment_forms %}
+                <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+                    {{ form.csrf_token }}
+                </form>
+            {% endfor %}
+            
+            <form id="{{ new_appointment_form.id }}" action="{{ new_appointment_form.endpoint }}" novalidate>
+                {{ new_appointment_form.csrf_token }}
+            </form>
+
+            <table class="table">
+            
+                <!-- Loop through each appointment form in the list of appointment forms -->
+                {% for form in appointment_forms %}
+                    <tr>
+                        <td>
+                            <div class='form-floating'>
+                                {{ form.therapy_type(class_='form-control form-select', placeholder=form.therapy_type.label.text, form=form.id) }}
+                                {{ form.therapy_type.label }}
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class='form-floating'>
+                                {{ form.therapy_mode(class_='form-control form-select', placeholder=form.therapy_mode.label.text, form=form.id) }}
+                                {{ form.therapy_mode.label }}
+                            </div>
+                        </td>
+                            
+                        <td>
+                            <div class='form-floating'>
+                                {{ form.duration(class_='form-control', placeholder=form.duration.label.text, form=form.id) }}
+                                {{ form.duration.label }}
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class='form-floating'>
+                                {{ form.fee_amount(class_='form-control', placeholder=form.fee_amount.label.text, form=form.id) }}
+                                {{ form.fee_amount.label }}
+                            </div>
+                        </td>
+
+                        <td>
+                            <div class='form-floating'>
+                                {{ form.fee_currency(class_='form-control form-select', placeholder=form.fee_currency.label.text, form=form.id) }}
+                                {{ form.fee_currency.label }}
+                            </div>
+                        </td>
+                            
+                        <td>
+                            <button type="submit" form="{{ form.id }}" class="btn-icon">
+                                <i class="fa-regular fa-square-check"></i>
+                            </button>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+
+                <!-- Form to create new appointment types -->
+                <tr>
+
+                    <td>
+                        <div class='form-floating'>
+                            {{ new_appointment_form.therapy_type(class_='form-control form-select', placeholder=new_appointment_form.therapy_type.label.text, form=new_appointment_form.id) }}
+                            {{ new_appointment_form.therapy_type.label }}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class='form-floating'>
+                            {{ new_appointment_form.therapy_mode(class_='form-control form-select', placeholder=new_appointment_form.therapy_mode.label.text, form=new_appointment_form.id) }}
+                            {{ new_appointment_form.therapy_mode.label }}
+                        </div>
+                    </td>
+                        
+                    <td>
+                        <div class='form-floating'>
+                            {{ new_appointment_form.duration(class_='form-control', placeholder=new_appointment_form.duration.label.text, form=new_appointment_form.id) }}
+                            {{ new_appointment_form.duration.label }}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class='form-floating'>
+                            {{ new_appointment_form.fee_amount(class_='form-control', placeholder=new_appointment_form.fee_amount.label.text, form=new_appointment_form.id) }}
+                            {{ new_appointment_form.fee_amount.label }}
+                        </div>
+                    </td>
+
+                    <td>
+                        <div class='form-floating'>
+                            {{ new_appointment_form.fee_currency(class_='form-control form-select', placeholder=new_appointment_form.fee_currency.label.text, form=new_appointment_form.id) }}
+                            {{ new_appointment_form.fee_currency.label }}
+                        </div>
+                    </td>
+                        
+                    <td>
+                        <button type="submit" form="{{ new_appointment_form.id }}" class="btn-icon">
+                            <i class="fa-regular fa-square-check"></i>
+                        </button>
+                    </td>
+                </tr>
+            </table>
+        </div>        
+    </div>
+{% endblock %}

@@ -1,16 +1,11 @@
 import pycountry
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import (
-    BooleanField,
-    DateField,
-    IntegerField,
-    SelectField,
-    StringField,
-    SubmitField,
-)
+from wtforms import (BooleanField, DateField, IntegerField, SelectField,
+                     StringField, SubmitField)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
 from app.models.enums import Gender
 from app.models.intervention import Intervention
 from app.models.issue import Issue
@@ -36,8 +31,8 @@ class UserProfileForm(CustomFlaskForm):
         "Gender",
         choices=[("", "Select gender")]
         + [(gender.name, gender.value) for gender in Gender],
-        validators=[DataRequired()],
         default="",
+        validators=[DataRequired()],
     )
     submit = SubmitField("Save")
 
@@ -68,8 +63,8 @@ class TherapistProfileForm(CustomFlaskForm):
         "Country",
         choices=[("", "Select country")]
         + [(country.name, country.name) for country in pycountry.countries],
-        validators=[DataRequired()],
         default="",
+        validators=[DataRequired()],
     )
     location = StringField(
         "Location (in-person appointments)",

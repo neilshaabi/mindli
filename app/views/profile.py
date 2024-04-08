@@ -1,19 +1,13 @@
 import os
 
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    jsonify,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, current_app, flash, jsonify, render_template,
+                   request, url_for)
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app import db
-from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
+from app.forms.profile import (ClientProfileForm, TherapistProfileForm,
+                               UserProfileForm)
 from app.models.client import Client
 from app.models.enums import UserRole
 from app.models.intervention import Intervention

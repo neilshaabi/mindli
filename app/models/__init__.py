@@ -8,13 +8,9 @@ class SeedableMixin:
 
 
 from .appointment_type import AppointmentType
-from .associations import (
-    client_issue,
-    therapist_intervention,
-    therapist_issue,
-    therapist_language,
-    therapist_title,
-)
+from .associations import (client_issue, therapist_intervention,
+                           therapist_issue, therapist_language,
+                           therapist_title)
 from .availability import Availability
 from .client import Client
 from .enums import Gender, TherapyMode, UserRole

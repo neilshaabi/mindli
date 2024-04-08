@@ -1,7 +1,8 @@
 from wtforms import SubmitField
 from wtforms.validators import Optional
 
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
 from app.models.enums import Gender
 from app.models.issue import Issue
 from app.models.language import Language

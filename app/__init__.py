@@ -54,11 +54,12 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
             seed_db(db)
 
     # Register blueprints with endpoints
-    from app.views import auth, main, profile
+    from app.views import appointments, auth, main, profile
 
     app.register_blueprint(main.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(profile.bp)
+    app.register_blueprint(appointments.bp)
 
     # Register handler to redirect to custom error page
     from app.views.errors import register_error_handlers

@@ -22,27 +22,32 @@ function registerFormHandlers() {
         event.preventDefault();
 
         var form = $(this);
-        var submitBtn = $(form).find(":input[type='submit']");
-        var btnText = $(form).find('.btn-text');
-        var btnSpinner = $(form).find('.spinner-border');
-        var errorMessages = $(form).find('.error-message');
-        var errorInputs = $(form).find('.input-error');
+
+        console.log(form); // Check if form is correct
+        console.log(form.html()); // Check the HTML content of the form
+        
+        var submitBtn = form.find(":input[type='submit']");
+        var btnText = submitBtn.find('.btn-text');
+        var btnSpinner = submitBtn.find('.spinner-border');
+        
+        var errorMessages = form.find('.error-message');
+        var errorInputs = $form.find('.input-error');
 
         $.ajax({
-            url: $(form).attr('action'),
+            url: form.attr('action'),
             type: 'POST',
             data: new FormData(this),
             processData: false,
             contentType: false,
             beforeSend: function() {
-                // Show loading button only for this form
-                $(submitBtn).prop('disabled', true);
-                $(btnText).hide();
-                $(btnSpinner).show();
+                // Show loading state for submit button for this form
+                submitBtn.prop('disabled', true);
+                btnText.hide();
+                btnSpinner.show();
 
                 // Clear previous errors for this form
-                $(errorMessages).remove();
-                $(errorInputs).removeClass('input-error');
+                errorMessages.remove();
+                errorInputs.removeClass('input-error');
 
                 // Remove flashed messages
                 $('.flashed-message').remove();
@@ -51,8 +56,14 @@ function registerFormHandlers() {
                 if (response.success) { // Redirect user
                     window.location = response.url;
                 } else if (response.errors) { // Display form errors
+                    
+                    var formPrefix = ""
+                    if (response.form_prefix) {
+                        formPrefix = response.form_prefix + "-"
+                    }
+
                     for (const key in response.errors) {
-                        var inputField = $('#' + key);
+                        var inputField = $('#' + formPrefix + key);
                         const firstError = response.errors[key][0];
                         const errorMessage = $(
                             '<div class="error-message">' 
@@ -74,9 +85,9 @@ function registerFormHandlers() {
                 window.location = '/error';
             },
             complete: function() { // Hide loading button only for this form
-                $(submitBtn).prop('disabled', false);
-                $(btnText).show();
-                $(btnSpinner).hide();
+                submitBtn.prop('disabled', false);
+                btnText.show();
+                btnSpinner.hide();
             }
         });
     });
