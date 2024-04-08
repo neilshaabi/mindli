@@ -22,16 +22,14 @@ function registerFormHandlers() {
         event.preventDefault();
 
         var form = $(this);
-
-        console.log(form); // Check if form is correct
-        console.log(form.html()); // Check the HTML content of the form
+        var formId = form.attr('id');
         
         var submitBtn = form.find(":input[type='submit']");
         var btnText = submitBtn.find('.btn-text');
         var btnSpinner = submitBtn.find('.spinner-border');
         
-        var errorMessages = form.find('.error-message');
-        var errorInputs = $form.find('.input-error');
+        var errorMessages = $('.error-message[data-form-id="' + formId + '"]');
+        var errorInputs = $('.input-error[data-form-id="' + formId + '"]');
 
         $.ajax({
             url: form.attr('action'),
@@ -66,16 +64,17 @@ function registerFormHandlers() {
                         var inputField = $('#' + formPrefix + key);
                         const firstError = response.errors[key][0];
                         const errorMessage = $(
-                            '<div class="error-message">' 
-                                + '<i class="fa-solid fa-circle-exclamation"></i> ' 
-                                + firstError
-                            + '</div>'
+                            '<div class="error-message" data-form-id="' + formId + '">' +
+                                '<i class="fa-solid fa-circle-exclamation"></i>' + 
+                                ' ' +
+                                firstError +
+                            '</div>'
                         );
                         if (['profile_picture', 'consent'].includes(key)) {
                             inputField = inputField.parent();
                         }
                         inputField.after(errorMessage);
-                        inputField.addClass('input-error');
+                        inputField.addClass('input-error').attr('data-form-id', formId);;
                     }
                 } else {
                     window.location = '/error';
