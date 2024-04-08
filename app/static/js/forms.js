@@ -28,8 +28,9 @@ function registerFormHandlers() {
         var btnText = submitBtn.find('.btn-text');
         var btnSpinner = submitBtn.find('.spinner-border');
         
-        var errorMessages = $('.error-message[data-form-id="' + formId + '"]');
-        var errorInputs = $('.input-error[data-form-id="' + formId + '"]');
+        // Store references to existing error messages and inputs
+        var existingErrorMessages = $('.error-message[data-form-id="' + formId + '"]');
+        var existingErrorInputs = $('.input-error[data-form-id="' + formId + '"]');
 
         $.ajax({
             url: form.attr('action'),
@@ -43,10 +44,9 @@ function registerFormHandlers() {
                 btnText.hide();
                 btnSpinner.show();
 
-                // Clear previous errors for this form
-                errorMessages.remove();
-                errorInputs.removeClass('input-error');
-
+                // Remove previous error indicators for this form
+                existingErrorInputs.removeClass('input-error');
+                
                 // Remove flashed messages
                 $('.flashed-message').remove();
             },
@@ -55,26 +55,53 @@ function registerFormHandlers() {
                     window.location = response.url;
                 } else if (response.errors) { // Display form errors
                     
-                    var formPrefix = ""
-                    if (response.form_prefix) {
-                        formPrefix = response.form_prefix + "-"
-                    }
+                    // Get the form prefix (for pages with multiple forms of the same type)
+                    var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";
+
+                    var newErrorMessages = {};
 
                     for (const key in response.errors) {
                         var inputField = $('#' + formPrefix + key);
                         const firstError = response.errors[key][0];
-                        const errorMessage = $(
-                            '<div class="error-message" data-form-id="' + formId + '">' +
-                                '<i class="fa-solid fa-circle-exclamation"></i>' + 
-                                ' ' +
-                                firstError +
-                            '</div>'
-                        );
+                        newErrorMessages[formPrefix + key] = firstError;
                         if (['profile_picture', 'consent'].includes(key)) {
                             inputField = inputField.parent();
                         }
+                        inputField.addClass('input-error').attr('data-form-id', formId);
+                    }
+
+                    // Remove outdated error messages and add new ones
+                    existingErrorMessages.each(function() {
+                        
+                        var thisMessage = $(this);
+                        var thisKey = thisMessage.data('form-id') + '-' + thisMessage.data('for');
+                        
+                        if (newErrorMessages[thisKey]) {
+                            
+                            // Update message if different                            
+                            if (thisMessage.text() !== newErrorMessages[thisKey]) {
+                                thisMessage.text(newErrorMessages[thisKey]);
+                            }
+                            
+                            // Remove from newErrorMessages to avoid adding it again
+                            delete newErrorMessages[thisKey];
+                        } else {
+                            // Remove message if not in new errors
+                            thisMessage.remove();
+                        }
+                    });
+
+                    // Add new error messages
+                    for (const key in newErrorMessages) {
+                        var inputField = $('#' + key);
+                        const errorMessage = $(
+                            '<div class="error-message" data-form-id="' + formId + '" data-for="' + key + '">' +
+                                '<i class="fa-solid fa-circle-exclamation"></i>' + 
+                                ' ' +
+                                newErrorMessages[key] +
+                            '</div>'
+                        );
                         inputField.after(errorMessage);
-                        inputField.addClass('input-error').attr('data-form-id', formId);;
                     }
                 } else {
                     window.location = '/error';
