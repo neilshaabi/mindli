@@ -3,7 +3,7 @@ from flask import (Blueprint, current_app, flash, jsonify, redirect, render_temp
 from flask_login import current_user, login_required
 
 from app import db
-from app.forms.appointments import AppointmentTypeForm
+from app.forms.appointments import AppointmentTypeForm, DeleteAppointmentTypeForm
 from app.models.appointment_type import AppointmentType
 from app.utils.decorators import therapist_required
 
@@ -39,11 +39,15 @@ def appointments():
         prefix="new", id="appointment_type_new", endpoint=url_for("appointments.create_appointment_type")
     )
 
+    # Add form to delete a given appointment type
+    delete_appointment_type_form = DeleteAppointmentTypeForm(id="delete_appointment_type", endpoint=url_for("appointments.delete_appointment_type"))
+
     # Render the page with the appointment forms and the new appointment form
     return render_template(
         "appointments.html",
         appointment_forms=appointment_forms,
         new_appointment_form=new_appointment_form,
+        delete_appointment_type_form=delete_appointment_type_form
     )
 
 
@@ -106,4 +110,16 @@ def create_appointment_type():
     db.session.commit()
     
     flash("New appointment type created")
+    return jsonify({"success": True, "url": url_for("appointments.appointments")})
+
+
+@bp.route("/appointments/delete", methods=["POST"])
+@login_required
+@therapist_required
+def delete_appointment_type():    
+    form = DeleteAppointmentTypeForm()
+    appointment_type = db.session.execute(db.select(AppointmentType).filter_by(id=form.appointment_type_id.data)).scalar_one()
+    db.session.delete(appointment_type)
+    db.session.commit()
+    flash("Appointment type deleted")
     return jsonify({"success": True, "url": url_for("appointments.appointments")})

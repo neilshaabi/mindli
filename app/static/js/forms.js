@@ -12,6 +12,14 @@ $(document).ready(function() {
 
     // Register submission handlers for all forms using AJAX
     registerFormHandlers();
+
+    // Set the delete modal's hidden field with the correct appointment type id
+    $('#deleteAppointmentTypeModal').on('show.bs.modal', function (event) {
+        var modalToggler = $(event.relatedTarget);
+        var formId = modalToggler.attr('form');
+        var appointment_type_id = formId.replace('appointment_type_', '');
+        $(this).find('input[name="appointment_type_id"]').val(appointment_type_id);
+    });
 });
 
 
@@ -23,7 +31,7 @@ function enableFields(button) {
     
     // Toggle button visibility
     $(button).addClass('hidden');
-    $('button[data-bs-target="#exampleModal"][form="' + formId + '"]').removeClass('hidden');
+    $('span[data-bs-target="#deleteAppointmentTypeModal"][form="' + formId + '"]').removeClass('hidden');
     $('button[type="submit"][form="' + formId + '"]').removeClass('hidden');
 }
 
@@ -44,6 +52,8 @@ function registerFormHandlers() {
         var existingErrorMessages = $('.error-message[data-form-id="' + formId + '"]');
         var existingErrorInputs = $('.input-error[data-form-id="' + formId + '"]');
 
+        console.log(new FormData(this));
+
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
@@ -51,6 +61,7 @@ function registerFormHandlers() {
             processData: false,
             contentType: false,
             beforeSend: function() {
+                
                 // Show loading state for submit button for this form
                 submitBtn.prop('disabled', true);
                 btnText.hide();
@@ -67,7 +78,7 @@ function registerFormHandlers() {
                 if (response.success) { // Redirect user
                     window.location = response.url;
                 } else if (response.errors) { // Display form errors
-                    
+
                     // Get the form prefix (for pages with multiple forms of the same type)
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";
 

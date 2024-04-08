@@ -1,4 +1,4 @@
-from wtforms import DecimalField, IntegerField, SelectField, SubmitField
+from wtforms import DecimalField, HiddenField, IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 from app.forms import CustomFlaskForm, CustomSelectField
@@ -43,3 +43,8 @@ class AppointmentTypeForm(CustomFlaskForm):
             self.therapy_type.preselect_choices(appointment_type.therapy_type)
             self.therapy_mode.preselect_choices(appointment_type.therapy_mode)
         return
+
+
+class DeleteAppointmentTypeForm(CustomFlaskForm):
+    appointment_type_id = HiddenField('Appointment Type ID', validators=[DataRequired()])
+    submit = SubmitField("Delete")
