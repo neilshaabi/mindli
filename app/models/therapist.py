@@ -38,12 +38,6 @@ class Therapist(SeedableMixin, db.Model):
     appointment_types: so.Mapped[List["AppointmentType"]] = so.relationship(
         back_populates="therapist", cascade="all, delete-orphan"
     )
-    availabilities: so.Mapped[List["Availability"]] = so.relationship(
-        back_populates="therapist", cascade="all, delete-orphan"
-    )
-    unavailabilities: so.Mapped[List["Unavailability"]] = so.relationship(
-        back_populates="therapist", cascade="all, delete-orphan"
-    )
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
