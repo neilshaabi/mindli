@@ -16,7 +16,7 @@ from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
 from app.models.title import Title
-from app.utils.validators import PhoneNumberValidator, WhitespaceValidator
+from app.utils.validators import NotWhitespace, ValidPhoneNumber
 
 
 class UserProfileForm(CustomFlaskForm):
@@ -59,10 +59,10 @@ class TherapistProfileForm(CustomFlaskForm):
         "Years of experience", validators=[DataRequired(), NumberRange(min=0)]
     )
     qualifications = StringField(
-        "Qualifications", validators=[DataRequired(), WhitespaceValidator()]
+        "Qualifications", validators=[DataRequired(), NotWhitespace()]
     )
     registrations = StringField(
-        "Registrations", validators=[Optional(), WhitespaceValidator()]
+        "Registrations", validators=[Optional(), NotWhitespace()]
     )
     country = SelectField(
         "Country",
@@ -74,7 +74,7 @@ class TherapistProfileForm(CustomFlaskForm):
     location = StringField(
         "Location (in-person appointments)",
         validators=[
-            WhitespaceValidator(),
+            NotWhitespace(),
             Length(max=255),
         ],
     )
@@ -95,7 +95,7 @@ class TherapistProfileForm(CustomFlaskForm):
     )
     link = StringField(
         "Professional website",
-        validators=[Optional(), WhitespaceValidator(), Length(max=255)],
+        validators=[Optional(), NotWhitespace(), Length(max=255)],
     )
     submit = SubmitField("Save")
 
@@ -138,17 +138,15 @@ class ClientProfileForm(CustomFlaskForm):
         validators=[DataRequired()],
     )
     address = StringField(
-        "Address", validators=[DataRequired(), WhitespaceValidator(), Length(max=255)]
+        "Address", validators=[DataRequired(), NotWhitespace(), Length(max=255)]
     )
-    phone = StringField(
-        "Phone Number", validators=[DataRequired(), PhoneNumberValidator()]
-    )
+    phone = StringField("Phone Number", validators=[DataRequired(), ValidPhoneNumber()])
     emergency_contact_name = StringField(
         "Emergency contact name",
-        validators=[DataRequired(), WhitespaceValidator(), Length(max=100)],
+        validators=[DataRequired(), NotWhitespace(), Length(max=100)],
     )
     emergency_contact_phone = StringField(
-        "Emergency contact phone", validators=[DataRequired(), PhoneNumberValidator()]
+        "Emergency contact phone", validators=[DataRequired(), ValidPhoneNumber()]
     )
     referral_source = SelectField(
         "Referral source",

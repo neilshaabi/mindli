@@ -3,6 +3,7 @@ from wtforms.validators import DataRequired, NumberRange
 
 from app.forms import CustomFlaskForm, CustomSelectField
 from app.models.enums import TherapyMode, TherapyType
+from app.utils.validators import LocationRequired
 
 
 class AppointmentTypeForm(CustomFlaskForm):
@@ -18,7 +19,7 @@ class AppointmentTypeForm(CustomFlaskForm):
         choices=[("", "Select mode")]
         + [(choice.name, choice.value) for choice in TherapyMode],
         default="",
-        validators=[DataRequired()],
+        validators=[DataRequired(), LocationRequired()],
     )
     duration = IntegerField(
         "Duration (minutes)",

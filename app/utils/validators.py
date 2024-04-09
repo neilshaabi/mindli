@@ -1,15 +1,18 @@
 import phonenumbers
+from flask_login import current_user
 from wtforms.validators import ValidationError
 
+from app.models.enums import TherapyMode
 
-class WhitespaceValidator:
+
+class NotWhitespace:
     def __call__(self, form, field):
         if field.data and field.data.isspace():
             raise ValidationError(f"Invalid {field.name.replace('_', ' ').lower()}.")
         return
 
 
-class PasswordValidator:
+class ValidPassword:
     def __call__(self, form, field):
         error = None
 
@@ -31,7 +34,7 @@ class PasswordValidator:
         return
 
 
-class PhoneNumberValidator:
+class ValidPhoneNumber:
     def __call__(self, form, field):
         try:
             input_number = phonenumbers.parse(field.data, None)
@@ -42,3 +45,12 @@ class PhoneNumberValidator:
         if not phonenumbers.is_valid_number(input_number):
             raise ValidationError("Invalid phone number.")
         return
+
+
+class LocationRequired:
+    def __call__(self, form, field):
+        if (
+            field.data == TherapyMode.IN_PERSON.name
+            and current_user.therapist.location is None
+        ):
+            raise ValidationError("Location required for in-person appointments.")

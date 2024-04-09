@@ -3,7 +3,7 @@ from wtforms.validators import DataRequired, Email, Length
 
 from app.forms import CustomFlaskForm
 from app.models.enums import UserRole
-from app.utils.validators import PasswordValidator
+from app.utils.validators import ValidPassword
 
 
 class LoginForm(CustomFlaskForm):
@@ -31,9 +31,7 @@ class RegisterForm(CustomFlaskForm):
         "Last name", validators=[DataRequired(), Length(min=1, max=50)]
     )
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField(
-        "Password", validators=[DataRequired(), PasswordValidator()]
-    )
+    password = PasswordField("Password", validators=[DataRequired(), ValidPassword()])
     submit = SubmitField("Register")
 
 
@@ -50,7 +48,7 @@ class InitiatePasswordResetForm(CustomFlaskForm):
 class ResetPasswordForm(CustomFlaskForm):
     email = HiddenField("Email address", validators=[DataRequired(), Email()])
     password = PasswordField(
-        "New password", validators=[DataRequired(), PasswordValidator()]
+        "New password", validators=[DataRequired(), ValidPassword()]
     )
     password_confirmation = PasswordField(
         "Password confirmation", validators=[DataRequired()]
