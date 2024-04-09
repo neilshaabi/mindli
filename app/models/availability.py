@@ -1,5 +1,4 @@
-from datetime import date, time
-from typing import Optional
+from datetime import time
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -12,13 +11,8 @@ class Availability(db.Model):
     therapist_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("therapist.id", ondelete="CASCADE"), index=True
     )
-    day_of_week: so.Mapped[Optional[int]] = so.mapped_column(
-        sa.Integer
-    )  # 0=Monday, 6=Sunday, None for specific dates
-    start_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
-    end_time: so.Mapped[Optional[time]] = so.mapped_column(sa.Time)
-    specific_date: so.Mapped[Optional[date]] = so.mapped_column(
-        sa.Date
-    )  # For non-recurring availability
+    day_of_week: so.Mapped[int] = so.mapped_column(sa.Integer)  # 0=Monday, 6=Sunday
+    start_time: so.Mapped[time] = so.mapped_column(sa.Time)
+    end_time: so.Mapped[time] = so.mapped_column(sa.Time)
 
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="availabilities")

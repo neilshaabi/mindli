@@ -50,9 +50,7 @@ def profile():
             endpoint=url_for("profile.client_profile"),
         )
 
-    return render_template(
-        "profile.html", UserRole=UserRole, user_form=user_form, role_form=role_form
-    )
+    return render_template("profile.html", user_form=user_form, role_form=role_form)
 
 
 @bp.route("/profile/user", methods=["POST"])
