@@ -43,6 +43,15 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     if app.config["WTF_CSRF_ENABLED"]:
         csrf.init_app(app)
 
+    # Register context processor to inject global variables
+    @app.context_processor
+    def inject_globals():
+        from app.models.enums import UserRole
+
+        return {
+            "UserRole": UserRole,
+        }
+
     # Reset and seed database
     from app.seed import seed_db
 
