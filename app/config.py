@@ -25,8 +25,7 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG: bool = True
-    # RESET_DB: bool = True
-    RESET_DB: bool = False
+    RESET_DB: bool = True
     WTF_CSRF_ENABLED: str = True
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 

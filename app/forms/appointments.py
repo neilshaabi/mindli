@@ -2,7 +2,6 @@ from wtforms import DecimalField, HiddenField, IntegerField, SelectField, Submit
 from wtforms.validators import DataRequired, NumberRange
 
 from app.forms import CustomFlaskForm, CustomSelectField
-from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType
 
 
@@ -46,5 +45,7 @@ class AppointmentTypeForm(CustomFlaskForm):
 
 
 class DeleteAppointmentTypeForm(CustomFlaskForm):
-    appointment_type_id = HiddenField('Appointment Type ID', validators=[DataRequired()])
+    appointment_type_id = HiddenField(
+        "Appointment Type ID", validators=[DataRequired()]
+    )
     submit = SubmitField("Delete")

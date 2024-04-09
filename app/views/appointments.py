@@ -1,5 +1,4 @@
-from flask import (Blueprint, current_app, flash, jsonify, redirect, render_template,
-                   request, url_for)
+from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app import db
@@ -17,37 +16,45 @@ def appointments():
     # Query existing appointment types for the therapist
     appointment_types = (
         db.session.execute(
-            db.select(AppointmentType).filter_by(therapist_id=current_user.id)
+            db.select(AppointmentType).filter_by(therapist_id=current_user.therapist.id)
         )
         .scalars()
         .all()
     )
 
     # Create a list of forms pre-populated with the data from each appointment type
-    appointment_forms = [
+    appointment_type_forms = [
         AppointmentTypeForm(
             obj=appointment_type,
             prefix=str(appointment_type.id),
             id=f"appointment_type_{appointment_type.id}",
-            endpoint=url_for('appointments.update_appointment_type', appointment_type_id=appointment_type.id)
+            endpoint=url_for(
+                "appointments.update_appointment_type",
+                appointment_type_id=appointment_type.id,
+            ),
         )
         for appointment_type in appointment_types
     ]
 
     # Add an empty form for adding a new appointment type
-    new_appointment_form = AppointmentTypeForm(
-        prefix="new", id="appointment_type_new", endpoint=url_for("appointments.create_appointment_type")
+    new_appointment_type_form = AppointmentTypeForm(
+        prefix="new",
+        id="appointment_type_new",
+        endpoint=url_for("appointments.create_appointment_type"),
     )
 
     # Add form to delete a given appointment type
-    delete_appointment_type_form = DeleteAppointmentTypeForm(id="delete_appointment_type", endpoint=url_for("appointments.delete_appointment_type"))
+    delete_appointment_type_form = DeleteAppointmentTypeForm(
+        id="delete_appointment_type",
+        endpoint=url_for("appointments.delete_appointment_type"),
+    )
 
     # Render the page with the appointment forms and the new appointment form
     return render_template(
         "appointments.html",
-        appointment_forms=appointment_forms,
-        new_appointment_form=new_appointment_form,
-        delete_appointment_type_form=delete_appointment_type_form
+        appointment_type_forms=appointment_type_forms,
+        new_appointment_type_form=new_appointment_type_form,
+        delete_appointment_type_form=delete_appointment_type_form,
     )
 
 
@@ -55,26 +62,28 @@ def appointments():
 @login_required
 @therapist_required
 def update_appointment_type(appointment_type_id):
-    
-    print(appointment_type_id)
-
     # Find the appointment type by ID
-    appointment_type: AppointmentType = (
-        db.session.execute(
-            db.select(AppointmentType).filter_by(id=appointment_type_id, therapist_id=current_user.id)
+    appointment_type: AppointmentType = db.session.execute(
+        db.select(AppointmentType).filter_by(
+            id=appointment_type_id, therapist_id=current_user.id
         )
-        .scalar_one()
-    )
+    ).scalar_one()
 
     # Redirect if appointment type not found
     if appointment_type is None:
-        return redirect(url_for('appointments.appointments'))
-    
+        return redirect(url_for("appointments.appointments"))
+
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors, "form_prefix": appointment_type_id})
+        return jsonify(
+            {
+                "success": False,
+                "errors": form.errors,
+                "form_prefix": appointment_type_id,
+            }
+        )
 
     # Update the appointment type with form data
     appointment_type.therapy_type = form.therapy_type.data
@@ -83,7 +92,7 @@ def update_appointment_type(appointment_type_id):
     appointment_type.fee_amount = form.fee_amount.data
     appointment_type.fee_currency = form.fee_currency.data
     db.session.commit()
-    
+
     flash("Appointment type updated")
     return jsonify({"success": True, "url": url_for("appointments.appointments")})
 
@@ -99,16 +108,17 @@ def create_appointment_type():
         return jsonify({"success": False, "errors": form.errors, "form_prefix": "new"})
 
     # Create a new appointment type instance
-    new_appointment_type = AppointmentType(therapist_id=current_user.id,
-                                           therapy_type=form.therapy_type.data,
-                                           therapy_mode=form.therapy_mode.data,
-                                           duration=form.duration.data,
-                                           fee_amount=form.fee_amount.data,
-                                           fee_currency=form.fee_currency.data,
-                                           )
+    new_appointment_type = AppointmentType(
+        therapist_id=current_user.id,
+        therapy_type=form.therapy_type.data,
+        therapy_mode=form.therapy_mode.data,
+        duration=form.duration.data,
+        fee_amount=form.fee_amount.data,
+        fee_currency=form.fee_currency.data,
+    )
     db.session.add(new_appointment_type)
     db.session.commit()
-    
+
     flash("New appointment type created")
     return jsonify({"success": True, "url": url_for("appointments.appointments")})
 
@@ -116,9 +126,11 @@ def create_appointment_type():
 @bp.route("/appointments/delete", methods=["POST"])
 @login_required
 @therapist_required
-def delete_appointment_type():    
+def delete_appointment_type():
     form = DeleteAppointmentTypeForm()
-    appointment_type = db.session.execute(db.select(AppointmentType).filter_by(id=form.appointment_type_id.data)).scalar_one()
+    appointment_type = db.session.execute(
+        db.select(AppointmentType).filter_by(id=form.appointment_type_id.data)
+    ).scalar_one()
     db.session.delete(appointment_type)
     db.session.commit()
     flash("Appointment type deleted")
