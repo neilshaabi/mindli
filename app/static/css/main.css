@@ -322,7 +322,7 @@ input:-webkit-autofill:focus {
     gap: 40px;
 }
 
-.my-container {
+.my-card {
     color: var(--dark-grey-text);
     background: white;
     box-shadow: var(--my-box-shadow);
@@ -332,24 +332,24 @@ input:-webkit-autofill:focus {
     border: none;
 }
 
-.my-container.centered {
+.my-card.centered {
     width: 45%;
     min-width: 200px;
 }
 
 @media only screen and (max-width: 768px) {
-    .my-container {
+    .my-card {
         width: 100%;
     }
 }
 
-.my-container .description {
+.my-card .description {
     color: var(--light-grey-text);
     font-size: 0.8rem;
     line-height: 1.75;
 }
 
-.my-container .btn {
+.my-card .btn {
     width: 100%;
     height: var(--my-form-height);
 }

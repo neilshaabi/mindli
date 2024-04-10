@@ -17,7 +17,8 @@
         <div class="row g-4">
 
             <div class='col-lg-4'>
-                <div class='my-container'>
+                
+                <div class='my-card'>
                     <h3>Personal Information</h3>
                     <form id="{{ user_form.id }}" action="{{ user_form.endpoint }}" enctype="multipart/form-data" novalidate>
                         
@@ -76,7 +77,7 @@
             </div>
             
             <div class='col-lg-8'>
-                <div class='my-container'>
+                <div class='my-card'>
 
                     {% if current_user.role == UserRole.THERAPIST %}
 

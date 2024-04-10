@@ -23,3 +23,4 @@ from .language import Language
 from .therapist import Therapist
 from .title import Title
 from .user import User
+from .appointment_type import AppointmentType

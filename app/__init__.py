@@ -52,15 +52,17 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
             "UserRole": UserRole,
         }
 
-    # Reset and seed database
     from app.seed import seed_db
-
-    if app.config["RESET_DB"]:
-        with app.app_context():
+    with app.app_context():
+        
+        # Reset database
+        if app.config["RESET_DB"]:
             db.drop_all()
             db.create_all()
             db.session.commit()
-            seed_db(db)
+        
+        # Seed database
+        seed_db(db=db, use_fake_data=app.config["FAKE_DATA"])
 
     # Register blueprints with endpoints
     from app.views import appointments, auth, main, profile, therapists

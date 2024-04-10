@@ -1,9 +1,8 @@
 from flask import Blueprint, jsonify, render_template, request, url_for
 from flask_login import current_user, login_required
 
-from app.forms.therapists import FilterTherapistsForm
-
 from app import db
+from app.forms.therapists import FilterTherapistsForm
 from app.models.therapist import Therapist
 
 bp = Blueprint("therapists", __name__)
@@ -19,7 +18,9 @@ def therapists():
     therapists = db.session.execute(db.select(Therapist)).scalars()
 
     # Render a template, passing the filter form to it
-    return render_template("therapists.html", filter_form=filter_form, therapists=therapists)
+    return render_template(
+        "therapists.html", filter_form=filter_form, therapists=therapists
+    )
 
 
 @bp.route("/therapists", methods=["POST"])
