@@ -34,8 +34,7 @@ class UserProfileForm(CustomFlaskForm):
     )
     gender = CustomSelectField(
         "Gender",
-        choices=[("", "Select gender")]
-        + [(gender.name, gender.value) for gender in Gender],
+        choices=[("", "Select gender")],
         default="",
         validators=[DataRequired()],
     )
@@ -43,6 +42,7 @@ class UserProfileForm(CustomFlaskForm):
 
     def __init__(self, *args, **kwargs):
         super(UserProfileForm, self).__init__(*args, **kwargs)
+        self.gender.populate_choices(Gender)
         user = kwargs.get("obj")
         if user:
             self.gender.preselect_choices(user.gender)

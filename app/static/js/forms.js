@@ -88,9 +88,6 @@ function registerFormHandlers() {
                         var inputField = $('#' + formPrefix + key);
                         const firstError = response.errors[key][0];
                         newErrorMessages[formPrefix + key] = firstError;
-                        if (['profile_picture', 'consent'].includes(key)) {
-                            inputField = inputField.parent();
-                        }
                         inputField.addClass('input-error').attr('data-form-id', formId);
                     }
 
@@ -119,13 +116,24 @@ function registerFormHandlers() {
                     for (const key in newErrorMessages) {
                         var inputField = $('#' + key);
                         const errorMessage = $(
-                            '<div class="error-message" data-form-id="' + formId + '" data-for="' + key + '">' +
+                            '<div class="error-message mt-2" data-form-id="' + formId + '" data-for="' + key + '">' +
                                 '<i class="fa-solid fa-circle-exclamation"></i>' + 
                                 ' ' +
                                 newErrorMessages[key] +
                             '</div>'
                         );
-                        inputField.after(errorMessage);
+                        
+                        // Special handling for checkboxes
+                        if (inputField.attr('type') === 'checkbox' || inputField.attr('type') === 'radio') {
+                            inputField = inputField.closest('.form-check'); // Target the .form-check div
+                        }
+                        
+                        // Insert error message
+                        if (key == 'role') {
+                            inputField.append(errorMessage); // Append to register form's role field
+                        } else {
+                            inputField.after(errorMessage); // Insert after individual fields
+                        }
                     }
                 } else {
                     window.location = '/error';

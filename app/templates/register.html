@@ -6,60 +6,86 @@
 
 {% block content %}
 
-    <div class='my-container centered'>
-        <h3>Create account</h3>
-        <p>Have an account? <a href='/login'>Sign in</a></p>
+    <div class='container'>
 
-        <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
-        
-            {{ form.csrf_token }}
+        <div class='my-container centered'>
+            <h3>Create account</h3>
+            <p>Have an account? <a href='/login'>Sign in</a></p>
 
-            <div class='radio-group' id='role'>
-                {% for role in form.role %}
-                    <input type='radio' class='btn-check' id='{{ role.id }}' name='{{ role.name }}' value='{{ role._value() }}' autocomplete='off'>
-                    <label class='btn btn-outline-primary' for='{{ role.id }}'>
-                        <i class='fa-solid fa-check'></i>
-                        {{ role.label.text }}
-                    </label>
-                {% endfor %}
-            </div>
+            <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+            
+                {{ form.csrf_token }}
 
-            <div class='form-floating'>
-                {{ form.first_name(class_='form-control', placeholder=form.first_name.label.text) }}
-                {{ form.first_name.label }}
-            </div>
+                <div class="row mb-3 g-2" id='role'>
+                    {% for role in form.role %}
+                        <div class="col-md-6">
+                            {{ role(class_='btn-check', id=role.id) }}
+                            {{ role.label(class_='btn btn-outline-primary') }}
+                        </div>
+                    {% endfor %}
+                </div>
 
-            <div class='form-floating'>
-                {{ form.last_name(class_='form-control', placeholder=form.last_name.label.text) }}
-                {{ form.last_name.label }}
-            </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class='form-floating'>
+                            {{ form.first_name(class_='form-control', placeholder=form.first_name.label.text) }}
+                            {{ form.first_name.label }}
+                        </div>
+                    </div>
+                </div>
 
-            <div class='form-floating'>
-                {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
-                {{ form.email.label }}
-            </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class='form-floating'>
+                            {{ form.last_name(class_='form-control', placeholder=form.last_name.label.text) }}
+                            {{ form.last_name.label }}
+                        </div>
+                    </div>
+                </div>
 
-            <div class='form-floating'>
-                {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
-                {{ form.password.label }}
-                <button type='button' id='togglePassword'>
-                    <i class='fa-solid fa-eye'></i>
-                </button>
-            </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class='form-floating'>
+                            {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
+                            {{ form.email.label }}
+                        </div>
+                    </div>
+                </div>
 
-            <div class='description'>
-                Password requirements:
-                <ul>
-                    <li>At least 8 characters</li>
-                    <li>1 uppercase letter (A-Z)</li>
-                    <li>1 lowercase letter (a-z)</li>
-                    <li>1 number (0-9)</li>
-                </ul>
-            </div>
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class='form-floating'>
+                            {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
+                            {{ form.password.label }}
+                            <button type='button' id='togglePassword'>
+                                <i class='fa-solid fa-eye'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
 
-            {{ submit_button(form.submit) }}
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class='description'>
+                            Password requirements:
+                            <ul>
+                                <li>At least 8 characters</li>
+                                <li>1 uppercase letter (A-Z)</li>
+                                <li>1 lowercase letter (a-z)</li>
+                                <li>1 number (0-9)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-        </form>
+                <div class="row">
+                    <div class="col-12">
+                        {{ submit_button(form.submit) }}
+                    </div>
+                </div>
+
+            </form>
+        </div>
     </div>
 
 {% endblock %}

@@ -16,7 +16,6 @@ class Gender(Enum):
     TRANSFEMININE = "Transfeminine"
     AGENDER = "Agender"
     OTHER = "Other"
-    PREFER_NOT_TO_SAY = "Prefer not to say"
 
 
 @unique

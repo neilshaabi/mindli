@@ -16,10 +16,14 @@ class CustomFlaskForm(FlaskForm):
 
 
 class SelectFieldMixin:
-    def populate_choices(self, model: Type[Model]) -> None:
-        choices = [
-            (row.id, row.name) for row in db.session.execute(db.select(model)).scalars()
-        ]
+    def populate_choices(self, source: Union[Type[Model], Enum]) -> None:
+        if issubclass(source, Enum):
+            choices = [(member.name, member.value) for member in source]
+        else:
+            choices = [
+                (row.id, row.name)
+                for row in db.session.execute(db.select(source)).scalars()
+            ]
         if self.choices is None:
             self.choices = choices
         else:

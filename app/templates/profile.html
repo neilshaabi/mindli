@@ -6,172 +6,271 @@
 
 {% block content %}
 
-    <div class='page-header'>
-        <h3>{{ current_user.role.value }} Profile</h3>
-    </div>
-    
-    <div class='page-content'>
-    
-        <div class='my-container' style="width: 60%">
-            <h3>Personal Information</h3>
-            <form id="{{ user_form.id }}" action="{{ user_form.endpoint }}" enctype="multipart/form-data" novalidate>
-                
-                {{ user_form.csrf_token }}
-
-                <div id="profile-picture-container">
-                    <img id="profile-picture-preview"
-                            src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}"
-                            alt="Profile picture"
-                            class="{{ 'default-pic' if not current_user.profile_picture }}">
-                    <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
-                        <i class="fa fa-camera"></i>
-                    </label>
-                    {{ user_form.profile_picture(style='display: none;', onchange="previewImage(event)") }}
-                </div>
-                
-                <div class='form-floating'>
-                    {{ user_form.first_name(class_='form-control', placeholder=user_form.first_name.label.text) }}
-                    {{ user_form.first_name.label }}
-                </div>
-    
-                <div class='form-floating'>
-                    {{ user_form.last_name(class_='form-control', placeholder=user_form.last_name.label.text) }}
-                    {{ user_form.last_name.label }}
-                </div>
-
-                <div class='form-floating'>
-                    {{ user_form.gender(class_='form-control form-select', placeholder=user_form.gender.label.text) }}
-                    {{ user_form.gender.label }}
-                </div>
-
-                {{ submit_button(user_form.submit) }}
-            
-            </form>
-        </div>
+    <div class='container'>
         
-        <div class='my-container'>
-
-            {% if current_user.role == UserRole.THERAPIST %}
-
-                <h3>Professional Information</h3>
-                
-                <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
-                    
-                    {{ role_form.csrf_token }}
-                    
-                    <div class='form-floating'>
-                        {{ role_form.titles(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.titles.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.years_of_experience(class_='form-control', placeholder=role_form.years_of_experience.label.text) }}
-                        {{ role_form.years_of_experience.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.qualifications(class_='form-control', placeholder=role_form.qualifications.label.text) }}
-                        {{ role_form.qualifications.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.registrations(class_='form-control', placeholder=role_form.registrations.label.text) }}
-                        {{ role_form.registrations.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
-                        {{ role_form.country.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.location(class_='form-control', placeholder=role_form.location.label.text) }}
-                        {{ role_form.location.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.languages.label }}
-                    </div>
-                    
-                    <div class='form-floating'>
-                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.issues.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.interventions(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.interventions.label }}
-                    </div>
-
-                    <div class='form-floating'>
-                        {{ role_form.link(class_='form-control', placeholder=role_form.link.label.text) }}
-                        {{ role_form.link.label }}
-                    </div>
-                    
-                    {{ submit_button(role_form.submit) }}
-                
-                </form>
-            
-            {% elif current_user.role == UserRole.CLIENT %}
-                
-                <h3>Background Information</h3>
-
-                <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
-                
-                    {{ role_form.csrf_token }}
-                
-                    <div class='form-floating'>
-                        {{ role_form.date_of_birth(class_='form-control', placeholder=role_form.date_of_birth.label.text) }}
-                        {{ role_form.date_of_birth.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.occupation(class_='form-control form-select', placeholder=role_form.occupation.label.text) }}
-                        {{ role_form.occupation.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.address(class_='form-control', placeholder=role_form.address.label.text) }}
-                        {{ role_form.address.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.phone(class_='form-control', placeholder=role_form.phone.label.text) }}
-                        {{ role_form.phone.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.emergency_contact_name(class_='form-control', placeholder=role_form.emergency_contact_name.label.text) }}
-                        {{ role_form.emergency_contact_name.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.emergency_contact_phone(class_='form-control', placeholder=role_form.emergency_contact_phone.label.text) }}
-                        {{ role_form.emergency_contact_phone.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.referral_source(class_='form-control form-select', placeholder=role_form.referral_source.label.text) }}
-                        {{ role_form.referral_source.label }}
-                    </div>
-                
-                    <div class='form-floating'>
-                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
-                        {{ role_form.issues.label }}
-                    </div>
-
-                    <div class="form-check">
-                        {{ role_form.consent(class_='form-check-input') }}
-                        {{ role_form.consent.label(class_='form-check-label') }}
-                    </div>
-                    
-                    {{ submit_button(role_form.submit) }}
-
-                </form>
-                
-            {% endif %}
+        <div class='row mb-3 g-4'>
+            <div class='col-lg-12'>
+                <h3>{{ current_user.role.value }} Profile</h3>
+            </div>
         </div>
+    
+        <div class="row g-4">
+
+            <div class='col-lg-4'>
+                <div class='my-container'>
+                    <h3>Personal Information</h3>
+                    <form id="{{ user_form.id }}" action="{{ user_form.endpoint }}" enctype="multipart/form-data" novalidate>
+                        
+                        {{ user_form.csrf_token }}
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div id="profile-picture-container">
+                                    <img id="profile-picture-preview"
+                                            src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}"
+                                            alt="Profile picture"
+                                            class="{{ 'default-pic' if not current_user.profile_picture }}">
+                                    <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
+                                        <i class="fa fa-camera"></i>
+                                    </label>
+                                    {{ user_form.profile_picture(style='display: none;', onchange="previewImage(event)") }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ user_form.first_name(class_='form-control', placeholder=user_form.first_name.label.text) }}
+                                    {{ user_form.first_name.label }}
+                                </div>
+                                </div>
+                            </div>
+            
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ user_form.last_name(class_='form-control', placeholder=user_form.last_name.label.text) }}
+                                    {{ user_form.last_name.label }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ user_form.gender(class_='form-control form-select', placeholder=user_form.gender.label.text) }}
+                                    {{ user_form.gender.label }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                {{ submit_button(user_form.submit) }}
+                            </div>
+                        </div>
+                    
+                    </form>
+                </div>
+            </div>
+            
+            <div class='col-lg-8'>
+                <div class='my-container'>
+
+                    {% if current_user.role == UserRole.THERAPIST %}
+
+                        <h3>Professional Information</h3>
+                        
+                        <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
+                            
+                            {{ role_form.csrf_token }}
+                            
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.titles(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.titles.label }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.years_of_experience(class_='form-control', placeholder=role_form.years_of_experience.label.text) }}
+                                        {{ role_form.years_of_experience.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class='form-floating'>
+                                        {{ role_form.qualifications(class_='form-control', placeholder=role_form.qualifications.label.text) }}
+                                        {{ role_form.qualifications.label }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class='form-floating'>
+                                        {{ role_form.registrations(class_='form-control', placeholder=role_form.registrations.label.text) }}
+                                        {{ role_form.registrations.label }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
+                                        {{ role_form.country.label }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.languages.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.location(class_='form-control', placeholder=role_form.location.label.text) }}
+                                        {{ role_form.location.label }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.link(class_='form-control', placeholder=role_form.link.label.text) }}
+                                        {{ role_form.link.label }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.issues.label }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.interventions(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.interventions.label }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ submit_button(role_form.submit) }}
+                                </div>
+                            </div>
+                        
+                        </form>
+                    
+                    {% elif current_user.role == UserRole.CLIENT %}
+                        
+                        <h3>Background Information</h3>
+
+                        <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
+                        
+                            {{ role_form.csrf_token }}
+                        
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+
+                                    <div class='form-floating'>
+                                        {{ role_form.date_of_birth(class_='form-control', placeholder=role_form.date_of_birth.label.text) }}
+                                        {{ role_form.date_of_birth.label }}
+                                    </div>
+                                </div>
+                            
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.occupation(class_='form-control form-select', placeholder=role_form.occupation.label.text) }}
+                                        {{ role_form.occupation.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.address(class_='form-control', placeholder=role_form.address.label.text) }}
+                                        {{ role_form.address.label }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.phone(class_='form-control', placeholder=role_form.phone.label.text) }}
+                                        {{ role_form.phone.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.emergency_contact_name(class_='form-control', placeholder=role_form.emergency_contact_name.label.text) }}
+                                        {{ role_form.emergency_contact_name.label }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.emergency_contact_phone(class_='form-control', placeholder=role_form.emergency_contact_phone.label.text) }}
+                                        {{ role_form.emergency_contact_phone.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-6">
+                                
+                                    <div class='form-floating'>
+                                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.issues.label }}
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class='form-floating'>
+                                        {{ role_form.referral_source(class_='form-control form-select', placeholder=role_form.referral_source.label.text) }}
+                                        {{ role_form.referral_source.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <div class="form-check">
+                                        {{ role_form.consent(class_='form-check-input') }}
+                                        {{ role_form.consent.label(class_='form-check-label') }}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-12">
+                                    {{ submit_button(role_form.submit) }}
+                                </div>
+                            </div>
+
+                        </form>
+                        
+                    {% endif %}
+                </div>
+            </div>
         
+        </div>
     </div>
 {% endblock %}

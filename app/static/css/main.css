@@ -15,7 +15,6 @@
 
     --my-form-height: calc(3.5rem + 2px);
     --my-form-padding: 1rem 0.75rem;
-    --my-form-margin: 12px 0;
 
     --my-border-radius: 5px;
     --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
@@ -141,9 +140,8 @@ i {
     text-align: left;
 }
 
-.form-floating .form-control {
+.form-control {
     height: var(--my-form-height);
-    margin: var(--my-form-margin);
     padding: var(--my-form-padding);
     color: var(--dark-grey-text);
     background: white;
@@ -151,6 +149,7 @@ i {
     font-size: 0.9rem;
     border-radius: var(--my-border-radius);
 }
+
 
 .form-control:focus {
     color: var(--dark-grey-text);
@@ -181,29 +180,19 @@ input:-webkit-autofill:focus {
 .error-message {
     color: red;
     font-size: 0.8rem;
-    margin: var(--my-form-margin);
 }
 
-.radio-group {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    gap: 10px;
-}
-
-.radio-group.input-error {
+#role.input-error {
     border: none !important;
 }
 
-.radio-group.input-error .btn {
+#role.input-error .btn {
     border: solid 1px red !important;
 }
 
 .form-check {
     color: var(--dark-grey-text);
     font-size: 0.9rem;
-    margin: var(--my-form-margin);
 }
 
 .form-check-input:checked {
@@ -252,16 +241,6 @@ input:-webkit-autofill:focus {
     color: var(--light-grey-text);
     background: transparent;
     border: solid 1px var(--light-grey-outline);
-}
-
-.btn-check + .btn i {
-    color: var(--colour-primary);
-    margin-right: 7px;
-    display: none;
-}
-
-.btn-check:checked + .btn i {
-    display: inline;
 }
 
 .btn-check + .btn:hover {
@@ -354,7 +333,7 @@ input:-webkit-autofill:focus {
 }
 
 .my-container.centered {
-    width: 40%;
+    width: 45%;
     min-width: 200px;
 }
 
@@ -367,7 +346,6 @@ input:-webkit-autofill:focus {
 .my-container .description {
     color: var(--light-grey-text);
     font-size: 0.8rem;
-    margin: var(--my-form-margin);
     line-height: 1.75;
 }
 

@@ -1,3 +1,4 @@
+import re
 from typing import List, Optional
 
 import pycountry
@@ -25,14 +26,18 @@ class Language(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
+        # Removes characters within parentheses including the parentheses themselves
+        def clean_language_name(name):
+            return re.sub(r"\s*\(.*?\)\s*", "", name).strip()
+
         languages = [
             Language(
-                name=language.name,
+                name=clean_language_name(language.name),
                 alpha_2=getattr(language, "alpha_2", None),
                 alpha_3=getattr(language, "alpha_3", None),
             )
             for language in pycountry.languages
-            if language.type == "L"
+            if hasattr(language, "alpha_2") and language.type == "L"
         ]
         db.session.add_all(languages)
         db.session.commit()
