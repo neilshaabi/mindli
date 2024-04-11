@@ -374,6 +374,59 @@ input:-webkit-autofill:focus {
 }
 
 
+/* Profie picture displayed in profile form */
+
+#profile-picture-container {
+    margin: 20px auto;
+    position: relative;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#profile-picture-preview {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+img.default-profile-picture {
+    object-fit: contain !important;
+    border: solid 2px var(--light-grey-outline);
+}
+
+#profile-picture-upload {
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+#profile-picture-upload i {
+    color: white;
+    margin: 0;
+}
+
+
+/* Therapist card */
+
+.therapist-card .profile-pic {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+
+
 /* Miscellaneous */
 
 .centered {
@@ -412,46 +465,4 @@ input:-webkit-autofill:focus {
 
 .sidebar-layout .flashed-message {
     left: var(--sidebar-width);   
-}
-
-
-/* Profie picture */
-
-#profile-picture-container {
-    margin: 20px auto;
-    position: relative;
-    width: 120px;
-    height: 120px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-#profile-picture-preview {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    z-index: 1;
-}
-
-#profile-picture-preview.default-pic {
-    object-fit: contain;
-    border: solid 2px var(--light-grey-outline);
-}
-
-#profile-picture-upload {
-    padding: 0;
-    width: 30px;
-    height: 30px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    border-radius: 50%;
-    z-index: 2;
-}
-
-#profile-picture-upload i {
-    color: white;
-    margin: 0;
 }

@@ -1,3 +1,4 @@
+from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app.models.appointment_type import AppointmentType
@@ -10,18 +11,17 @@ from app.models.title import Title
 from app.models.user import User
 
 
-
 # Seed required models in order
 def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
     Title.seed(db)
     Language.seed(db)
     Issue.seed(db)
     Intervention.seed(db)
-    
+
     if use_fake_data:
-        User.seed(db)
-        Therapist.seed(db)
-        AppointmentType.seed(db)
-        # Client.seed(db)
+        fake = Faker()
+        User.seed(db, fake)
+        Therapist.seed(db, fake)
+        AppointmentType.seed(db, fake)
+        Client.seed(db, fake)
     return
-    

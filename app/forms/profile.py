@@ -1,4 +1,3 @@
-import pycountry
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import (
     BooleanField,
@@ -10,6 +9,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
+from app.constants import COUNTRIES
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
 from app.models.intervention import Intervention
@@ -67,7 +67,7 @@ class TherapistProfileForm(CustomFlaskForm):
     country = SelectField(
         "Country",
         choices=[("", "Select country")]
-        + [(country.name, country.name) for country in pycountry.countries],
+        + [(country, country) for country in COUNTRIES],
         default="",
         validators=[DataRequired()],
     )

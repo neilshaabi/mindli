@@ -37,8 +37,8 @@
     </head>
     <body>
 
-        <!-- Macro for reusing submit buttons across forms -->
-        {% from "_macros.html" import submit_button %}
+        <!-- Macros for reusable components across templates -->
+        {% from "_macros.html" import submit_button, therapist_card %}
         
         <!-- Show navbar/sidebar depending on error and authentication status -->
         {% set layout_type = 'sidebar' if current_user.is_authenticated else 'navbar' %}
@@ -46,7 +46,7 @@
         
         <main class="{{ layout_type }}-layout">
             
-            <!-- Content rendered by individual html pages -->
+            <!-- Content rendered by individual html templates -->
             {% block content %}{% endblock %} 
 
             <!-- Flashed messages -->

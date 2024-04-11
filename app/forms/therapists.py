@@ -1,9 +1,10 @@
-import pycountry
+from flask_login import current_user
 from wtforms import IntegerField, SelectField, SubmitField
 from wtforms.validators import Optional
 
+from app.constants import COUNTRIES
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
-from app.models.enums import Gender, TherapyMode, TherapyType
+from app.models.enums import Gender, TherapyMode, TherapyType, UserRole
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
@@ -42,9 +43,9 @@ class FilterTherapistsForm(CustomFlaskForm):
         coerce=int,
     )
     country = SelectField(
-        "Country",
+        "Based in",
         choices=[("", "Select country")]
-        + [(country.name, country.name) for country in pycountry.countries],
+        + [(country, country) for country in COUNTRIES],
         default="",
         validators=[Optional()],
     )
@@ -69,6 +70,9 @@ class FilterTherapistsForm(CustomFlaskForm):
         self.language.populate_choices(Language)
         self.specialisations.populate_choices(Issue)
         self.interventions.populate_choices(Intervention)
+
+        if current_user.role == UserRole.CLIENT and current_user.client is not None:
+            self.specialisations.preselect_choices(current_user.client.issues)
 
         #     client = kwargs.get("obj")
         #     if client:

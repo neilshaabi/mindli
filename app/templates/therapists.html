@@ -108,17 +108,9 @@
             </div>
         </div>
 
-        <div class="row g-4">
-
+        <div id="therapist-cards" class="row g-4">
             {% for therapist in therapists %}
-                <div class='col-lg-3'>
-                    <div class="my-card">
-                            <h5>{{ therapist.user.first_name }} {{ therapist.user.last_name }}</h5>
-                            <p>Years of Experience: {{ therapist.years_of_experience }}</p>
-                            <p class="text-muted">{{ therapist.specialisations|join(', ', 'name') }}</p>
-                        </div>
-                    </div>
-                </div>
+                {{ therapist_card(therapist) }}
             {% endfor %}
         </div>
 

@@ -1,12 +1,19 @@
+import random
 from typing import List, Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.constants import COUNTRIES
 from app.models import SeedableMixin
 from app.models.enums import UserRole
+from app.models.intervention import Intervention
+from app.models.issue import Issue
+from app.models.language import Language
+from app.models.title import Title
 from app.models.user import User
 
 
@@ -16,7 +23,7 @@ class Therapist(SeedableMixin, db.Model):
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
     )
     years_of_experience: so.Mapped[Optional[int]] = so.mapped_column(sa.Integer)
-    qualifications: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
+    qualifications: so.Mapped[str] = so.mapped_column(sa.Text)
     registrations: so.Mapped[Optional[str]] = so.mapped_column(sa.Text)
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
@@ -40,19 +47,78 @@ class Therapist(SeedableMixin, db.Model):
     )
 
     @classmethod
-    def seed(cls, db: SQLAlchemy) -> None:
-        fake_user_therapist = db.session.execute(
-            db.select(User).filter_by(role=UserRole.THERAPIST)
-        ).scalar_one_or_none()
+    def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
+        # Fetch titles, languages, issues, interventions from the database
+        titles = db.session.execute(db.select(Title)).scalars().all()
+        languages = db.session.execute(db.select(Language)).scalars().all()
+        issues = db.session.execute(db.select(Issue)).scalars().all()
+        interventions = db.session.execute(db.select(Intervention)).scalars().all()
 
-        fake_therapist = Therapist(
-            user_id=fake_user_therapist.id,
-            years_of_experience=5,
+        # Insert specific therapist for development purposes
+        specific_therapist_email = "therapist@example.com"
+        specific_therapist_user = db.session.execute(
+            db.select(User).filter_by(email=specific_therapist_email)
+        ).scalar_one()
+        specific_therapist = Therapist(
+            user_id=specific_therapist_user.id,
+            years_of_experience=3,
             country="Singapore",
-            location="21 Lower Kent Ridge Rd, Singapore 119077",
-            qualifications="Doctor of Psychology in Clinical Psychology, NUS",
+            location="22 Eng Hoon St, Singapore 169772",
+            qualifications="Master of Psychology, NUS",
             registrations="Singapore Psychological Society (SPS)",
+            link=fake.url(),
+            titles=titles,
+            languages=[
+                db.session.execute(
+                    db.select(Language).filter_by(name="English")
+                ).scalar_one()
+            ],
+            specialisations=issues[:3],
+            interventions=interventions[:3],
         )
-        db.session.add(fake_therapist)
+        db.session.add(specific_therapist)
+
+        # Fetch all other users with a role of THERAPIST
+        therapist_users = (
+            db.session.execute(
+                db.select(User).where(
+                    User.role == UserRole.THERAPIST,
+                    User.email != specific_therapist_email,
+                )
+            )
+            .scalars()
+            .all()
+        )
+
+        for user in therapist_users:
+            # Randomly select associated data from the fetched lists
+            random_titles = random.sample(
+                titles, random.randint(1, min(3, len(titles)))
+            )
+            random_languages = random.sample(
+                languages, random.randint(1, min(3, len(languages)))
+            )
+            random_issues = random.sample(
+                issues, random.randint(1, min(3, len(issues)))
+            )
+            random_interventions = random.sample(
+                interventions, random.randint(1, min(3, len(interventions)))
+            )
+
+            fake_therapist = Therapist(
+                user_id=user.id,
+                years_of_experience=random.randint(1, 20),
+                country=random.choice(COUNTRIES),
+                location=fake.address(),
+                qualifications="Example qualification",
+                registrations=fake.sentence(nb_words=4),
+                link=fake.url(),
+                titles=random_titles,
+                languages=random_languages,
+                specialisations=random_issues,
+                interventions=random_interventions,
+            )
+            db.session.add(fake_therapist)
+
         db.session.commit()
         return

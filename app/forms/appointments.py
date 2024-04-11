@@ -1,6 +1,7 @@
 from wtforms import DecimalField, HiddenField, IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
+from app.constants import CURRENCIES
 from app.forms import CustomFlaskForm, CustomSelectField
 from app.models.enums import TherapyMode, TherapyType
 from app.utils.validators import LocationRequired
@@ -32,7 +33,7 @@ class AppointmentTypeForm(CustomFlaskForm):
     fee_currency = SelectField(
         "Currency",
         choices=[("", "Select currency")]
-        + [("USD", "USD"), ("EUR", "EUR"), ("GBP", "GBP")],  # TODO: Add more currencies
+        + [(currency, currency) for currency in CURRENCIES],
         validators=[DataRequired()],
     )
 

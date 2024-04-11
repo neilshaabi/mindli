@@ -3,6 +3,8 @@ from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from faker import Faker
+from flask_sqlalchemy import SQLAlchemy
 
 from app import db
 
@@ -24,3 +26,7 @@ class Client(db.Model):
     issues: so.Mapped[List["Issue"]] = so.relationship(
         secondary="client_issue", back_populates="clients"
     )
+
+    @classmethod
+    def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
+        pass

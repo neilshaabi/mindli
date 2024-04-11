@@ -1,8 +1,12 @@
+import random
+
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.constants import CURRENCIES
 from app.models import SeedableMixin
 from app.models.enums import TherapyMode, TherapyType
 from app.models.therapist import Therapist
@@ -24,19 +28,29 @@ class AppointmentType(SeedableMixin, db.Model):
     )
 
     @classmethod
-    def seed(cls, db: SQLAlchemy) -> None:
-        fake_therapist = db.session.execute(
-            db.select(Therapist).order_by(Therapist.id)
-        ).scalar_one()
+    def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
+        # Fetch all therapists
+        therapists = db.session.execute(db.select(Therapist)).scalars().all()
 
-        fake_appointment_type = AppointmentType(
-            therapist_id=fake_therapist.id,
-            therapy_type=TherapyType.INDIVIDUAL,
-            therapy_mode=TherapyMode.IN_PERSON,
-            duration=60,
-            fee_amount=200,
-            fee_currency="USD",
-        )
-        db.session.add(fake_appointment_type)
+        for therapist in therapists:
+            # Create 1-3 random appointment types for each therapist
+            for _ in range(random.randint(1, 3)):
+                therapy_type = random.choice(list(TherapyType))
+                therapy_mode = random.choice(list(TherapyMode))
+                duration = random.choice([30, 45, 60, 90])
+                fee_amount = random.uniform(50.0, 200.0)
+                fee_currency = random.choice(CURRENCIES)
+
+                appointment_type = AppointmentType(
+                    therapist_id=therapist.id,
+                    therapy_type=therapy_type,
+                    therapy_mode=therapy_mode,
+                    duration=duration,
+                    fee_amount=fee_amount,
+                    fee_currency=fee_currency,
+                )
+
+                db.session.add(appointment_type)
+
         db.session.commit()
         return

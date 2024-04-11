@@ -63,8 +63,8 @@ def register() -> Response:
         password_hash=generate_password_hash(form.password.data),
         first_name=form.first_name.data.capitalize(),
         last_name=form.last_name.data.capitalize(),
-        date_joined=date.today(),
         role=UserRole(form.role.data),
+        date_joined=date.today(),
         verified=False,
         active=True,
     )

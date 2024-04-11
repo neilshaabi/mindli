@@ -27,10 +27,9 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <div id="profile-picture-container">
-                                    <img id="profile-picture-preview"
-                                            src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}"
-                                            alt="Profile picture"
-                                            class="{{ 'default-pic' if not current_user.profile_picture }}">
+                                    <img id="profile-picture-preview" src="{{ url_for('static', filename='img/profile_pictures/' + (current_user.profile_picture or 'default.png')) }}" 
+                                        class="{{ 'default-profile-picture' if not current_user.profile_picture }}"
+                                        alt="Profile picture">
                                     <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
                                         <i class="fa fa-camera"></i>
                                     </label>

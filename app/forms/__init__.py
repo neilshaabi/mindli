@@ -44,9 +44,11 @@ class SelectFieldMixin:
         if self.data is None:
             return
 
-        selected_data = db.session.execute(
-            db.select(child).filter(child.id.in_(self.data))
-        ).scalars()
+        selected_data = (
+            db.session.execute(db.select(child).filter(child.id.in_(self.data)))
+            .scalars()
+            .all()
+        )
         getattr(parent, children).extend(selected_data)
         return
 

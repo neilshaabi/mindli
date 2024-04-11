@@ -1,8 +1,10 @@
+import random
 from datetime import date
 from typing import Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from faker import Faker
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
@@ -19,17 +21,11 @@ class User(UserMixin, SeedableMixin, db.Model):
     first_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     last_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
-    date_joined: so.Mapped[date] = so.mapped_column(sa.Date)
     role: so.Mapped["UserRole"] = so.mapped_column(sa.Enum(UserRole))
+    date_joined: so.Mapped[date] = so.mapped_column(sa.Date)
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
     profile_picture: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
-    timezone: so.Mapped[Optional[str]] = so.mapped_column(
-        sa.String(50)
-    )  # IANA Time Zone Database name
-    currency: so.Mapped[Optional[str]] = so.mapped_column(
-        sa.String(3)
-    )  # ISO 4217 currency code
 
     client: so.Mapped[Optional["Client"]] = so.relationship(
         back_populates="user", cascade="all, delete-orphan"
@@ -39,32 +35,60 @@ class User(UserMixin, SeedableMixin, db.Model):
     )
 
     @classmethod
-    def seed(cls, db: SQLAlchemy) -> None:
-        fake_password = "ValidPassword1"
+    def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
+        # Fake password that meets requirements to be used for all users
+        fake_password_hash = generate_password_hash("ValidPassword1")
 
-        fake_user_client = User(
+        specific_fake_user_client = User(
             email="client@example.com".lower(),
-            password_hash=generate_password_hash(fake_password),
+            password_hash=fake_password_hash,
             first_name="John",
             last_name="Smith",
-            date_joined=date.today(),
+            gender=Gender.MALE,
             role=UserRole.CLIENT,
-            verified=True,
-            active=True,
-        )
-
-        fake_user_therapist = User(
-            email="therapist@example.com".lower(),
-            password_hash=generate_password_hash(fake_password),
-            first_name="Alison",
-            last_name="Gray",
             date_joined=date.today(),
-            role=UserRole.THERAPIST,
             verified=True,
             active=True,
         )
+        db.session.add(specific_fake_user_client)
 
-        fake_users = [fake_user_client, fake_user_therapist]
-        db.session.add_all(fake_users)
+        specific_fake_user_therapist = User(
+            email="therapist@example.com".lower(),
+            password_hash=fake_password_hash,
+            first_name="Jane",
+            last_name="Doe",
+            gender=Gender.FEMALE,
+            role=UserRole.THERAPIST,
+            date_joined=date.today(),
+            verified=True,
+            active=True,
+        )
+        db.session.add(specific_fake_user_therapist)
+
+        # Insert therapists
+        for _ in range(10):
+            # Create a fake email that doesn't already exist in the database
+            fake_email = fake.unique.email().lower()
+            while (
+                db.session.execute(
+                    db.select(User).filter_by(email=fake_email)
+                ).scalar_one_or_none()
+                is not None
+            ):
+                fake_email = fake.unique.email()
+
+            fake_user_therapist = User(
+                email=fake_email,
+                password_hash=fake_password_hash,
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                gender=random.choice(list(Gender)),
+                role=UserRole.THERAPIST,
+                date_joined=date.today(),
+                verified=True,
+                active=True,
+            )
+            db.session.add(fake_user_therapist)
+
         db.session.commit()
         return

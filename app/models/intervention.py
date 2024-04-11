@@ -21,7 +21,7 @@ class Intervention(SeedableMixin, db.Model):
         intervention_names = [
             "Acceptance and commitment therapy (ACT)",
             "Art therapy",
-            "Cognitive behaviour therapy (CBT)",
+            "Cognitive behavioural therapy (CBT)",
             "Dialectical behaviour therapy (DBT)",
             "Emotion-focused therapy (EFT)",
             "Eye movement desensitisation and reprocessing (EMDR)",
@@ -46,8 +46,8 @@ class Intervention(SeedableMixin, db.Model):
             "Schema therapy",
             "Solution-focused brief therapy (SFBT)",
             "Systemic therapy",
-            "Transpersonal psychology",
             "Transactional Analysis",
+            "Transpersonal psychology",
         ]
         interventions = [
             Intervention(name=intervention_name)

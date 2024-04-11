@@ -73,13 +73,16 @@ function registerFormHandlers() {
                 // Remove flashed messages
                 $('.flashed-message').remove();
             },
-            success: function(response) {
-
-                if (response.success) { // Redirect user
-                    window.location = response.url;
+            success: function(response) {    
+                if (response.success) {
+                    if (response.url) { // Redirect user to url
+                        window.location = response.url;
+                    } else if (response.replaced_id) { // Replace element with new HTML
+                        $('#' + response.replaced_id).html(response.new_html)
+                    }
                 } else if (response.errors) { // Display form errors
 
-                    // Get the form prefix (for pages with multiple forms of the same type)
+                    // Get the form prefix (for templates with multiple forms of the same type)
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";
 
                     var newErrorMessages = {};
@@ -135,8 +138,6 @@ function registerFormHandlers() {
                             inputField.after(errorMessage); // Insert after individual fields
                         }
                     }
-                } else {
-                    window.location = '/error';
                 }
             },
             error: function() {

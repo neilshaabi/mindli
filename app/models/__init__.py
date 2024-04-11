@@ -1,9 +1,12 @@
+from typing import Optional
+
+from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 
 class SeedableMixin:
     @classmethod
-    def seed(cls, db: SQLAlchemy) -> None:
+    def seed(cls, db: SQLAlchemy, fake: Optional[Faker] = None) -> None:
         pass
 
 
@@ -23,4 +26,3 @@ from .language import Language
 from .therapist import Therapist
 from .title import Title
 from .user import User
-from .appointment_type import AppointmentType
