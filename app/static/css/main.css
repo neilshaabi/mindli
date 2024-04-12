@@ -344,7 +344,7 @@ input:-webkit-autofill:focus {
     line-height: 1.75;
 }
 
-.my-card .btn {
+form .btn {
     width: 100%;
     height: var(--my-form-height);
 }

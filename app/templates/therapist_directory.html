@@ -25,7 +25,7 @@
                         
                         {{ filter_form.csrf_token }}
                         
-                        <div class="row g-3">
+                        <div class="row g-3 mb-3">
 
                             <div class="col-lg-auto">
                                 <div class='form-floating'>
@@ -104,11 +104,17 @@
                                     {{ filter_form.interventions.label }}
                                 </div>
                             </div>
+                        </div>
+                        
+                        <div class="row g-3">
 
                             <div class="col-lg-auto">
-                                {{ submit_button(filter_form.submit) }}
+                                {{ submit_button(filter_form.submit_filter) }}
                             </div>
 
+                            <div class="col-lg-auto">
+                                {{ submit_button(filter_form.submit_reset_filters) }}
+                            </div>
                         </div>
                     </form>
                 </div>

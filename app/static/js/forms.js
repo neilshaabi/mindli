@@ -36,6 +36,12 @@ function enableFields(button) {
 }
 
 function registerFormHandlers() {
+
+    // Store last clicked submit button to send with request
+    $(':submit').click(function() {
+        var form = $(this).closest('form');
+        form.data({submit: {name: $(this).attr('name'), value: $(this).val()}});
+    });
     
     $('form').on('submit', function(event) {
         
@@ -43,15 +49,22 @@ function registerFormHandlers() {
 
         var form = $(this);
         var formId = form.attr('id');
+        var formData = new FormData(this);
         
         var submitBtn = form.find(":input[type='submit']");
         var btnText = submitBtn.find('.btn-text');
         var btnSpinner = submitBtn.find('.spinner-border');
 
+        // Add name of clicked submit button
+        var submitData = form.data('submit');
+        if (submitData) {
+            formData.append('submit', submitData.name);
+        }
+
         $.ajax({
             url: form.attr('action'),
             type: 'POST',
-            data: new FormData(this),
+            data: formData,
             processData: false,
             contentType: false,
             beforeSend: function() { // Show loading state for submit button, remove flashed messages

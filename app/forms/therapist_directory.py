@@ -1,10 +1,9 @@
-from flask_login import current_user
 from wtforms import IntegerField, SelectField, StringField, SubmitField
 from wtforms.validators import Optional
 
 from app.constants import COUNTRIES
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
-from app.models.enums import Gender, TherapyMode, TherapyType, UserRole
+from app.models.enums import Gender, TherapyMode, TherapyType
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
@@ -60,7 +59,10 @@ class FilterTherapistsForm(CustomFlaskForm):
         validators=[Optional()],
         coerce=int,
     )
-    submit = SubmitField("Filter")
+    submit_filter = SubmitField("Filter Therapists", render_kw={"name": "filter"})
+    submit_reset_filters = SubmitField(
+        "Reset Filters", render_kw={"name": "reset_filters"}
+    )
 
     def __init__(self, *args, **kwargs):
         super(FilterTherapistsForm, self).__init__(*args, **kwargs)
@@ -71,13 +73,4 @@ class FilterTherapistsForm(CustomFlaskForm):
         self.language.populate_choices(Language)
         self.specialisations.populate_choices(Issue)
         self.interventions.populate_choices(Intervention)
-
-        if current_user.role == UserRole.CLIENT and current_user.client is not None:
-            self.specialisations.preselect_choices(current_user.client.issues)
-
-        #     client = kwargs.get("obj")
-        #     if client:
-        #         self.preferred_language.preselect_choices(client.preferred_language)
-        #         self.preferred_gender.preselect_choices(client.preferred_gender)
-        #         self.issues.preselect_choices(client.issues)
         return
