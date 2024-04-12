@@ -19,10 +19,12 @@ from .associations import (
     therapist_title,
 )
 from .client import Client
+from .conversation import Conversation
 from .enums import Gender, TherapyMode, UserRole
 from .intervention import Intervention
 from .issue import Issue
 from .language import Language
+from .message import Message
 from .therapist import Therapist
 from .title import Title
 from .user import User

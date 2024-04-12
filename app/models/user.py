@@ -1,6 +1,6 @@
 import random
 from datetime import date
-from typing import Optional
+from typing import List, Optional
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
@@ -10,6 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
 from app import db
+from app.constants import EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
 
@@ -33,14 +34,31 @@ class User(UserMixin, SeedableMixin, db.Model):
     therapist: so.Mapped[Optional["Therapist"]] = so.relationship(
         back_populates="user", cascade="all, delete-orphan"
     )
+    conversations_as_therapist: so.Mapped[
+        Optional[List["Conversation"]]
+    ] = so.relationship(
+        back_populates="therapist_user",
+        lazy="dynamic",
+        foreign_keys="Conversation.therapist_user_id",
+    )
+    conversations_as_client: so.Mapped[
+        Optional[List["Conversation"]]
+    ] = so.relationship(
+        back_populates="client_user",
+        lazy="dynamic",
+        foreign_keys="Conversation.client_user_id",
+    )
+    messages: so.Mapped[Optional["Message"]] = so.relationship(
+        back_populates="author", cascade="all, delete-orphan"
+    )
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
         # Fake password that meets requirements to be used for all users
         fake_password_hash = generate_password_hash("ValidPassword1")
 
-        specific_fake_user_client = User(
-            email="client@example.com".lower(),
+        example_fake_user_client = User(
+            email=EXAMPLE_CLIENT_EMAIL.lower(),
             password_hash=fake_password_hash,
             first_name="John",
             last_name="Smith",
@@ -50,10 +68,10 @@ class User(UserMixin, SeedableMixin, db.Model):
             verified=True,
             active=True,
         )
-        db.session.add(specific_fake_user_client)
+        db.session.add(example_fake_user_client)
 
-        specific_fake_user_therapist = User(
-            email="therapist@example.com".lower(),
+        example_fake_user_therapist = User(
+            email=EXAMPLE_THERAPIST_EMAIL.lower(),
             password_hash=fake_password_hash,
             first_name="Jane",
             last_name="Doe",
@@ -63,7 +81,7 @@ class User(UserMixin, SeedableMixin, db.Model):
             verified=True,
             active=True,
         )
-        db.session.add(specific_fake_user_therapist)
+        db.session.add(example_fake_user_therapist)
 
         # Insert therapists
         for _ in range(10):

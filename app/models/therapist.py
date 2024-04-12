@@ -7,7 +7,7 @@ from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
-from app.constants import COUNTRIES
+from app.constants import COUNTRIES, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
 from app.models.enums import UserRole
 from app.models.intervention import Intervention
@@ -54,13 +54,12 @@ class Therapist(SeedableMixin, db.Model):
         issues = db.session.execute(db.select(Issue)).scalars().all()
         interventions = db.session.execute(db.select(Intervention)).scalars().all()
 
-        # Insert specific therapist for development purposes
-        specific_therapist_email = "therapist@example.com"
-        specific_therapist_user = db.session.execute(
-            db.select(User).filter_by(email=specific_therapist_email)
+        # Insert example therapist for development purposes
+        example_therapist_user = db.session.execute(
+            db.select(User).filter_by(email=EXAMPLE_THERAPIST_EMAIL)
         ).scalar_one()
-        specific_therapist = Therapist(
-            user_id=specific_therapist_user.id,
+        example_therapist = Therapist(
+            user_id=example_therapist_user.id,
             years_of_experience=3,
             country="Singapore",
             location="22 Eng Hoon St, Singapore 169772",
@@ -76,14 +75,14 @@ class Therapist(SeedableMixin, db.Model):
             specialisations=issues[:3],
             interventions=interventions[:3],
         )
-        db.session.add(specific_therapist)
+        db.session.add(example_therapist)
 
         # Fetch all other users with a role of THERAPIST
         therapist_users = (
             db.session.execute(
                 db.select(User).where(
                     User.role == UserRole.THERAPIST,
-                    User.email != specific_therapist_email,
+                    User.email != EXAMPLE_THERAPIST_EMAIL,
                 )
             )
             .scalars()
