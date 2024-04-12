@@ -8,7 +8,7 @@
 
 
 {% macro therapist_card(therapist) %}
-    <div class="col-lg-4">
+    <div class="col-lg-6">
         <div class="my-card therapist-card">
             <div class="row mb-3">
                 <div class="col-2">
@@ -31,7 +31,7 @@
                 <p class="p-0">Years of Experience: {{ therapist.years_of_experience }}</p>
                 <p class="p-0">Specialisations: {{ therapist.specialisations|join(', ', 'name') }}</p>
                 <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
-                <a href="#" class="btn btn-primary">View Profile</a>
+                <a href="{{ url_for('therapist_directory.therapist', therapist_id=therapist.id) }}" class="btn btn-primary">View Profile</a>
             </div>
         </div>
     </div>

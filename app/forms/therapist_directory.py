@@ -1,5 +1,5 @@
 from flask_login import current_user
-from wtforms import IntegerField, SelectField, SubmitField
+from wtforms import IntegerField, SelectField, StringField, SubmitField
 from wtforms.validators import Optional
 
 from app.constants import COUNTRIES
@@ -12,6 +12,7 @@ from app.models.title import Title
 
 
 class FilterTherapistsForm(CustomFlaskForm):
+    name = StringField("Search by name", validators=[Optional()])
     therapy_type = CustomSelectField(
         "Therapy type",
         choices=[("", "Select type")],

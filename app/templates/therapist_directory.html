@@ -23,9 +23,16 @@
 
                     <form id="{{ filter_form.id }}" action="{{ filter_form.endpoint }}" novalidate>
                         
-                        <div class="row g-2">
+                        {{ filter_form.csrf_token }}
                         
-                            {{ filter_form.csrf_token }}
+                        <div class="row g-3">
+
+                            <div class="col-lg-auto">
+                                <div class='form-floating'>
+                                    {{ filter_form.name(class_='form-control', placeholder=filter_form.name.label.text) }}
+                                    {{ filter_form.name.label }}
+                                </div>
+                            </div>
 
                             <div class="col-lg-auto">
                                 <div class='form-floating'>

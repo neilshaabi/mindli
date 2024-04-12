@@ -1,0 +1,41 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Log in
+{% endblock %}
+
+{% block content %}
+    
+    <div class='container'>
+
+        <div class="row">
+            <div class="col-lg-9 mx-auto">
+                <div class="my-card therapist-card">
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + (therapist.user.profile_picture or 'default.png')) }}" 
+                                class="profile-pic {{ 'default-profile-picture' if not therapist.user.profile_picture }}" 
+                                alt="Profile picture of {{ therapist.user.first_name }} {{ therapist.user.last_name }}">
+                        </div>
+                        <div class="col-10 ps-4">
+                            <h5>{{ therapist.user.first_name }} {{ therapist.user.last_name }}</h5>
+                            <span class="text-muted">{{ therapist.qualifications }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <p class="p-0">Types: {{ therapist.appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
+                        <p class="p-0">Modes: {{ therapist.appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
+                        <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
+                        <p class="p-0">Gender: {{ therapist.user.gender.value }}</p>
+                        <p class="p-0">Languages: {{ therapist.languages|join(', ', 'name') }}</p>
+                        <p class="p-0">Based in: {{ therapist.country }}</p>
+                        <p class="p-0">Years of Experience: {{ therapist.years_of_experience }}</p>
+                        <p class="p-0">Specialisations: {{ therapist.specialisations|join(', ', 'name') }}</p>
+                        <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
