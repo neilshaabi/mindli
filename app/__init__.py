@@ -65,13 +65,13 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
         seed_db(db=db, use_fake_data=app.config["FAKE_DATA"])
 
     # Register blueprints with endpoints
-    from app.views import appointments, auth, main, profile, therapists
+    from app.views import appointments, auth, main, profile, therapist_directory
 
     app.register_blueprint(appointments.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(profile.bp)
-    app.register_blueprint(therapists.bp)
+    app.register_blueprint(therapist_directory.bp)
 
     # Register handler to redirect to custom error page
     from app.views.errors import register_error_handlers
