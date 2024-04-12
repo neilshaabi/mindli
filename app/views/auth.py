@@ -19,9 +19,9 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 from app.forms.auth import (
-    RequestPasswordResetForm,
     LoginForm,
     RegisterForm,
+    RequestPasswordResetForm,
     ResetPasswordForm,
     VerifyEmailForm,
 )
