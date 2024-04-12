@@ -11,21 +11,22 @@ from app.models.language import Language
 from app.models.therapist import Therapist
 from app.models.title import Title
 
-bp = Blueprint("therapists", __name__)
+bp = Blueprint("therapist_directory", __name__)
 
 
 @bp.route("/therapists", methods=["GET"])
 @login_required
 def therapists():
     filter_form = FilterTherapistsForm(
-        id="filter-therapists", endpoint=url_for("therapists.filtered_therapists")
+        id="filter-therapists",
+        endpoint=url_for("therapist_directory.filtered_therapists"),
     )
 
     therapists = db.session.execute(db.select(Therapist)).scalars().all()
 
     # Render a template, passing the filter form to it
     return render_template(
-        "therapists.html", filter_form=filter_form, therapists=therapists
+        "therapist_directory.html", filter_form=filter_form, therapists=therapists
     )
 
 
@@ -33,7 +34,8 @@ def therapists():
 @login_required
 def filtered_therapists():
     filter_form = FilterTherapistsForm(
-        id="filter-therapists", endpoint=url_for("therapists.filtered_therapists")
+        id="filter-therapists",
+        endpoint=url_for("therapist_directory.filtered_therapists"),
     )
 
     # Invalid form submission - return errors
@@ -106,5 +108,9 @@ def filtered_therapists():
     )
 
     return jsonify(
-        {"success": True, "replaced_id": "therapist-cards", "new_html": therapists_html}
+        {
+            "success": True,
+            "update_target": "therapist-cards",
+            "updated_html": therapists_html,
+        }
     )
