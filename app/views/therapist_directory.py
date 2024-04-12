@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, render_template, render_template_string, u
 from flask_login import login_required
 
 from app import db
-from app.forms.therapists import FilterTherapistsForm
+from app.forms.therapist_directory import FilterTherapistsForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType
 from app.models.intervention import Intervention
