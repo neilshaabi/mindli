@@ -332,11 +332,6 @@ input:-webkit-autofill:focus {
     border: none;
 }
 
-.my-card.centered {
-    width: 45%;
-    min-width: 200px;
-}
-
 @media only screen and (max-width: 768px) {
     .my-card {
         width: 100%;
@@ -428,14 +423,6 @@ img.default-profile-picture {
 
 
 /* Miscellaneous */
-
-.centered {
-    margin: 0 auto;
-}
-
-.hidden {
-    display: none;
-}
 
 .alert {
     margin-bottom: 10px;

@@ -40,7 +40,7 @@ class VerifyEmailForm(CustomFlaskForm):
     submit = SubmitField("Resend Email")
 
 
-class InitiatePasswordResetForm(CustomFlaskForm):
+class RequestPasswordResetForm(CustomFlaskForm):
     email = StringField("Email address", validators=[DataRequired(), Email()])
     submit = SubmitField("Continue")
 

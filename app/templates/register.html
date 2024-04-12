@@ -7,84 +7,89 @@
 {% block content %}
 
     <div class='container'>
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                
+                <div class='my-card'>
+                
+                    <h3>Create account</h3>
+                    <p>Have an account? <a href='/login'>Sign in</a></p>
 
-        <div class='my-card centered'>
-            <h3>Create account</h3>
-            <p>Have an account? <a href='/login'>Sign in</a></p>
+                    <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+                    
+                        {{ form.csrf_token }}
 
-            <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
-            
-                {{ form.csrf_token }}
-
-                <div class="row mb-3 g-2" id='role'>
-                    {% for role in form.role %}
-                        <div class="col-md-6">
-                            {{ role(class_='btn-check', id=role.id) }}
-                            {{ role.label(class_='btn btn-outline-primary') }}
+                        <div class="row mb-3 g-2" id='role'>
+                            {% for role in form.role %}
+                                <div class="col-md-6">
+                                    {{ role(class_='btn-check', id=role.id) }}
+                                    {{ role.label(class_='btn btn-outline-primary') }}
+                                </div>
+                            {% endfor %}
                         </div>
-                    {% endfor %}
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.first_name(class_='form-control', placeholder=form.first_name.label.text) }}
-                            {{ form.first_name.label }}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.first_name(class_='form-control', placeholder=form.first_name.label.text) }}
+                                    {{ form.first_name.label }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.last_name(class_='form-control', placeholder=form.last_name.label.text) }}
-                            {{ form.last_name.label }}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.last_name(class_='form-control', placeholder=form.last_name.label.text) }}
+                                    {{ form.last_name.label }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
-                            {{ form.email.label }}
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
+                                    {{ form.email.label }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
-                            {{ form.password.label }}
-                            <button type='button' id='togglePassword'>
-                                <i class='fa-solid fa-eye'></i>
-                            </button>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
+                                    {{ form.password.label }}
+                                    <button type='button' id='togglePassword'>
+                                        <i class='fa-solid fa-eye'></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='description'>
-                            Password requirements:
-                            <ul>
-                                <li>At least 8 characters</li>
-                                <li>1 uppercase letter (A-Z)</li>
-                                <li>1 lowercase letter (a-z)</li>
-                                <li>1 number (0-9)</li>
-                            </ul>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='description'>
+                                    Password requirements:
+                                    <ul>
+                                        <li>At least 8 characters</li>
+                                        <li>1 uppercase letter (A-Z)</li>
+                                        <li>1 lowercase letter (a-z)</li>
+                                        <li>1 number (0-9)</li>
+                                    </ul>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-12">
-                        {{ submit_button(form.submit) }}
-                    </div>
-                </div>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                {{ submit_button(form.submit) }}
+                            </div>
+                        </div>
 
-            </form>
+                    </form>
+                </div>
+            </div>
         </div>
     </div>
 

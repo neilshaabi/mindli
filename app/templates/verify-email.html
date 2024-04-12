@@ -6,17 +6,30 @@
 
 {% block content %}
 
-    <div class='my-card centered'>
-        
-        <h3>Verify your email</h3>
-        <p>Check <strong>{{ email }}</strong> to activate your account</p>
-        
-        <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
-            {{ form.csrf_token }}
-            {{ submit_button(form.submit) }}
-        </form>
-        
-        <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
+    <div class='container'>
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                
+                <div class='my-card'>
+                    
+                    <h3>Verify your email</h3>
+                    <p>Check <strong>{{ email }}</strong> to activate your account</p>
+                    
+                    <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+                        {{ form.csrf_token }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                {{ submit_button(form.submit) }}
+                            </div>
+                        </div>
+                    </form>
+                    
+                    <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
+                
+                </div>
+            </div>
+        </div>
     </div>
 
 {% endblock %}

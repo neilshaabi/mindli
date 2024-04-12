@@ -19,7 +19,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
 from app.forms.auth import (
-    InitiatePasswordResetForm,
+    RequestPasswordResetForm,
     LoginForm,
     RegisterForm,
     ResetPasswordForm,
@@ -192,16 +192,16 @@ def email_verification(token):
         return redirect(url_for("auth.login"))
 
 
-@bp.route("/initiate-password-reset", methods=["GET", "POST"])
-def initiate_password_reset() -> Response:
-    form = InitiatePasswordResetForm(
-        id="initiate-password-reset",
-        endpoint=url_for("auth.initiate_password_reset"),
+@bp.route("/request-password-reset", methods=["GET", "POST"])
+def request_password_reset() -> Response:
+    form = RequestPasswordResetForm(
+        id="request-password-reset",
+        endpoint=url_for("auth.request_password_reset"),
     )
 
     # GET request - display page
     if request.method == "GET":
-        return render_template("initiate-password-reset.html", form=form)
+        return render_template("request-password-reset.html", form=form)
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():

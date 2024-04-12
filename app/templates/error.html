@@ -6,15 +6,24 @@
 
 {% block content %}
 
-    <div class='my-card centered'>
-        {% if is_http_exception %}
-            <h3>{{ error.code }} {{ error.name }}</h3>
-            <p>{{ error.description }}</p>
-        {% else %}
-            <h3>Error</h3>
-            <p>Sorry, it looks like something went wrong.</p>
-        {% endif %}
-        <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
+<div class='container'>
+    <div class="row">
+        <div class="col-lg-6 mx-auto">
+            
+            <div class='my-card'>
+            
+                {% if is_http_exception %}
+                    <h3>{{ error.code }} {{ error.name }}</h3>
+                    <p>{{ error.description }}</p>
+                {% else %}
+                    <h3>Error</h3>
+                    <p>Sorry, it looks like something went wrong.</p>
+                {% endif %}
+                <p class='description'>Need help? <a href='/contact'>Contact us</a></p>
+                
+            </div>
+        </div>
     </div>
+</div>
 
 {% endblock %}

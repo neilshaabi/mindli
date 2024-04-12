@@ -7,52 +7,56 @@
 {% block content %}
     
     <div class='container'>
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
 
-        <div class='my-card centered'>
-            
-            <h3>Sign in</h3>
-            <p>Don't have an account? <a href='/register'>Register</a></p>
-            
-            <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
-                
-                {{ form.csrf_token }}
-                
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
-                            {{ form.email.label }}
+                <div class='my-card'>
+                    
+                    <h3>Sign in</h3>
+                    <p>Don't have an account? <a href='/register'>Register</a></p>
+                    
+                    <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+                        
+                        {{ form.csrf_token }}
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.email(class_='form-control', placeholder=form.email.label.text) }}
+                                    {{ form.email.label }}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='form-floating'>
-                            {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
-                            {{ form.password.label }}
-                            <button type='button' id='togglePassword'>
-                                <i class='fa-solid fa-eye'></i>
-                            </button>
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='form-floating'>
+                                    {{ form.password(class_='form-control', placeholder=form.password.label.text) }}
+                                    {{ form.password.label }}
+                                    <button type='button' id='togglePassword'>
+                                        <i class='fa-solid fa-eye'></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                
-                <div class="row mb-3">
-                    <div class="col-12">
-                        <div class='description'>
-                            <a href='/initiate-password-reset'>Forgot password?</a>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <div class='description'>
+                                    <a href='/request-password-reset'>Forgot password?</a>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                        
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                {{ submit_button(form.submit) }}
+                            </div>
+                        </div>
+                    
+                    </form>
                 </div>
-                
-                <div class="row">
-                    <div class="col-12">
-                        {{ submit_button(form.submit) }}
-                    </div>
-                </div>
-            
-            </form>
+            </div>
         </div>
     </div>
 
