@@ -74,25 +74,21 @@ def messages(conversation_id):
         other_user_field = "therapist_user"
 
     # Ensure the conversation exists and the current user is part of it
-    conversation = db.session.execute(
+    selected_conversation = db.session.execute(
         db.select(Conversation).filter_by(id=conversation_id)
     ).scalar_one_or_none()
-    if not conversation or (
+    if not selected_conversation or (
         current_user.id
-        not in [conversation.therapist_user_id, conversation.client_user_id]
+        not in [
+            selected_conversation.therapist_user_id,
+            selected_conversation.client_user_id,
+        ]
     ):
         return redirect(url_for("messages.messages_entry"))
-
-    # Fetch the messages for this conversation, ordered by timestamp
-    messages = (
-        db.session.execute(
-            db.select(Message)
-            .filter_by(conversation_id=conversation_id)
-            .order_by(Message.timestamp.asc())
+    else:
+        selected_conversation.other_user = getattr(
+            selected_conversation, other_user_field
         )
-        .scalars()
-        .all()
-    )
 
     # Create a subquery to fetch the latest message in each conversation
     latest_message_subquery = (
@@ -128,6 +124,6 @@ def messages(conversation_id):
 
     return render_template(
         "messages.html",
+        selected_conversation=selected_conversation,
         conversations=conversations,
-        messages=messages,
     )

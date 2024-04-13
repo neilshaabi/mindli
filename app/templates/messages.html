@@ -20,23 +20,61 @@
                 
                 <div class='my-card'>
                     <h3>Recent conversations</h3>
-                    {% for conversation in conversations %}
-                        <p>{{ conversation.id }}</p>
-                        <p>{{ conversation.other_user.first_name + ' ' + conversation.other_user.last_name }}</p>
-                        {% if conversation.messages %}
-                            <p>{{ conversation.latest_message_content | truncate(30, '...') }}</p>
-                            <p>{{ conversation.time_since_latest_message }}</p>
-                        {% else %}
-                            <p>No messages yet</p>
-                        {% endif %}
-                        <hr>
-                    {% endfor %}
+                    <p>SEARCH BAR</p>
+                    <p>SEARCH BAR</p>
+                    <p>SEARCH BAR</p>
+                    {% if conversations %}
+                        {% for conversation in conversations %}
+                            <div class="row mb-3">
+                                <div class="col-2">
+                                    <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ conversation.other_user.first_name }} {{ conversation.other_user.last_name }}">
+                                </div>
+                                <div class="col-10 ps-4">
+                                    <h6>{{ conversation.other_user.first_name }} {{ conversation.other_user.last_name }}</h6>
+                                    <div class="row mb-3">
+                                        {% if conversation.messages %}
+                                            <div class="col-auto">
+                                                <span class="text-muted">{{ conversation.latest_message_content | truncate(30, '...') }}</span>
+                                            </div>
+                                            <div class="col text-end">
+                                                <span class="text-muted">{{ conversation.time_since_latest_message }}</span>
+                                            </div>
+                                        {% else %}
+                                            <p>No messages yet</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        {% endfor %}
+                    {% else %}
+                        NO CONVERSATIONS FOUND
+                    {% endif %}
                 </div>
             </div>
             
             <div class='col-lg-8'>
                 <div class='my-card'>
-
+                    <div class="row mb-3">
+                        <div class="col-2">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + selected_conversation.other_user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ selected_conversation.other_user.first_name }} {{ selected_conversation.other_user.last_name }}">
+                        </div>
+                        <div class="col-8 ps-4">
+                            <h5>{{ selected_conversation.other_user.first_name }} {{ selected_conversation.other_user.last_name }}</h5>
+                        </div>
+                        <div class="col-2 ps-4 text-end">
+                            <button>Book Appointment</button>
+                        </div>
+                    </div>
+                    {% if selected_conversation.messages %}
+                        {% for message in selected_conversation.messages %}
+                            {{ message.content }} | {{ message.timestamp }}
+                            <br>
+                            <br>
+                        {% endfor %}
+                    {% else %}
+                        NO MESSAGES
+                    {% endif %}
                 </div>
             </div>
         
