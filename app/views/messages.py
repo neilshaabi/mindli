@@ -1,12 +1,11 @@
-from flask import Blueprint, render_template
+from flask import Blueprint, redirect, render_template, url_for
 from flask_login import current_user, login_required
-from sqlalchemy import func
-from sqlalchemy.orm import joinedload
 
 from app import db
 from app.models.conversation import Conversation
 from app.models.enums import UserRole
 from app.models.message import Message
+from app.utils.formatters import format_time_since
 
 bp = Blueprint(
     "messages",
@@ -16,54 +15,119 @@ bp = Blueprint(
 
 @bp.route("/messages", methods=["GET"])
 @login_required
-def messages():
-    # Determine conversation fields based on the current user's role
+def messages_entry():
+    # Determine field for current user's id based on their role
     if current_user.role == UserRole.THERAPIST:
-        current_user_field = Conversation.therapist_user_id
-        other_user_field = Conversation.client_user_id
-    elif current_user.role == UserRole.CLIENT:
-        current_user_field = Conversation.client_user_id
-        other_user_field = Conversation.therapist_user_id
+        current_user_id_field = Conversation.therapist_user_id
+    else:
+        current_user_id_field = Conversation.client_user_id
 
-    # Create a subquery for the latest message in each conversation
+    # Create a subquery to fetch the latest message timestamp in each conversation
     latest_message_subquery = (
         db.select(
-            Message.conversation_id,
-            func.max(Message.timestamp).label("latest_timestamp"),
+            Message.conversation_id.label("conversation_id"),
+            db.func.max(Message.timestamp).label("latest_timestamp"),
+        )
+        .group_by(Message.conversation_id)
+        .subquery()
+    )
+
+    # Fetch the latest conversation by joining with the latest message subquery
+    latest_conversation_query = (
+        db.select(Conversation)
+        .join(
+            latest_message_subquery,
+            Conversation.id == latest_message_subquery.c.conversation_id,
+        )
+        .where(current_user_id_field == current_user.id)
+        .order_by(latest_message_subquery.c.latest_timestamp.desc())
+        .limit(1)
+    )
+    latest_conversation = db.session.execute(
+        latest_conversation_query
+    ).scalar_one_or_none()
+
+    # Redirect to endpoint with most recent conversation selected, if one exists
+    if latest_conversation is not None:
+        return redirect(
+            url_for("messages.messages", conversation_id=latest_conversation.id)
+        )
+
+    # No conversations found for this user
+    else:
+        return render_template(
+            "messages.html",
+            conversations=None,
+            messages=None,
+        )
+
+
+@bp.route("/messages/<int:conversation_id>", methods=["GET"])
+@login_required
+def messages(conversation_id):
+    # Determine conversation fields based on the current user's role
+    if current_user.role == UserRole.THERAPIST:
+        current_user_id_field = Conversation.therapist_user_id
+        other_user_field = "client_user"
+    elif current_user.role == UserRole.CLIENT:
+        current_user_id_field = Conversation.client_user_id
+        other_user_field = "therapist_user"
+
+    # Ensure the conversation exists and the current user is part of it
+    conversation = db.session.execute(
+        db.select(Conversation).filter_by(id=conversation_id)
+    ).scalar_one_or_none()
+    if not conversation or (
+        current_user.id
+        not in [conversation.therapist_user_id, conversation.client_user_id]
+    ):
+        return redirect(url_for("messages.messages_entry"))
+
+    # Fetch the messages for this conversation, ordered by timestamp
+    messages = (
+        db.session.execute(
+            db.select(Message)
+            .filter_by(conversation_id=conversation_id)
+            .order_by(Message.timestamp.asc())
+        )
+        .scalars()
+        .all()
+    )
+
+    # Create a subquery to fetch the latest message in each conversation
+    latest_message_subquery = (
+        db.select(
+            Message.conversation_id.label("conversation_id"),
+            db.func.max(Message.timestamp).label("latest_timestamp"),
         )
         .group_by(Message.conversation_id)
         .subquery()
     )
 
     # Fetch conversations using subquery to order conversations by latest message timestamp
-    conversations = (
-        db.session.execute(
-            db.select(Conversation)
-            .join(
-                latest_message_subquery,
-                Conversation.id == latest_message_subquery.c.conversation_id,
-            )
-            .options(joinedload(Conversation.messages))
-            .filter(current_user_field == current_user.id)
-            .order_by(latest_message_subquery.c.latest_timestamp.desc())
+    conversations_query = (
+        db.select(Conversation)
+        .join(
+            latest_message_subquery,
+            Conversation.id == latest_message_subquery.c.conversation_id,
         )
-        .scalars()
-        .all()
+        .where(current_user_id_field == current_user.id)
+        .order_by(latest_message_subquery.c.latest_timestamp.desc())
     )
+    conversations = db.session.execute(conversations_query).unique().scalars().all()
 
-    # Display latest message of each conversation in template
+    # Display latest message and the time that has passed for each conversation
     for conversation in conversations:
-        conversation.latest_message = (
-            conversation.messages[-1].content
-            if conversation.messages
-            else "No messages yet"
-        )
-        conversation.other_user_full_name = (
-            getattr(conversation, other_user_field).first_name
-            + " "
-            + getattr(conversation, other_user_field).last_name
-        )
+        if conversation.messages:
+            latest_message = conversation.messages[-1]
+            conversation.latest_message_content = latest_message.content
+            conversation.time_since_latest_message = format_time_since(
+                latest_message.timestamp
+            )
+            conversation.other_user = getattr(conversation, other_user_field)
 
     return render_template(
-        "messages.html", conversations=conversations, other_user_field=other_user_field
+        "messages.html",
+        conversations=conversations,
+        messages=messages,
     )

@@ -21,15 +21,22 @@
                 <div class='my-card'>
                     <h3>Recent conversations</h3>
                     {% for conversation in conversations %}
-                        <p>{{ conversation.other_user_full_name }}</p>
-                        <p>{{ conversation.latest_message }}</p>
-                        <br>
+                        <p>{{ conversation.id }}</p>
+                        <p>{{ conversation.other_user.first_name + ' ' + conversation.other_user.last_name }}</p>
+                        {% if conversation.messages %}
+                            <p>{{ conversation.latest_message_content | truncate(30, '...') }}</p>
+                            <p>{{ conversation.time_since_latest_message }}</p>
+                        {% else %}
+                            <p>No messages yet</p>
+                        {% endif %}
+                        <hr>
                     {% endfor %}
                 </div>
             </div>
             
             <div class='col-lg-8'>
                 <div class='my-card'>
+
                 </div>
             </div>
         

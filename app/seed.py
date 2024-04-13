@@ -3,9 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 
 from app.models.appointment_type import AppointmentType
 from app.models.client import Client
+from app.models.conversation import Conversation
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
+from app.models.message import Message
 from app.models.therapist import Therapist
 from app.models.title import Title
 from app.models.user import User
@@ -24,4 +26,6 @@ def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
         Therapist.seed(db, fake)
         AppointmentType.seed(db, fake)
         Client.seed(db, fake)
+        Conversation.seed(db)
+        Message.seed(db, fake)
     return

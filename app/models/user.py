@@ -54,38 +54,8 @@ class User(UserMixin, SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
-        # Fake password that meets requirements to be used for all users
-        fake_password_hash = generate_password_hash("ValidPassword1")
-
-        example_fake_user_client = User(
-            email=EXAMPLE_CLIENT_EMAIL.lower(),
-            password_hash=fake_password_hash,
-            first_name="John",
-            last_name="Smith",
-            gender=Gender.MALE,
-            role=UserRole.CLIENT,
-            date_joined=date.today(),
-            verified=True,
-            active=True,
-        )
-        db.session.add(example_fake_user_client)
-
-        example_fake_user_therapist = User(
-            email=EXAMPLE_THERAPIST_EMAIL.lower(),
-            password_hash=fake_password_hash,
-            first_name="Jane",
-            last_name="Doe",
-            gender=Gender.FEMALE,
-            role=UserRole.THERAPIST,
-            date_joined=date.today(),
-            verified=True,
-            active=True,
-        )
-        db.session.add(example_fake_user_therapist)
-
-        # Insert therapists
-        for _ in range(10):
-            # Create a fake email that doesn't already exist in the database
+        # Create a fake email that doesn't already exist in the database
+        def unique_fake_email() -> str:
             fake_email = fake.unique.email().lower()
             while (
                 db.session.execute(
@@ -94,15 +64,64 @@ class User(UserMixin, SeedableMixin, db.Model):
                 is not None
             ):
                 fake_email = fake.unique.email()
+            return fake_email
 
+        # Fake password that meets requirements to be used for all users
+        fake_password_hash = generate_password_hash("ValidPassword1")
+
+        # Insert example client for development purposes
+        example_fake_user_client = User(
+            email=EXAMPLE_CLIENT_EMAIL.lower(),
+            password_hash=fake_password_hash,
+            first_name="John",
+            last_name="Smith",
+            gender=Gender.MALE,
+            role=UserRole.CLIENT,
+            date_joined=fake.past_date(start_date="-1y", tzinfo=None),
+            verified=True,
+            active=True,
+        )
+        db.session.add(example_fake_user_client)
+
+        # Insert example therapist for development purposes
+        example_fake_user_therapist = User(
+            email=EXAMPLE_THERAPIST_EMAIL.lower(),
+            password_hash=fake_password_hash,
+            first_name="Jane",
+            last_name="Doe",
+            gender=Gender.FEMALE,
+            role=UserRole.THERAPIST,
+            date_joined=fake.past_date(start_date="-1y", tzinfo=None),
+            verified=True,
+            active=True,
+        )
+        db.session.add(example_fake_user_therapist)
+
+        # Insert 10 clients with fake and randomly selected data
+        for _ in range(10):
             fake_user_therapist = User(
-                email=fake_email,
+                email=unique_fake_email(),
+                password_hash=fake_password_hash,
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                gender=random.choice(list(Gender)),
+                role=UserRole.CLIENT,
+                date_joined=fake.past_date(start_date="-1y", tzinfo=None),
+                verified=True,
+                active=True,
+            )
+            db.session.add(fake_user_therapist)
+
+        # Insert 10 therapists with fake and randomly selected data
+        for _ in range(10):
+            fake_user_therapist = User(
+                email=unique_fake_email(),
                 password_hash=fake_password_hash,
                 first_name=fake.first_name(),
                 last_name=fake.last_name(),
                 gender=random.choice(list(Gender)),
                 role=UserRole.THERAPIST,
-                date_joined=date.today(),
+                date_joined=fake.past_date(start_date="-1y", tzinfo=None),
                 verified=True,
                 active=True,
             )
