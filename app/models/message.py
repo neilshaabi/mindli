@@ -19,7 +19,9 @@ class Message(db.Model):
     )
     author_id: so.Mapped[int] = so.mapped_column(sa.ForeignKey("user.id"), index=True)
     content: so.Mapped[str] = so.mapped_column(sa.Text)
-    timestamp: so.Mapped[datetime] = so.mapped_column(sa.DateTime)
+    timestamp: so.Mapped[datetime] = so.mapped_column(
+        sa.DateTime, default=datetime.now()
+    )
 
     conversation: so.Mapped["Conversation"] = so.relationship(back_populates="messages")
     author: so.Mapped["User"] = so.relationship(back_populates="messages")

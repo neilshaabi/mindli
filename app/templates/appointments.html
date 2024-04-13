@@ -164,7 +164,7 @@
                     <form id="{{ delete_appointment_type_form.id }}" action="{{ delete_appointment_type_form.endpoint }}" novalidate>
                         {{ delete_appointment_type_form.csrf_token }}
                         {{ delete_appointment_type_form.appointment_type_id }}
-                        {{ delete_appointment_type_form.submit(class_='btn btn-danger') }}
+                        {{ submit_button(delete_appointment_type_form.submit, class='btn btn-danger') }}
                     </form>
                 </div>
             </div>

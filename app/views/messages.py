@@ -1,7 +1,8 @@
-from flask import Blueprint, redirect, render_template, url_for
+from flask import Blueprint, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app import db
+from app.forms.messages import SendMessageForm
 from app.models.conversation import Conversation
 from app.models.enums import UserRole
 from app.models.message import Message
@@ -122,8 +123,41 @@ def messages(conversation_id):
             )
             conversation.other_user = getattr(conversation, other_user_field)
 
+    # Initialise form
+    form = SendMessageForm(
+        id="send-message",
+        endpoint=url_for(
+            "messages.send_message", conversation_id=selected_conversation.id
+        ),
+    )
+    form.conversation_id.data = selected_conversation.id
+
     return render_template(
         "messages.html",
         selected_conversation=selected_conversation,
         conversations=conversations,
+        form=form,
+    )
+
+
+@bp.route("/messages/<int:conversation_id>/send-message", methods=["POST"])
+def send_message(conversation_id):
+    form = SendMessageForm()
+
+    # Do nothing if form is submitted without any text
+    if not form.validate_on_submit():
+        return jsonify({"success": True})
+
+    message = Message(
+        conversation_id=conversation_id,
+        author_id=current_user.id,
+        content=form.message.data,
+    )
+    db.session.add(message)
+    db.session.commit()
+    return jsonify(
+        {
+            "success": True,
+            "url": url_for("messages.messages", conversation_id=conversation_id),
+        }
     )

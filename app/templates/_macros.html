@@ -1,5 +1,5 @@
-{% macro submit_button(submit_field) %}
-    <button type="submit" class="btn btn-primary"
+{% macro submit_button(submit_field, class=None) %}
+    <button type="submit" class="{% if class %}{{ class }}{% else %}btn btn-primary{% endif %}"
         {% if submit_field.render_kw %}
             {% if submit_field.render_kw.name %} name={{ submit_field.render_kw['name'] }} {% endif %}
             {% if submit_field.render_kw.value %} value={{ submit_field.render_kw['value'] }} {% endif %}

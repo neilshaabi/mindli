@@ -206,6 +206,7 @@ input:-webkit-autofill:focus {
 
 .btn {
     padding: 10px 30px;
+    height: var(--my-form-height);
     border: none;
     border-radius: var(--my-border-radius);
     transition: var(--my-transition);
@@ -346,7 +347,6 @@ input:-webkit-autofill:focus {
 
 form .btn {
     width: 100%;
-    height: var(--my-form-height);
 }
 
 
@@ -405,9 +405,6 @@ form .btn {
     margin: 0;
 }
 
-
-/* Therapist card */
-
 .profile-pic {
     width: 56px;
     height: 56px;
@@ -415,6 +412,30 @@ form .btn {
     object-fit: cover;
 }
 
+
+/* Messages */
+
+.selected-conversation {
+    background: var(--light-grey-bg);
+    border-radius: var(--my-border-radius);
+}
+
+.message {
+    display: inline-block;
+    border-radius: 10px;
+    clear: both;
+}
+
+.message.from_current_user {
+    float: right !important;
+    color: white;
+    background: var(--colour-primary);
+}
+
+.message.from_other_user {
+    float: left !important;
+    background: var(--light-grey-bg);
+}
 
 
 /* Miscellaneous */
