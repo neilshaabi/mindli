@@ -389,11 +389,6 @@ form .btn {
     z-index: 1;
 }
 
-img.default-profile-picture {
-    object-fit: contain !important;
-    border: solid 2px var(--light-grey-outline);
-}
-
 #profile-picture-upload {
     padding: 0;
     width: 30px;
@@ -423,6 +418,10 @@ img.default-profile-picture {
 
 
 /* Miscellaneous */
+
+.hidden {
+    display: none;
+}
 
 .alert {
     margin-bottom: 10px;

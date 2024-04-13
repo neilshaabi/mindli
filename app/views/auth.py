@@ -1,5 +1,3 @@
-from datetime import date
-
 from flask import (
     Blueprint,
     Response,
@@ -58,15 +56,13 @@ def register() -> Response:
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
+    # Create user to insert
     user = User(
         email=form.email.data.lower(),
         password_hash=generate_password_hash(form.password.data),
         first_name=form.first_name.data.capitalize(),
         last_name=form.last_name.data.capitalize(),
         role=UserRole(form.role.data),
-        date_joined=date.today(),
-        verified=False,
-        active=True,
     )
 
     # Insert user into database

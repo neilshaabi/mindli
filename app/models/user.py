@@ -23,10 +23,12 @@ class User(UserMixin, SeedableMixin, db.Model):
     last_name: so.Mapped[str] = so.mapped_column(sa.String(50))
     gender: so.Mapped[Optional["Gender"]] = so.mapped_column(sa.Enum(Gender))
     role: so.Mapped["UserRole"] = so.mapped_column(sa.Enum(UserRole))
-    date_joined: so.Mapped[date] = so.mapped_column(sa.Date)
+    date_joined: so.Mapped[date] = so.mapped_column(sa.Date, default=date.today())
     verified: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=False)
     active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
-    profile_picture: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    profile_picture: so.Mapped[Optional[str]] = so.mapped_column(
+        sa.String(255), default="default.png"
+    )
 
     client: so.Mapped[Optional["Client"]] = so.relationship(
         back_populates="user", cascade="all, delete-orphan"
