@@ -53,40 +53,53 @@
             </div>
             
             <div class='col-lg-8'>
-                <div class='my-card clearfix'>
+                <div class='my-card d-flex flex-column clearfix'>
                     
-                    <div class="row mb-3">
-                        <div class="col-2">
+                    <!-- Message header -->
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-auto">
                             <img src="{{ url_for('static', filename='img/profile_pictures/' + selected_conversation.other_user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ selected_conversation.other_user.first_name }} {{ selected_conversation.other_user.last_name }}">
                         </div>
-                        <div class="col-8 ps-4">
+                        <div class="col-auto">
                             <h5>{{ selected_conversation.other_user.first_name }} {{ selected_conversation.other_user.last_name }}</h5>
                         </div>
-                        <div class="col-2 ps-4 text-end">
-                            <button>Book Appointment</button>
+                        <div class="col-auto ms-auto">
+                            <button class="btn btn-outline-primary">Book Appointment</button>
                         </div>
                     </div>
-                    {% if selected_conversation.messages %}
-                        {% for message in selected_conversation.messages %}
-                        <div class="message p-2 mb-1 {% if message.author_id == current_user.id %}from_current_user{% else %}from_other_user{% endif %}"
-                            data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%-d %B %Y, %H:%M') }}">
-                            {{ message.content }}
-                        </div>
-                        {% endfor %}
-                    {% else %}
-                        NO MESSAGES
-                    {% endif %}
 
-                    <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
-                        {{ form.csrf_token }}
-                        {{ form.conversation_id() }}
-                        
-                        <div class='form-floating position-relative bottom-0 start-0'>
-                            {{ form.message(class_='form-control', placeholder=form.message.label.text) }}
-                            {{ form.message.label }}
+                    <hr>
+                    
+                    <!-- Messages container -->
+                    <div class="messages-container flex-grow-1 overflow-auto mb-3">
+                        {% if selected_conversation.messages %}
+                            {% for message in selected_conversation.messages %}
+                            <div class="message p-2 mb-1 {% if message.author_id == current_user.id %}from_current_user{% else %}from_other_user{% endif %}"
+                                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%-d %B %Y, %H:%M') }}">
+                                {{ message.content }}
+                            </div>
+                            {% endfor %}
+                        {% else %}
+                            NO MESSAGES
+                        {% endif %}
+                    </div>
+
+                    <!-- Message input field -->
+                    <div class="row mt-auto">
+                        <div class="col-12">
+                            <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+                                {{ form.csrf_token }}
+                                {{ form.conversation_id() }}
+                                <div class='form-floating'>
+                                    {{ form.message(class_='form-control', placeholder=form.message.label.text) }}
+                                    {{ form.message.label }}
+                                    <button type='submit' class='input-btn-icon'>
+                                        <i class="fa-regular fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </form>
                         </div>
-                        {{ submit_button(form.submit, class='hidden') }}
-                    </form>
+                    </div>
                     
                 </div>
             </div>

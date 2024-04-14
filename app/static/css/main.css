@@ -256,7 +256,7 @@ input:-webkit-autofill:focus {
     border: solid 1px var(--colour-primary) !important;
 }
 
-.form-floating button {
+.input-btn-icon {
     color: var(--light-grey-text);
     padding: var(--my-form-padding);
     height: var(--my-form-height);
