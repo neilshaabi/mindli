@@ -31,3 +31,13 @@ class TherapyType(Enum):
     COUPLES = "Couples"
     FAMILY = "Family"
     PSYCHOMETRIC_TESTING = "Psychometric Testing"
+
+
+@unique
+class AppointmentStatus(Enum):
+    SCHEDULED = "Scheduled"
+    CANCELED = "Canceled"
+    COMPLETED = "Completed"
+    CONFIRMED = "Confirmed"
+    RESCHEDULED = "Rescheduled"
+    NO_SHOW = "No Show"

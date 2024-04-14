@@ -10,6 +10,7 @@ class SeedableMixin:
         pass
 
 
+from .appointment import Appointment
 from .appointment_type import AppointmentType
 from .associations import (
     client_issue,

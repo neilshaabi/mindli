@@ -26,6 +26,9 @@ class Client(db.Model):
     issues: so.Mapped[List["Issue"]] = so.relationship(
         secondary="client_issue", back_populates="clients"
     )
+    appointments: so.Mapped[List["Appointment"]] = so.relationship(
+        back_populates="client",
+    )
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
