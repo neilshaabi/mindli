@@ -23,7 +23,7 @@ def appointments():
     )
 
     # Create a list of forms pre-populated with the data from each appointment type
-    appointment_type_forms = [
+    update_appointment_type_forms = [
         AppointmentTypeForm(
             obj=appointment_type,
             prefix=str(appointment_type.id),
@@ -37,7 +37,7 @@ def appointments():
     ]
 
     # Add an empty form for adding a new appointment type
-    new_appointment_type_form = AppointmentTypeForm(
+    create_appointment_type_form = AppointmentTypeForm(
         prefix="new",
         id="appointment_type_new",
         endpoint=url_for("appointments.create_appointment_type"),
@@ -52,20 +52,46 @@ def appointments():
     # Render the page with the appointment forms and the new appointment form
     return render_template(
         "appointments.html",
-        appointment_type_forms=appointment_type_forms,
-        new_appointment_type_form=new_appointment_type_form,
+        update_appointment_type_forms=update_appointment_type_forms,
+        create_appointment_type_form=create_appointment_type_form,
         delete_appointment_type_form=delete_appointment_type_form,
     )
 
 
-@bp.route("/appointments/<int:appointment_type_id>", methods=["POST"])
+@bp.route("/appointment-types/create", methods=["POST"])
+@login_required
+@therapist_required
+def create_appointment_type():
+    form = AppointmentTypeForm(prefix="new")
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors, "form_prefix": "new"})
+
+    # Create a new appointment type instance
+    new_appointment_type = AppointmentType(
+        therapist_id=current_user.id,
+        therapy_type=form.therapy_type.data,
+        therapy_mode=form.therapy_mode.data,
+        duration=form.duration.data,
+        fee_amount=form.fee_amount.data,
+        fee_currency=form.fee_currency.data,
+    )
+    db.session.add(new_appointment_type)
+    db.session.commit()
+
+    flash("New appointment type created")
+    return jsonify({"success": True, "url": url_for("appointments.appointments")})
+
+
+@bp.route("/appointment-types/<int:appointment_type_id>", methods=["POST"])
 @login_required
 @therapist_required
 def update_appointment_type(appointment_type_id):
     # Find the appointment type by ID
     appointment_type: AppointmentType = db.session.execute(
         db.select(AppointmentType).filter_by(
-            id=appointment_type_id, therapist_id=current_user.id
+            id=appointment_type_id, therapist_id=current_user.therapist.id
         )
     ).scalar_one()
 
@@ -97,39 +123,15 @@ def update_appointment_type(appointment_type_id):
     return jsonify({"success": True, "url": url_for("appointments.appointments")})
 
 
-@bp.route("/appointments/new", methods=["POST"])
-@login_required
-@therapist_required
-def create_appointment_type():
-    form = AppointmentTypeForm(prefix="new")
-
-    # Invalid form submission - return errors
-    if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors, "form_prefix": "new"})
-
-    # Create a new appointment type instance
-    new_appointment_type = AppointmentType(
-        therapist_id=current_user.id,
-        therapy_type=form.therapy_type.data,
-        therapy_mode=form.therapy_mode.data,
-        duration=form.duration.data,
-        fee_amount=form.fee_amount.data,
-        fee_currency=form.fee_currency.data,
-    )
-    db.session.add(new_appointment_type)
-    db.session.commit()
-
-    flash("New appointment type created")
-    return jsonify({"success": True, "url": url_for("appointments.appointments")})
-
-
-@bp.route("/appointments/delete", methods=["POST"])
+@bp.route("/appointment-types/delete", methods=["POST"])
 @login_required
 @therapist_required
 def delete_appointment_type():
     form = DeleteAppointmentTypeForm()
     appointment_type = db.session.execute(
-        db.select(AppointmentType).filter_by(id=form.appointment_type_id.data)
+        db.select(AppointmentType).filter_by(
+            id=form.appointment_type_id.data, therapist_id=current_user.therapist.id
+        )
     ).scalar_one()
     db.session.delete(appointment_type)
     db.session.commit()

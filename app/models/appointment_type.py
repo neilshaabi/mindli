@@ -35,24 +35,17 @@ class AppointmentType(SeedableMixin, db.Model):
         # Fetch all therapists
         therapists = db.session.execute(db.select(Therapist)).scalars().all()
 
+        # Create 1-3 random appointment types for each therapist
         for therapist in therapists:
-            # Create 1-3 random appointment types for each therapist
             for _ in range(random.randint(1, 3)):
-                therapy_type = random.choice(list(TherapyType))
-                therapy_mode = random.choice(list(TherapyMode))
-                duration = random.choice([30, 45, 60, 90])
-                fee_amount = random.uniform(50.0, 200.0)
-                fee_currency = random.choice(CURRENCIES)
-
                 appointment_type = AppointmentType(
                     therapist_id=therapist.id,
-                    therapy_type=therapy_type,
-                    therapy_mode=therapy_mode,
-                    duration=duration,
-                    fee_amount=fee_amount,
-                    fee_currency=fee_currency,
+                    therapy_type=random.choice(list(TherapyType)),
+                    therapy_mode=random.choice(list(TherapyMode)),
+                    duration=random.choice([30, 45, 60, 90]),
+                    fee_amount=round(random.uniform(50.0, 200.0) / 10) * 10,
+                    fee_currency=random.choice(CURRENCIES),
                 )
-
                 db.session.add(appointment_type)
 
         db.session.commit()
