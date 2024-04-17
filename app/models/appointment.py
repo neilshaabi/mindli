@@ -24,7 +24,7 @@ class Appointment(SeedableMixin, db.Model):
     )
     time: so.Mapped[datetime] = so.mapped_column(sa.DateTime)
     status: so.Mapped["AppointmentStatus"] = so.mapped_column(
-        sa.Enum(AppointmentStatus)
+        sa.Enum(AppointmentStatus), default=AppointmentStatus.SCHEDULED
     )
 
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="appointments")

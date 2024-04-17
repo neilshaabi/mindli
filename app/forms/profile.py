@@ -9,7 +9,7 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.constants import COUNTRIES
+from app.constants import COUNTRIES, OCCUPATIONS, REFERRAL_SOURCES
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender
 from app.models.intervention import Intervention
@@ -123,17 +123,7 @@ class ClientProfileForm(CustomFlaskForm):
     )
     occupation = SelectField(
         "Occupation",
-        choices=[
-            ("", "Select occupation"),
-            ("healthcare", "Healthcare"),
-            ("education", "Education"),
-            ("it", "IT/Technology"),
-            ("finance", "Finance"),
-            ("arts", "Arts & entertainment"),
-            ("student", "Student"),
-            ("unemployed", "Unemployed"),
-            ("other", "Other"),
-        ],
+        choices=[("", "Select occupation")] + OCCUPATIONS,
         default="",
         validators=[DataRequired()],
     )
@@ -150,15 +140,7 @@ class ClientProfileForm(CustomFlaskForm):
     )
     referral_source = SelectField(
         "Referral source",
-        choices=[
-            ("", "Select referral source"),
-            ("mindli", "Mindli"),
-            ("internet", "Internet"),
-            ("friend_family", "Friend/family"),
-            ("healthcare_provider", "Healthcare provider"),
-            ("social_media", "Social media"),
-            ("other", "Other"),
-        ],
+        choices=[("", "Select referral source")] + REFERRAL_SOURCES,
         default="",
         validators=[DataRequired(), Length(max=100)],
     )

@@ -1,0 +1,30 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Appointments
+{% endblock %}
+
+{% block content %}
+
+    <div class='container'>
+
+        <div class='row mb-3 g-4'>
+            <div class='col-lg-12'>
+                <h3>Appointments</h3>
+            </div>
+        </div>
+    
+        <div class="row g-4">
+        
+            <div class='col-lg-12'>
+                <div class='my-card'>
+                    <h3>My Appointments</h3>
+                    {% for appointment in appointments %}
+                        {{ appointment }}
+                    {% endfor %}
+                </div>        
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

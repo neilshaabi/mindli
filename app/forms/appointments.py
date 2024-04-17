@@ -1,4 +1,12 @@
-from wtforms import DecimalField, HiddenField, IntegerField, SelectField, SubmitField
+from wtforms import (
+    DateField,
+    DecimalField,
+    HiddenField,
+    IntegerField,
+    SelectField,
+    SubmitField,
+    TimeField,
+)
 from wtforms.validators import DataRequired, NumberRange
 
 from app.constants import CURRENCIES
@@ -48,6 +56,34 @@ class AppointmentTypeForm(CustomFlaskForm):
 
 class DeleteAppointmentTypeForm(CustomFlaskForm):
     appointment_type_id = HiddenField(
-        "Appointment Type ID", validators=[DataRequired()]
+        "Appointment type ID", validators=[DataRequired()]
     )
     submit = SubmitField("Delete")
+
+
+class BookAppointmentForm(CustomFlaskForm):
+    appointment_type = CustomSelectField(
+        "Appointment type",
+        choices=[("", "Select appointment type")],
+        default="",
+        validators=[DataRequired()],
+    )
+    date = DateField("Date", format="%Y-%m-%d", validators=[DataRequired()])
+    time = TimeField("Time", validators=[DataRequired()])
+    submit = SubmitField("Book Appointment")
+
+    def __init__(self, *args, **kwargs):
+        super(BookAppointmentForm, self).__init__(*args, **kwargs)
+        therapist = kwargs.get("obj")
+        self.appointment_type.choices.extend(
+            [
+                (
+                    at.id,
+                    (
+                        f"{at.therapy_type.value}, {at.therapy_mode.value} ({at.duration} minutes) - {at.fee_amount} {at.fee_currency}"
+                    ),
+                )
+                for at in therapist.appointment_types
+            ]
+        )
+        return

@@ -63,9 +63,13 @@
                         <div class="col-auto">
                             <h5>{{ selected_conversation.other_user.first_name }} {{ selected_conversation.other_user.last_name }}</h5>
                         </div>
-                        <div class="col-auto ms-auto">
-                            <button class="btn btn-outline-primary">Book Appointment</button>
-                        </div>
+                        {% if current_user.role == UserRole.CLIENT %}
+                            <div class="col-auto ms-auto">
+                                <a href="{{ url_for('appointments.show_book_appointment_form', therapist_id=selected_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
+                                    Book Appointment
+                                </a>
+                            </div>
+                        {% endif %}
                     </div>
 
                     <hr>

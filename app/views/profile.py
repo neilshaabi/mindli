@@ -192,7 +192,7 @@ def client_profile():
     db.session.commit()
 
     # Reload page
-    flash("Client preferences updated")
+    flash("Client background information updated")
     return jsonify(
         {
             "success": True,

@@ -1,18 +1,27 @@
+from datetime import datetime
+
 from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app import db
-from app.forms.appointments import AppointmentTypeForm, DeleteAppointmentTypeForm
+from app.forms.appointments import (
+    AppointmentTypeForm,
+    BookAppointmentForm,
+    DeleteAppointmentTypeForm,
+)
+from app.models.appointment import Appointment
 from app.models.appointment_type import AppointmentType
-from app.utils.decorators import therapist_required
+from app.models.enums import AppointmentStatus
+from app.models.therapist import Therapist
+from app.utils.decorators import client_required, therapist_required
 
 bp = Blueprint("appointments", __name__)
 
 
-@bp.route("/appointments", methods=["GET"])
+@bp.route("/appointments/therapist", methods=["GET"])
 @login_required
 @therapist_required
-def appointments():
+def therapist_appointments():
     # Query existing appointment types for the therapist
     appointment_types = (
         db.session.execute(
@@ -49,9 +58,9 @@ def appointments():
         endpoint=url_for("appointments.delete_appointment_type"),
     )
 
-    # Render the page with the appointment forms and the new appointment form
+    # Render the page with the appointment forms
     return render_template(
-        "appointments.html",
+        "therapist_appointments.html",
         update_appointment_type_forms=update_appointment_type_forms,
         create_appointment_type_form=create_appointment_type_form,
         delete_appointment_type_form=delete_appointment_type_form,
@@ -70,7 +79,7 @@ def create_appointment_type():
 
     # Create a new appointment type instance
     new_appointment_type = AppointmentType(
-        therapist_id=current_user.id,
+        therapist_id=current_user.therapist.id,
         therapy_type=form.therapy_type.data,
         therapy_mode=form.therapy_mode.data,
         duration=form.duration.data,
@@ -81,7 +90,9 @@ def create_appointment_type():
     db.session.commit()
 
     flash("New appointment type created")
-    return jsonify({"success": True, "url": url_for("appointments.appointments")})
+    return jsonify(
+        {"success": True, "url": url_for("appointments.therapist_appointments")}
+    )
 
 
 @bp.route("/appointment-types/<int:appointment_type_id>", methods=["POST"])
@@ -97,7 +108,7 @@ def update_appointment_type(appointment_type_id):
 
     # Redirect if appointment type not found
     if appointment_type is None:
-        return redirect(url_for("appointments.appointments"))
+        return redirect(url_for("appointments.therapist_appointments"))
 
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
 
@@ -120,7 +131,9 @@ def update_appointment_type(appointment_type_id):
     db.session.commit()
 
     flash("Appointment type updated")
-    return jsonify({"success": True, "url": url_for("appointments.appointments")})
+    return jsonify(
+        {"success": True, "url": url_for("appointments.therapist_appointments")}
+    )
 
 
 @bp.route("/appointment-types/delete", methods=["POST"])
@@ -136,4 +149,86 @@ def delete_appointment_type():
     db.session.delete(appointment_type)
     db.session.commit()
     flash("Appointment type deleted")
-    return jsonify({"success": True, "url": url_for("appointments.appointments")})
+    return jsonify(
+        {"success": True, "url": url_for("appointments.therapist_appointments")}
+    )
+
+
+@bp.route("/appointments/client", methods=["GET"])
+@login_required
+@client_required
+def client_appointments():
+    appointments = (
+        db.session.execute(
+            db.select(Appointment).filter_by(client_id=current_user.client.id)
+        )
+        .scalars()
+        .all()
+    )
+
+    # Render the page with the appointment forms and the new appointment form
+    return render_template(
+        "client_appointments.html",
+        appointments=appointments,
+    )
+
+
+@bp.route("/appointments/book-appointment/<int:therapist_id>", methods=["GET"])
+@login_required
+@client_required
+def show_book_appointment_form(therapist_id):
+    # Fetch therapist with this id
+    therapist = db.session.execute(
+        db.select(Therapist).filter_by(id=therapist_id)
+    ).scalar_one()
+
+    # Redirect if therapist not found
+    if not therapist:
+        flash("Therapist not found")
+        return redirect(url_for("main.index"))
+
+    # Initialise form for client to book an appointment with this therapist
+    form = BookAppointmentForm(
+        obj=therapist,
+        id="book_appointment",
+        endpoint=url_for(
+            "appointments.process_book_appointment", therapist_id=therapist_id
+        ),
+    )
+
+    return render_template("book_appointment.html", therapist=therapist, form=form)
+
+
+@bp.route("/appointments/book-appointment/<int:therapist_id>", methods=["POST"])
+@login_required
+@client_required
+def process_book_appointment(therapist_id):
+    # Fetch therapist with this id to initialise form correctly
+    therapist = db.session.execute(
+        db.select(Therapist).filter_by(id=therapist_id)
+    ).scalar_one()
+
+    form = BookAppointmentForm(obj=therapist)
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Combine date and time into a single datetime object
+    appointment_datetime = datetime.combine(form.date.data, form.time.data)
+
+    # Create a new appointment
+    new_appointment = Appointment(
+        therapist_id=therapist_id,
+        client_id=current_user.client.id,
+        appointment_type_id=form.appointment_type.data,
+        time=appointment_datetime,
+        status=AppointmentStatus.SCHEDULED,
+    )
+    db.session.add(new_appointment)
+    db.session.commit()
+
+    flash("Appointment scheduled and awaiting confirmation from the therapist")
+    return jsonify(
+        {"success": True, "url": url_for("appointments.client_appointments")}
+    )
