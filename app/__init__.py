@@ -1,5 +1,6 @@
 import os
 
+import stripe
 from flask import Flask
 from flask_login import LoginManager
 from flask_mail import Mail
@@ -39,6 +40,10 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
+    # Initialise Stripe
+    stripe.api_key = app.config["STRIPE_SECRET_KEY"]
+    stripe.api_version = "2023-10-16"
+
     # Initialise CSRF protection for forms
     if app.config["WTF_CSRF_ENABLED"]:
         csrf.init_app(app)
@@ -50,6 +55,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
 
         return {
             "UserRole": UserRole,
+            "STRIPE_PUBLISHABLE_KEY": app.config["STRIPE_PUBLISHABLE_KEY"],
         }
 
     from app.seed import seed_db
@@ -70,6 +76,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
         auth,
         main,
         messages,
+        payments,
         profile,
         therapist_directory,
     )
@@ -78,6 +85,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     app.register_blueprint(auth.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(messages.bp)
+    app.register_blueprint(payments.bp)
     app.register_blueprint(profile.bp)
     app.register_blueprint(therapist_directory.bp)
 

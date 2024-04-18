@@ -22,6 +22,10 @@ class Config(object):
     MAIL_DEFAULT_SENDER: str = MAIL_USERNAME
     MAIL_SUPPRESS_SEND: bool = False
 
+    # Stripe setup
+    STRIPE_SECRET_KEY: str = os.environ["STRIPE_SECRET_KEY"]
+    STRIPE_PUBLISHABLE_KEY: str = os.environ["STRIPE_PUBLISHABLE_KEY"]
+
 
 class DevConfig(Config):
     DEBUG: bool = True

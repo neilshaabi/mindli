@@ -8,14 +8,18 @@ venv:
 	@echo "source .venv/bin/activate"
 
 deps:
-	@echo "Installing dependencies..."
+	@echo "Installing Python dependencies..."
 	pip install -r requirements.txt
+	@echo "Installing Node.js dependencies..."
+	npm install
 
 reqs:
 	@echo "Updating requirements.txt..."
 	pip freeze > requirements.txt
 
 app:
+	@echo "Building JavaScript assets..."
+	npx webpack --mode development
 	@echo "Running Flask app locally..."
 	flask run
 
@@ -47,5 +51,7 @@ clean:
 	rm -rf .venv
 	find . -type d -name '__pycache__' -exec rm -r {} +
 	find . -type f -name '*.pyc' -delete
+	rm -rf app/static/dist/*
+	@echo "Removed Python and JavaScript build files."
 
 .PHONY: help venv deps reqs app migrate-db reset-db lint test clean

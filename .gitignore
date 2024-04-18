@@ -3,3 +3,5 @@
 .venv/*
 *.sqlite
 .env
+node_modules/
+/app/static/dist/

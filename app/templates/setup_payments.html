@@ -1,0 +1,44 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Setup Payments
+{% endblock %}
+
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<div id="container">
+    <div class="container">
+      <div class="banner">
+        <h2>Rocket Rides</h2>
+      </div>
+      <div class="content">
+        <h2 id="title">Get ready for take off</h2>
+        <p id="subtitle">Rocket Rides is the world's leading air travel platform: join our team of pilots to help people travel faster.</p>
+        <div>
+          <button id="sign-up-button">
+            Sign up
+          </button>
+        </div>
+        <div id="embedded-onboarding-container">
+        </div>
+        <p id="error" class="error hidden">Something went wrong!</p>
+        <div id="dev-callout" class="dev-callout hidden">
+          <p id="connected-account-id" class="hidden"></p>
+          <p id="creating-connected-account" class="hidden">Creating a connected account...</p>
+        </div>
+        <div class="info-callout">
+          <p>
+            This is a sample app for Connect onboarding using the Account Onboarding embedded component. <a href="https://docs.stripe.com/connect/onboarding/quickstart?connect-onboarding-surface=embedded" target="_blank" rel="noopener noreferrer">View docs</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+<div id="error" hidden>Something went wrong!</div>
+
+{% endblock %}
