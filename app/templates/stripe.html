@@ -1,0 +1,32 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Setup Payments
+{% endblock %}
+
+{% block content %}
+    
+    <div class='container'>
+
+        <div class="row">
+            <div class="col-lg-9 mx-auto">
+                <div class="my-card">
+                  <h3>Create Stripe Account</h3>
+                  
+                  <form id="{{ form.id }}" action="{{ form.endpoint }}" enctype="multipart/form-data" novalidate>
+                        
+                    {{ form.csrf_token }}
+
+                    <div class="row mb-3">
+                        <div class="col-12">
+                            {{ submit_button(form.submit) }}
+                        </div>
+                    </div>
+                
+                </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

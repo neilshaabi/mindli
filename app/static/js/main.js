@@ -1,5 +1,3 @@
-import './stripe.js';
-
 $(document).ready(function() {
 
     // Enable Bootstrap tooltips
@@ -130,7 +128,7 @@ function registerFormHandlers() {
                 }
             },
             error: function() {
-                window.location = '/error';
+                // window.location = '/error'; // TODO
             },
             complete: function() { // Hide loading button only for this form
                 submitBtn.prop('disabled', false);

@@ -27,9 +27,6 @@
         <!-- Custom CSS stylesheet -->
         <link rel='stylesheet' href="{{ url_for('static', filename='css/main.css') }}" type='text/css'>
 
-        <!-- Pass Stripe publishable key to JavaScript -->
-        <script>const stripePublishableKey = "{{ STRIPE_PUBLISHABLE_KEY }}";</script>
-
         <!-- Favicon and title -->
         <link rel='icon' type='image/png' href="{{ url_for('static', filename='img/logos/logo-primary.png') }}">
         <title>{% block title %}{% endblock %} | mindli</title>
