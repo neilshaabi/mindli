@@ -28,6 +28,7 @@ class Therapist(SeedableMixin, db.Model):
     country: so.Mapped[str] = so.mapped_column(sa.String(50))
     location: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
     link: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
+    stripe_account_id: so.Mapped[Optional[str]] = so.mapped_column(sa.String(255))
 
     user: so.Mapped["User"] = so.relationship(back_populates="therapist")
     titles: so.Mapped[List["Title"]] = so.relationship(

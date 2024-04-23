@@ -11,9 +11,10 @@ from app.forms.appointments import (
 )
 from app.models.appointment import Appointment
 from app.models.appointment_type import AppointmentType
-from app.models.enums import AppointmentStatus
+from app.models.enums import AppointmentStatus, PaymentStatus
 from app.models.therapist import Therapist
 from app.utils.decorators import client_required, therapist_required
+from app.views.stripe import create_checkout_session
 
 bp = Blueprint("appointments", __name__)
 
@@ -100,7 +101,7 @@ def create_appointment_type():
 @therapist_required
 def update_appointment_type(appointment_type_id):
     # Find the appointment type by ID
-    appointment_type: AppointmentType = db.session.execute(
+    appointment_type = db.session.execute(
         db.select(AppointmentType).filter_by(
             id=appointment_type_id, therapist_id=current_user.therapist.id
         )
@@ -177,7 +178,7 @@ def client_appointments():
 @login_required
 @client_required
 def show_book_appointment_form(therapist_id):
-    # Fetch therapist with this id
+    # Fetch therapist with this ID
     therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
     ).scalar_one()
@@ -203,7 +204,7 @@ def show_book_appointment_form(therapist_id):
 @login_required
 @client_required
 def process_book_appointment(therapist_id):
-    # Fetch therapist with this id to initialise form correctly
+    # Fetch therapist with this ID to initialise form correctly
     therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
     ).scalar_one()
@@ -217,18 +218,27 @@ def process_book_appointment(therapist_id):
     # Combine date and time into a single datetime object
     appointment_datetime = datetime.combine(form.date.data, form.time.data)
 
-    # Create a new appointment
+    # Add new appointment with pending payment in database
     new_appointment = Appointment(
         therapist_id=therapist_id,
         client_id=current_user.client.id,
         appointment_type_id=form.appointment_type.data,
         time=appointment_datetime,
-        status=AppointmentStatus.SCHEDULED,
+        appointment_status=AppointmentStatus.SCHEDULED,
+        payment_status=PaymentStatus.PENDING,
     )
     db.session.add(new_appointment)
     db.session.commit()
 
-    flash("Appointment scheduled and awaiting confirmation from the therapist")
-    return jsonify(
-        {"success": True, "url": url_for("appointments.client_appointments")}
-    )
+    # Redirect the client to Stripe Checkout
+    checkout_session_url = create_checkout_session(new_appointment)
+    if not checkout_session_url:
+        flash("An error occurred while creating the Stripe checkout session")
+        return jsonify(
+            {
+                "success": False,
+                "errors": {"submit": "Failed to create Stripe checkout session"},
+            }
+        )
+    else:
+        return jsonify({"success": True, "url": checkout_session_url})

@@ -9,7 +9,7 @@ from app import db
 from app.models import SeedableMixin
 from app.models.appointment_type import AppointmentType
 from app.models.client import Client
-from app.models.enums import AppointmentStatus
+from app.models.enums import AppointmentStatus, PaymentStatus
 from app.models.therapist import Therapist
 
 
@@ -23,8 +23,11 @@ class Appointment(SeedableMixin, db.Model):
         sa.ForeignKey("appointment_type.id", ondelete="CASCADE"), index=True
     )
     time: so.Mapped[datetime] = so.mapped_column(sa.DateTime)
-    status: so.Mapped["AppointmentStatus"] = so.mapped_column(
+    appointment_status: so.Mapped["AppointmentStatus"] = so.mapped_column(
         sa.Enum(AppointmentStatus), default=AppointmentStatus.SCHEDULED
+    )
+    payment_status: so.Mapped["PaymentStatus"] = so.mapped_column(
+        sa.Enum(PaymentStatus), default=PaymentStatus.PENDING
     )
 
     therapist: so.Mapped["Therapist"] = so.relationship(back_populates="appointments")

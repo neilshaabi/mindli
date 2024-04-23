@@ -23,9 +23,9 @@ from app.forms.auth import (
     ResetPasswordForm,
     VerifyEmailForm,
 )
-from app.models.enums import UserRole
+from app.models.enums import EmailSubject, UserRole
 from app.models.user import User
-from app.utils.mail import EmailMessage, EmailSubject
+from app.utils.mail import EmailMessage
 
 bp = Blueprint("auth", __name__)
 
