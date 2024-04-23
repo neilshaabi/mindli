@@ -175,7 +175,7 @@ def reset_filters():
     return redirect(url_for("therapist_directory.therapists"))
 
 
-@bp.route("/therapists/<int:therapist_id>", methods=["GET"])
+@bp.route("/therapist/<int:therapist_id>", methods=["GET"])
 @login_required
 def therapist(therapist_id):
     # Get therapist with this ID

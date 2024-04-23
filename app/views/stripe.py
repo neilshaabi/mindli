@@ -207,7 +207,7 @@ def handle_payment_succeeded(session: stripe.checkout.Session):
     client_email_message = EmailMessage(
         recipient=appointment.client.user,
         subject=EmailSubject.APPOINTMENT_SCHEDULED_CLIENT,
-        appointment_id=appointment.id,
+        url_params={"appointment_id": appointment.id},
     )
     client_email_message.send()
 
@@ -215,7 +215,7 @@ def handle_payment_succeeded(session: stripe.checkout.Session):
     therapist_email_message = EmailMessage(
         recipient=appointment.therapist.user,
         subject=EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST,
-        appointment_id=appointment.id,
+        url_params={"appointment_id": appointment.id},
     )
     therapist_email_message.send()
     return
@@ -240,7 +240,7 @@ def handle_payment_failed(session: stripe.checkout.Session):
     client_email_message = EmailMessage(
         recipient=appointment.client.user,
         subject=EmailSubject.PAYMENT_FAILED_CLIENT,
-        appointment_id=appointment.id,
+        url_params={"appointment_id": appointment.id},
     )
     client_email_message.send()
     return

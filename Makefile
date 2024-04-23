@@ -1,5 +1,8 @@
 help:
-	@echo "Available commands: make [help, venv, deps, reqs, app, migrate-db, reset-db, lint, test, clean]"
+	@echo "Available commands: make [help, tree, venv, deps, reqs, app, migrate-db, reset-db, lint, test, clean]"
+
+tree:
+	tree -I 'node_modules|__pycache__|.venv'
 
 venv:
 	@echo "Creating virtual environment..."

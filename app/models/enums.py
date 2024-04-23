@@ -12,6 +12,7 @@ class EmailSubject(Enum):
         "New appointment scheduled and awaiting confirmation"
     )
     PAYMENT_FAILED_CLIENT = "Payment failed"
+    APPOINTMENT_CONFIRMED_CLIENT = "Appointment confirmed"
 
 
 @unique
@@ -49,10 +50,10 @@ class TherapyType(Enum):
 @unique
 class AppointmentStatus(Enum):
     SCHEDULED = "Scheduled"
-    CANCELED = "Canceled"
-    COMPLETED = "Completed"
     CONFIRMED = "Confirmed"
+    COMPLETED = "Completed"
     RESCHEDULED = "Rescheduled"
+    CANCELLED = "Cancelled"
     NO_SHOW = "No Show"
 
 

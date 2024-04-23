@@ -23,7 +23,7 @@
                     <span class="text-muted">{{ therapist.qualifications }}</span>
                 </div>
             </div>
-            <div class="card-body">
+            <div>
                 <p class="p-0">Types: {{ therapist.appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
                 <p class="p-0">Modes: {{ therapist.appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
                 <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>

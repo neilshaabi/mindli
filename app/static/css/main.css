@@ -296,12 +296,60 @@ input:-webkit-autofill:focus {
     align-items: center;
 }
 
+.tag {
+    font-size: 0.9rem;
+    padding: 5px;
+    border-radius: var(--my-border-radius);
+    background-color:#414552;
+}
+
+.tag.confirmed,
+.tag.completed,
+.tag.succeeded {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.tag.scheduled,
+.tag.rescheduled,
+.tag.pending {
+    background-color: #2196F3;
+    color: white;
+}
+
+.tag.cancelled,
+.tag.no_show,
+.tag.failed {
+    background-color: #F44336;
+    color: white;
+}
+
+table tr:hover {
+    background: var(--light-grey-bg);
+}
+
+table th {
+    font-weight: 500;
+}
+
+table tr .btn-icon {
+    opacity: 0;
+    pointer-events: none;
+    transition: var(--my-transition);
+}
+
+table tr:hover .btn-icon {
+    opacity: 1;
+    pointer-events: auto;
+}
+
 .btn-icon {
     font-size: 1.4rem;
     color: var(--light-grey-text);
     background: none !important;
     height: auto !important;
     padding: 0;
+    transition: 0;
 }
 
 .btn-icon:hover {

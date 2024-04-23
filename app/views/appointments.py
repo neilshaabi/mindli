@@ -108,7 +108,7 @@ def update_appointment_type(appointment_type_id):
     ).scalar_one()
 
     # Redirect if appointment type not found
-    if appointment_type is None:
+    if not appointment_type or appointment_type.therapist.user.id != current_user.id:
         return redirect(url_for("appointments.therapist_appointments"))
 
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
@@ -141,14 +141,26 @@ def update_appointment_type(appointment_type_id):
 @login_required
 @therapist_required
 def delete_appointment_type():
+    # Retrieve appointment type ID from hidden field in form
     form = DeleteAppointmentTypeForm()
+    appointment_type_id = form.appointment_type_id.data
+
+    # Fetch appointment with this ID
     appointment_type = db.session.execute(
         db.select(AppointmentType).filter_by(
-            id=form.appointment_type_id.data, therapist_id=current_user.therapist.id
+            id=appointment_type_id, therapist_id=current_user.therapist.id
         )
     ).scalar_one()
+
+    # Redirect if appointment type does not belong to this therapist
+    if appointment_type.therapist.user.id != current_user.id:
+        return redirect(url_for("appointments.therapist_appointments"))
+
+    # Delete appointment
     db.session.delete(appointment_type)
     db.session.commit()
+
+    # Redirect to appointments page
     flash("Appointment type deleted")
     return jsonify(
         {"success": True, "url": url_for("appointments.therapist_appointments")}
@@ -159,9 +171,12 @@ def delete_appointment_type():
 @login_required
 @client_required
 def client_appointments():
+    # Fetch all of the client's appointments ordered by the most recent
     appointments = (
         db.session.execute(
-            db.select(Appointment).filter_by(client_id=current_user.client.id)
+            db.select(Appointment)
+            .filter_by(client_id=current_user.client.id)
+            .order_by(Appointment.time.desc())
         )
         .scalars()
         .all()
@@ -181,7 +196,7 @@ def show_book_appointment_form(therapist_id):
     # Fetch therapist with this ID
     therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one()
+    ).scalar_one_or_none()
 
     # Redirect if therapist not found
     if not therapist:

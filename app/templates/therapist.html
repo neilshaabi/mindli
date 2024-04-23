@@ -20,7 +20,7 @@
                             <span class="text-muted">{{ therapist.qualifications }}</span>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div>
                         <p class="p-0">Types: {{ therapist.appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
                         <p class="p-0">Modes: {{ therapist.appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
                         <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
@@ -32,7 +32,7 @@
                         <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
                         {% if current_user.role == UserRole.CLIENT %}
                             <div class="col-auto ms-auto">
-                                <a href="{{ url_for('appointments.show_book_appointment_form', therapist_id=selected_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
+                                <a href="{{ url_for('appointments.show_book_appointment_form', therapist_id=therapist.id) }}" class="btn btn-primary">
                                     Book Appointment
                                 </a>
                             </div>

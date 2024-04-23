@@ -13,12 +13,15 @@ class EmailMessage:
         recipient: User,
         subject: EmailSubject,
         mail: Mail = mail,
-        **url_parameters: dict,
+        context: dict = {},
+        url_params: dict = {},
     ) -> None:
         self.mail = mail
         self.recipient = recipient
         self.subject = subject
-        self.url_params = url_parameters
+        self.context = context
+        self.url_params = url_params
+
         self.body = None
         self.link = None
         self.link_text = None
@@ -39,19 +42,29 @@ class EmailMessage:
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_CLIENT:
             self.body = "Your appointment has been successfully scheduled and is now awaiting confirmation by the therapist. You will be notified once confirmed."
             self.link_text = "View Appointment"
-            endpoint = "appointments.view_appointment"
+            endpoint = "view_appointment"
             with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST:
             self.body = "You have a new appointment scheduled and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
             self.link_text = "View Appointment"
-            endpoint = "appointments.view_appointment"
+            endpoint = "view_appointment"
             with_token = False
 
         elif self.subject == EmailSubject.PAYMENT_FAILED_CLIENT:
             self.body = "Unfortunately, your recent payment attempt for an appointment was unsuccessful. Please view the appointment to reattempt the payment."
             self.link_text = "View Appointment"
-            endpoint = "appointments.view_appointment"
+            endpoint = "view_appointment"
+            with_token = False
+
+        elif self.subject == EmailSubject.APPOINTMENT_CONFIRMED_CLIENT:
+            self.body = (
+                f"Good news! Your appointment with {self.context['therapist_name']} on {self.context['appointment_date']} at {self.context['appointment_time']} "
+                "has been confirmed. Please review any preparation material in advance and reach out via <a href='{{ url_for('messages.messages') }}'>messages</a> "
+                "if you have any questions before the appointment."
+            )
+            self.link_text = "View Appointment"
+            endpoint = "view_appointment"
             with_token = False
 
         else:

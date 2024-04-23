@@ -1,3 +1,4 @@
+import random
 from datetime import datetime
 
 import sqlalchemy as sa
@@ -6,11 +7,13 @@ from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.constants import EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
 from app.models.appointment_type import AppointmentType
 from app.models.client import Client
 from app.models.enums import AppointmentStatus, PaymentStatus
 from app.models.therapist import Therapist
+from app.models.user import User
 
 
 class Appointment(SeedableMixin, db.Model):
@@ -38,4 +41,38 @@ class Appointment(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
-        pass
+        # Helper function to adjust minutes to :00, :15, :30, or :45
+        def generate_reasonable_datetime() -> datetime:
+            dt = fake.future_datetime(end_date="+30d", tzinfo=None)
+            minutes = random.choice([0, 15, 30, 45])
+            dt = dt.replace(minute=minutes, second=0, microsecond=0)
+            return dt
+
+        appointments = []
+
+        # Fetch example therapist and client
+        example_therapist_user = db.session.execute(
+            db.select(User).filter_by(email=EXAMPLE_THERAPIST_EMAIL)
+        ).scalar_one()
+
+        example_client_user = db.session.execute(
+            db.select(User).filter_by(email=EXAMPLE_CLIENT_EMAIL)
+        ).scalar_one()
+
+        # Insert appointments between the example therapist and client
+        for _ in range(8):
+            appointment = Appointment(
+                therapist_id=example_therapist_user.therapist.id,
+                client_id=example_client_user.client.id,
+                appointment_type_id=random.choice(
+                    example_therapist_user.therapist.appointment_types
+                ).id,
+                time=generate_reasonable_datetime(),
+                appointment_status=random.choice(list(AppointmentStatus)),
+                payment_status=random.choice(list(PaymentStatus)),
+            )
+            appointments.append(appointment)
+
+        db.session.add_all(appointments)
+        db.session.commit()
+        return

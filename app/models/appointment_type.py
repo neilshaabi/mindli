@@ -35,9 +35,9 @@ class AppointmentType(SeedableMixin, db.Model):
         # Fetch all therapists
         therapists = db.session.execute(db.select(Therapist)).scalars().all()
 
-        # Create 1-3 random appointment types for each therapist
+        # Create random appointment types for each therapist
         for therapist in therapists:
-            for _ in range(random.randint(1, 3)):
+            for _ in range(random.randint(2, 5)):
                 appointment_type = AppointmentType(
                     therapist_id=therapist.id,
                     therapy_type=random.choice(list(TherapyType)),
