@@ -9,7 +9,7 @@ from app import db
 
 
 class CustomFlaskForm(FlaskForm):
-    def __init__(self, *args, id=None, endpoint=None, **kwargs):
+    def __init__(self, id=None, endpoint=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.id = id
         self.endpoint = endpoint

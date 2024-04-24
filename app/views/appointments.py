@@ -22,7 +22,7 @@ bp = Blueprint("appointments", __name__)
 @bp.route("/appointments/therapist", methods=["GET"])
 @login_required
 @therapist_required
-def therapist_appointments():
+def appointments_therapist():
     # Fetch all of the therapist's appointments ordered by the most recent
     appointments = (
         db.session.execute(
@@ -75,7 +75,7 @@ def therapist_appointments():
 
     # Render the page with the appointment forms
     return render_template(
-        "therapist_appointments.html",
+        "appointments_therapist.html",
         appointments=appointments,
         update_appointment_type_forms=update_appointment_type_forms,
         create_appointment_type_form=create_appointment_type_form,
@@ -108,7 +108,7 @@ def create_appointment_type():
 
     flash("New appointment type created")
     return jsonify(
-        {"success": True, "url": url_for("appointments.therapist_appointments")}
+        {"success": True, "url": url_for("appointments.appointments_therapist")}
     )
 
 
@@ -125,7 +125,7 @@ def update_appointment_type(appointment_type_id):
 
     # Redirect if appointment type not found
     if not appointment_type or appointment_type.therapist.user.id != current_user.id:
-        return redirect(url_for("appointments.therapist_appointments"))
+        return redirect(url_for("appointments.appointments_therapist"))
 
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
 
@@ -157,7 +157,7 @@ def update_appointment_type(appointment_type_id):
 
     flash("Appointment type updated")
     return jsonify(
-        {"success": True, "url": url_for("appointments.therapist_appointments")}
+        {"success": True, "url": url_for("appointments.appointments_therapist")}
     )
 
 
@@ -178,7 +178,7 @@ def delete_appointment_type():
 
     # Redirect if appointment type does not belong to this therapist
     if appointment_type.therapist.user.id != current_user.id:
-        return redirect(url_for("appointments.therapist_appointments"))
+        return redirect(url_for("appointments.appointments_therapist"))
 
     # Soft delete appointment to maintain historical integrity
     appointment_type.active = False
@@ -187,14 +187,14 @@ def delete_appointment_type():
     # Redirect to appointments page
     flash("Appointment type deleted")
     return jsonify(
-        {"success": True, "url": url_for("appointments.therapist_appointments")}
+        {"success": True, "url": url_for("appointments.appointments_therapist")}
     )
 
 
 @bp.route("/appointments/client", methods=["GET"])
 @login_required
 @client_required
-def client_appointments():
+def appointments_client():
     # Fetch all of the client's appointments ordered by the most recent
     appointments = (
         db.session.execute(
@@ -208,15 +208,15 @@ def client_appointments():
 
     # Render the page with the appointment forms and the new appointment form
     return render_template(
-        "client_appointments.html",
+        "appointments_client.html",
         appointments=appointments,
     )
 
 
-@bp.route("/appointments/book-appointment/<int:therapist_id>", methods=["GET"])
+@bp.route("/appointments/book/<int:therapist_id>", methods=["GET"])
 @login_required
 @client_required
-def show_book_appointment_form(therapist_id):
+def view_book_appointment(therapist_id):
     # Fetch therapist with this ID
     therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
@@ -239,7 +239,7 @@ def show_book_appointment_form(therapist_id):
     return render_template("book_appointment.html", therapist=therapist, form=form)
 
 
-@bp.route("/appointments/book-appointment/<int:therapist_id>", methods=["POST"])
+@bp.route("/appointments/book/<int:therapist_id>", methods=["POST"])
 @login_required
 @client_required
 def process_book_appointment(therapist_id):

@@ -13,8 +13,6 @@ $(document).ready(function() {
             break;
         }
     }
-
-    console.log($('.edit-disabled-form-button'));
     
     // Function to toggle disabled attribute on input fields and button visibility
     $('.edit-disabled-form-button').click(function() {
@@ -26,13 +24,22 @@ $(document).ready(function() {
     });
 
 
-    // Function to toggle the visibility of appointment date and time fields
+    // Function to toggle input fields and enable submit button
     $('#action-field').change(function() {
 
-        var selectedStatus = $(this).val();
+        var selectedAction = $(this).val();
         var datetimeFields = $('.datetime-field');
         
-        if (selectedStatus === 'RESCHEDULED') {
+        // Disable input button when no action selected
+        var submitBtn = $('#submit-btn');
+        if (selectedAction === '') {
+            submitBtn.prop('disabled', true);
+        } else {
+            submitBtn.prop('disabled', false);
+        }
+
+        // Show date and time fields when action is rescheduled
+        if (selectedAction === 'RESCHEDULED') {
             datetimeFields.removeClass('hidden');
         } else {
             datetimeFields.addClass('hidden');
@@ -130,7 +137,7 @@ function registerFormHandlers() {
             },
             success: function(response) {
                 if (response.success) {
-                    if (response.url) { // Redirect user to url
+                    if (response.url) { // Redirect to url
                         window.location = response.url;
                     } else if (response.update_target) { // Replace element with new HTML
                         $('#' + response.update_target).html(response.updated_html)
@@ -140,6 +147,8 @@ function registerFormHandlers() {
                 } else if (response.errors) { // Display form errors
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";
                     displayFormErrors(formId, formPrefix, response.errors);
+                } else if (response.redirect) { // Redirect
+                    window.location = response.redirect;
                 }
             },
             error: function() {

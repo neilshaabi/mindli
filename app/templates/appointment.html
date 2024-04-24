@@ -8,6 +8,12 @@
     
     <div class='container'>
 
+        <div class='row mb-3 g-4'>
+            <div class='col-lg-12'>
+                <h3>{{ current_user.role.value }} Profile</h3>
+            </div>
+        </div>
+        
         <div class="row">
             <div class="col-lg-9 mx-auto">
                 <div class="my-card">
@@ -27,13 +33,13 @@
                     <hr>
                     
                     <!-- Appointment details -->
-                    <div class="row mb-4">
+                    <div class="row mb-3">
                         <div class="col-auto">
-                            <h6 class="mb-3">Appointment Details</h6>
+                            <h6 class="mt-2 mb-3">Appointment Details</h6>
                             <ul>
                                 <li class="mb-2">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }}</li>
                                 <li class="mb-2">Therapy type: {{ appointment.appointment_type.therapy_type.value }}</li>
-                                <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }} ({{ appointment.appointment_type.duration }} minutes)</li>
+                                <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }}</li>
                                 <li class="mb-2">Duration: {{ appointment.appointment_type.duration }} minutes</li>
                                 <li class="mb-2">Fee: {{ appointment.appointment_type.fee_currency }}{{ appointment.appointment_type.fee_amount }}</li>
                                 <li class="mb-2">Payment status: &nbsp;<span class="tag {{ appointment.payment_status.value.lower() }}">{{ appointment.payment_status.value }}</span></li>
@@ -68,7 +74,7 @@
                                 </div>
                             </div>
                             <div class="col-lg-2">
-                                {{ submit_button(update_appointment_form.submit) }}
+                                {{ submit_button(update_appointment_form.submit, id='submit-btn', disabled=True) }}
                             </div>
                         </div>
                     </form>

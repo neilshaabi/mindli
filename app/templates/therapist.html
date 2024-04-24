@@ -32,7 +32,7 @@
                         <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
                         {% if current_user.role == UserRole.CLIENT %}
                             <div class="col-auto ms-auto">
-                                <a href="{{ url_for('appointments.show_book_appointment_form', therapist_id=therapist.id) }}" class="btn btn-primary">
+                                <a href="{{ url_for('appointments.view_book_appointment', therapist_id=therapist.id) }}" class="btn btn-primary">
                                     Book Appointment
                                 </a>
                             </div>

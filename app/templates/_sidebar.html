@@ -17,7 +17,7 @@
                 <a class="nav-link" href="/messages">Messages</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="{{ url_for('appointments.' + current_user.role.value.lower() + '_appointments') }}">Appointments</a>
+                <a class="nav-link" href="{{ url_for('appointments.appointments_' + current_user.role.value.lower()) }}">Appointments</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/therapists">Therapist Directory</a>

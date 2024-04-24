@@ -65,7 +65,7 @@
                         </div>
                         {% if current_user.role == UserRole.CLIENT %}
                             <div class="col-auto ms-auto">
-                                <a href="{{ url_for('appointments.show_book_appointment_form', therapist_id=opened_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
+                                <a href="{{ url_for('appointments.view_book_appointment', therapist_id=opened_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
                                     Book Appointment
                                 </a>
                             </div>
