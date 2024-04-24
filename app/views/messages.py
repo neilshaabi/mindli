@@ -1,4 +1,4 @@
-from flask import Blueprint, jsonify, redirect, render_template, url_for
+from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app import db
@@ -69,27 +69,22 @@ def messages(conversation_id):
     # Determine conversation fields based on the current user's role
     if current_user.role == UserRole.THERAPIST:
         current_user_id_field = Conversation.therapist_user_id
-        other_user_field = "client_user"
     elif current_user.role == UserRole.CLIENT:
         current_user_id_field = Conversation.client_user_id
-        other_user_field = "therapist_user"
 
     # Ensure the conversation exists and the current user is part of it
-    selected_conversation = db.session.execute(
+    opened_conversation = db.session.execute(
         db.select(Conversation).filter_by(id=conversation_id)
     ).scalar_one_or_none()
-    if not selected_conversation or (
+    if not opened_conversation or (
         current_user.id
         not in [
-            selected_conversation.therapist_user_id,
-            selected_conversation.client_user_id,
+            opened_conversation.therapist_user_id,
+            opened_conversation.client_user_id,
         ]
     ):
+        flash("You do not have permission to view this conversation", "error")
         return redirect(url_for("messages.messages_entry"))
-    else:
-        selected_conversation.other_user = getattr(
-            selected_conversation, other_user_field
-        )
 
     # Create a subquery to fetch the latest message in each conversation
     latest_message_subquery = (
@@ -121,20 +116,19 @@ def messages(conversation_id):
             conversation.time_since_latest_message = format_time_since(
                 latest_message.timestamp
             )
-            conversation.other_user = getattr(conversation, other_user_field)
 
     # Initialise form
     form = SendMessageForm(
         id="send-message",
         endpoint=url_for(
-            "messages.send_message", conversation_id=selected_conversation.id
+            "messages.send_message", conversation_id=opened_conversation.id
         ),
     )
-    form.conversation_id.data = selected_conversation.id
+    form.conversation_id.data = opened_conversation.id
 
     return render_template(
         "messages.html",
-        selected_conversation=selected_conversation,
+        opened_conversation=opened_conversation,
         conversations=conversations,
         form=form,
     )

@@ -23,10 +23,24 @@ bp = Blueprint("appointments", __name__)
 @login_required
 @therapist_required
 def therapist_appointments():
+    # Fetch all of the therapist's appointments ordered by the most recent
+    appointments = (
+        db.session.execute(
+            db.select(Appointment)
+            .filter_by(therapist_id=current_user.therapist.id)
+            .order_by(Appointment.time.desc())
+        )
+        .scalars()
+        .all()
+    )
+
     # Query existing appointment types for the therapist
     appointment_types = (
         db.session.execute(
-            db.select(AppointmentType).filter_by(therapist_id=current_user.therapist.id)
+            db.select(AppointmentType).where(
+                (AppointmentType.therapist_id == current_user.therapist.id)
+                & (AppointmentType.active is True)
+            )
         )
         .scalars()
         .all()
@@ -62,6 +76,7 @@ def therapist_appointments():
     # Render the page with the appointment forms
     return render_template(
         "therapist_appointments.html",
+        appointments=appointments,
         update_appointment_type_forms=update_appointment_type_forms,
         create_appointment_type_form=create_appointment_type_form,
         delete_appointment_type_form=delete_appointment_type_form,
@@ -78,7 +93,7 @@ def create_appointment_type():
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors, "form_prefix": "new"})
 
-    # Create a new appointment type instance
+    # Create a new appointment type
     new_appointment_type = AppointmentType(
         therapist_id=current_user.therapist.id,
         therapy_type=form.therapy_type.data,
@@ -86,6 +101,7 @@ def create_appointment_type():
         duration=form.duration.data,
         fee_amount=form.fee_amount.data,
         fee_currency=form.fee_currency.data,
+        active=True,
     )
     db.session.add(new_appointment_type)
     db.session.commit()
@@ -96,7 +112,7 @@ def create_appointment_type():
     )
 
 
-@bp.route("/appointment-types/<int:appointment_type_id>", methods=["POST"])
+@bp.route("/appointment-types/update/<int:appointment_type_id>", methods=["POST"])
 @login_required
 @therapist_required
 def update_appointment_type(appointment_type_id):
@@ -105,7 +121,7 @@ def update_appointment_type(appointment_type_id):
         db.select(AppointmentType).filter_by(
             id=appointment_type_id, therapist_id=current_user.therapist.id
         )
-    ).scalar_one()
+    ).scalar_one_or_none()
 
     # Redirect if appointment type not found
     if not appointment_type or appointment_type.therapist.user.id != current_user.id:
@@ -123,12 +139,20 @@ def update_appointment_type(appointment_type_id):
             }
         )
 
-    # Update the appointment type with form data
-    appointment_type.therapy_type = form.therapy_type.data
-    appointment_type.therapy_mode = form.therapy_mode.data
-    appointment_type.duration = form.duration.data
-    appointment_type.fee_amount = form.fee_amount.data
-    appointment_type.fee_currency = form.fee_currency.data
+    # Mark existing appointment type as inactive to maintain historical integrity
+    appointment_type.active = False
+
+    # Create a new appointment type
+    new_appointment_type = AppointmentType(
+        therapist_id=current_user.therapist.id,
+        therapy_type=form.therapy_type.data,
+        therapy_mode=form.therapy_mode.data,
+        duration=form.duration.data,
+        fee_amount=form.fee_amount.data,
+        fee_currency=form.fee_currency.data,
+        active=True,
+    )
+    db.session.add(new_appointment_type)
     db.session.commit()
 
     flash("Appointment type updated")
@@ -156,8 +180,8 @@ def delete_appointment_type():
     if appointment_type.therapist.user.id != current_user.id:
         return redirect(url_for("appointments.therapist_appointments"))
 
-    # Delete appointment
-    db.session.delete(appointment_type)
+    # Soft delete appointment to maintain historical integrity
+    appointment_type.active = False
     db.session.commit()
 
     # Redirect to appointments page
@@ -230,15 +254,12 @@ def process_book_appointment(therapist_id):
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Combine date and time into a single datetime object
-    appointment_datetime = datetime.combine(form.date.data, form.time.data)
-
     # Add new appointment with pending payment in database
     new_appointment = Appointment(
         therapist_id=therapist_id,
         client_id=current_user.client.id,
         appointment_type_id=form.appointment_type.data,
-        time=appointment_datetime,
+        time=datetime.combine(form.date.data, form.time.data),
         appointment_status=AppointmentStatus.SCHEDULED,
         payment_status=PaymentStatus.PENDING,
     )
@@ -252,7 +273,7 @@ def process_book_appointment(therapist_id):
         return jsonify(
             {
                 "success": False,
-                "errors": {"submit": "Failed to create Stripe checkout session"},
+                "errors": {"submit": ["Failed to create Stripe checkout session"]},
             }
         )
     else:

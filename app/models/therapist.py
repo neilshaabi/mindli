@@ -50,6 +50,10 @@ class Therapist(SeedableMixin, db.Model):
         back_populates="therapist",
     )
 
+    @property
+    def active_appointment_types(self):
+        return [at for at in self.appointment_types if at.active]
+
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
         # Fetch titles, languages, issues, interventions from the database

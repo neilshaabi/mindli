@@ -2,6 +2,7 @@ from typing import List
 
 import sqlalchemy as sa
 import sqlalchemy.orm as so
+from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
@@ -29,6 +30,20 @@ class Conversation(SeedableMixin, db.Model):
     client_user: so.Mapped["User"] = so.relationship(
         back_populates="conversations_as_client", foreign_keys=[client_user_id]
     )
+
+    @property
+    def this_user(self) -> User:
+        if current_user.role == UserRole.THERAPIST:
+            return self.therapist_user
+        elif current_user.role == UserRole.CLIENT:
+            return self.client_user
+
+    @property
+    def other_user(self) -> User:
+        if current_user.role == UserRole.THERAPIST:
+            return self.client_user
+        elif current_user.role == UserRole.CLIENT:
+            return self.therapist_user
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:

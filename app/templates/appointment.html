@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Appointment with {{ appointment.other_user.first_name }} {{ appointment.other_user.last_name }}
+    Appointment with {{ appointment.other_user.full_name }}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,68 @@
         <div class="row">
             <div class="col-lg-9 mx-auto">
                 <div class="my-card">
-                    TODO
+                    
+                    <!-- Appointment header -->
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-auto">
+                            <h3 class="mb-0">Appointment with {{ appointment.other_user.full_name }}</h3>
+                        </div>
+                        <div class="col-auto ms-auto">
+                            <span class="tag tag-lg {{ appointment.appointment_status.name.lower() }}" >
+                                {{ appointment.appointment_status.value }}
+                            </span>
+                        </div>
+                    </div>
+                        
+                    <hr>
+                    
+                    <!-- Appointment details -->
+                    <div class="row mb-4">
+                        <div class="col-auto">
+                            <h6 class="mb-3">Appointment Details</h6>
+                            <ul>
+                                <li class="mb-2">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }}</li>
+                                <li class="mb-2">Therapy type: {{ appointment.appointment_type.therapy_type.value }}</li>
+                                <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }} ({{ appointment.appointment_type.duration }} minutes)</li>
+                                <li class="mb-2">Duration: {{ appointment.appointment_type.duration }} minutes</li>
+                                <li class="mb-2">Fee: {{ appointment.appointment_type.fee_currency }}{{ appointment.appointment_type.fee_amount }}</li>
+                                <li class="mb-2">Payment status: &nbsp;<span class="tag {{ appointment.payment_status.value.lower() }}">{{ appointment.payment_status.value }}</span></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    
+                    <!-- Actions -->
+                    <form id="{{ update_appointment_form.id }}" action="{{ update_appointment_form.endpoint }}" novalidate>
+                        
+                        {{ update_appointment_form.csrf_token }}
+                        
+                        <h6 class="mb-3">Update Appointment</h6>
+                        <div class="row g-2 mb-3 align-items-center">
+                            <div class="col-lg-4">
+                                <div class='form-floating'>
+                                    {{ update_appointment_form.action(class_='form-control form-select', placeholder=update_appointment_form.action.label.text, id='action-field') }}
+                                    {{ update_appointment_form.action.label(class_='floatingInput') }}
+                                </div>
+                            </div>
+                            <div class="col-lg-3 datetime-field hidden">
+                                <div class='form-floating'>
+                                    {{ update_appointment_form.new_date(class_='form-control', placeholder=update_appointment_form.new_date.label.text) }}
+                                    {{ update_appointment_form.new_date.label(class_='floatingInput') }}
+                                </div>
+                            </div>
+                            <div class="col-lg-3 datetime-field hidden">
+                                <div class='form-floating'>
+                                    {{ update_appointment_form.new_time(class_='form-control', placeholder=update_appointment_form.new_time.label.text) }}
+                                    {{ update_appointment_form.new_time.label(class_='floatingInput') }}
+                                </div>
+                            </div>
+                            <div class="col-lg-2">
+                                {{ submit_button(update_appointment_form.submit) }}
+                            </div>
+                        </div>
+                    </form>
+
                 </div>
             </div>
         </div>

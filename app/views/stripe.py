@@ -44,7 +44,7 @@ def create_account():
             business_type="individual",
             email=current_user.email,
             business_profile={
-                "name": f"{current_user.first_name} {current_user.last_name}",
+                "name": current_user.full_name,
                 "mcc": "8099",  # Medical Services
                 "product_description": "Mindli provides online psychotherapy services, connecting mental health practioners with clients for support. Services include individual, couples and family therapy sessions.",
                 "url": url_for(
@@ -55,7 +55,7 @@ def create_account():
             },
             settings={
                 "dashboard": {
-                    "display_name": f"{current_user.first_name} {current_user.first_name}",
+                    "display_name": current_user.full_name,
                 }
             },
         )
@@ -260,7 +260,7 @@ def create_checkout_session(appointment: Appointment) -> str:
                     "price_data": {
                         "currency": appointment.appointment_type.fee_currency.lower(),
                         "product_data": {
-                            "name": f"Appointment with {appointment.therapist.user.first_name} {appointment.therapist.user.last_name} - {appointment.appointment_type.therapy_type.value}, {appointment.appointment_type.therapy_mode.value} ({appointment.appointment_type.duration} minutes)"
+                            "name": f"Appointment with {appointment.therapist.user.full_name} - {appointment.appointment_type.therapy_type.value}, {appointment.appointment_type.therapy_mode.value} ({appointment.appointment_type.duration} minutes)"
                         },
                         "unit_amount": unit_amount,
                     },
@@ -269,7 +269,11 @@ def create_checkout_session(appointment: Appointment) -> str:
             ],
             customer_email=current_user.email,
             stripe_account=appointment.therapist.stripe_account_id,
-            success_url=url_for("appointments.client_appointments", _external=True),
+            success_url=url_for(
+                "appointment.view_appointment",
+                appointment_id=appointment.id,
+                _external=True,
+            ),
             cancel_url=url_for("appointments.client_appointments", _external=True),
             metadata={"appointment_id": appointment.id},
         )

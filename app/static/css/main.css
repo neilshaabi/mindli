@@ -214,7 +214,7 @@ input:-webkit-autofill:focus {
     justify-content: center;
     align-items: center;
 }
-
+ 
 .btn:focus,
 .btn:active,
 .btn:focus-visible {
@@ -223,19 +223,24 @@ input:-webkit-autofill:focus {
     border: inherit;
 }
 
+.btn:hover,
 .btn-primary,
-.btn-primary.active,
 .btn-primary.show,
-.btn-primary:disabled,
-:not(.btn-check)+.btn:active {
+.btn-primary:disabled {
     color: white;
     background: var(--colour-primary);
+    border-color: var(--colour-primary);
 }
 
 .btn-primary:hover, 
 .btn-primary:focus,
-.btn-primary:active {
+.btn-primary:active,
+.btn:focus-visible,
+.btn-primary.active,
+.btn:first-child:active,
+:not(.btn-check)+.btn:active {
     background: var(--colour-dark);
+    border-color: var(--colour-dark);
 }
 
 .btn-outline-primary {
@@ -298,7 +303,14 @@ input:-webkit-autofill:focus {
 
 .tag {
     font-size: 0.9rem;
-    padding: 5px;
+    padding: 5px 15px;
+    border-radius: var(--my-border-radius);
+    background-color:#414552;
+}
+
+.tag-lg {
+    font-size: 1rem;
+    padding: 10px 30px;
     border-radius: var(--my-border-radius);
     background-color:#414552;
 }

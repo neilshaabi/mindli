@@ -14,6 +14,31 @@ $(document).ready(function() {
         }
     }
 
+    console.log($('.edit-disabled-form-button'));
+    
+    // Function to toggle disabled attribute on input fields and button visibility
+    $('.edit-disabled-form-button').click(function() {
+        var formId = $(this).attr('form');
+        $(':input[form="' + formId + '"]').prop('disabled', false);
+        $(this).addClass('hidden');
+        $('span[data-bs-target="#deleteAppointmentTypeModal"][form="' + formId + '"]').removeClass('hidden');
+        $('button[type="submit"][form="' + formId + '"]').removeClass('hidden');
+    });
+
+
+    // Function to toggle the visibility of appointment date and time fields
+    $('#action-field').change(function() {
+
+        var selectedStatus = $(this).val();
+        var datetimeFields = $('.datetime-field');
+        
+        if (selectedStatus === 'RESCHEDULED') {
+            datetimeFields.removeClass('hidden');
+        } else {
+            datetimeFields.addClass('hidden');
+        }
+    });
+    
     // Event listener for the toggle button
     $('#togglePassword').click(function() {
         
@@ -30,30 +55,30 @@ $(document).ready(function() {
         }
     });
 
-     // Setup CSRF token for AJAX requests
-     var csrf_token = "{{ csrf_token() }}";
-     $.ajaxSetup({
-         beforeSend: function(xhr, settings) {
-             if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
-                 xhr.setRequestHeader("X-CSRFToken", csrf_token);
-             }
-         }
-     });
+    // Setup CSRF token for AJAX requests
+    var csrf_token = "{{ csrf_token() }}";
+    $.ajaxSetup({
+        beforeSend: function(xhr, settings) {
+            if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+                xhr.setRequestHeader("X-CSRFToken", csrf_token);
+            }
+        }
+    });
+
+    // Register submission handlers for all forms using AJAX
+    registerFormHandlers();
  
-     // Register submission handlers for all forms using AJAX
-     registerFormHandlers();
- 
-     // Set the delete modal's hidden field with the correct appointment type id
-     $('#deleteAppointmentTypeModal').on('show.bs.modal', function (event) {
-         var modalToggler = $(event.relatedTarget);
-         var formId = modalToggler.attr('form');
-         var appointment_type_id = formId.replace('appointment_type_', '');
-         $(this).find('input[name="appointment_type_id"]').val(appointment_type_id);
-     });
+    // Set the delete modal's hidden field with the correct appointment type id
+    $('#deleteAppointmentTypeModal').on('show.bs.modal', function (event) {
+        var modalToggler = $(event.relatedTarget);
+        var formId = modalToggler.attr('form');
+        var appointment_type_id = formId.replace('appointment_type_', '');
+        $(this).find('input[name="appointment_type_id"]').val(appointment_type_id);
+    });
 });
 
 
-// Updates profile picture
+// Updates profile picture preview before form is submitted
 function previewImage(event) {
     var reader = new FileReader();
     reader.onload = function(){
@@ -64,18 +89,6 @@ function previewImage(event) {
     reader.readAsDataURL(event.target.files[0]);
 }
 
-
-function enableFields(button) {
-    
-    // Get the form ID from the edit button
-    var formId = $(button).attr('form');
-    $(':input[form="' + formId + '"]').prop('disabled', false);
-    
-    // Toggle button visibility
-    $(button).addClass('hidden');
-    $('span[data-bs-target="#deleteAppointmentTypeModal"][form="' + formId + '"]').removeClass('hidden');
-    $('button[type="submit"][form="' + formId + '"]').removeClass('hidden');
-}
 
 function registerFormHandlers() {
 
@@ -121,6 +134,8 @@ function registerFormHandlers() {
                         window.location = response.url;
                     } else if (response.update_target) { // Replace element with new HTML
                         $('#' + response.update_target).html(response.updated_html)
+                    } else {
+                        return
                     }
                 } else if (response.errors) { // Display form errors
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";

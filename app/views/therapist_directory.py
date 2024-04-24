@@ -88,7 +88,10 @@ def filtered_therapists():
         if filter_form.therapy_type.data:
             therapy_type = TherapyType[filter_form.therapy_type.data]
             query = query.where(
-                Therapist.appointment_types.any(therapy_type=therapy_type)
+                Therapist.appointment_types.any(
+                    (AppointmentType.therapy_type == therapy_type)
+                    & (AppointmentType.active is True)
+                )
             )
 
         if filter_form.therapy_mode.data:
@@ -96,13 +99,17 @@ def filtered_therapists():
             for mode in modes:
                 query = query.where(
                     Therapist.appointment_types.any(
-                        AppointmentType.therapy_mode == mode
+                        (AppointmentType.therapy_mode == mode)
+                        & (AppointmentType.active is True)
                     )
                 )
 
         if filter_form.duration.data:
             query = query.where(
-                Therapist.appointment_types.any(duration=filter_form.duration.data)
+                Therapist.appointment_types.any(
+                    (AppointmentType.duration == filter_form.duration.data)
+                    & (AppointmentType.active is True)
+                )
             )
 
         if filter_form.titles.data:

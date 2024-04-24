@@ -83,7 +83,7 @@ class BookAppointmentForm(CustomFlaskForm):
                         f"{at.therapy_type.value}, {at.therapy_mode.value} ({at.duration} minutes) - {at.fee_amount} {at.fee_currency}"
                     ),
                 )
-                for at in therapist.appointment_types
+                for at in therapist.active_appointment_types
             ]
         )
         return

@@ -36,10 +36,10 @@
                         <table class="table text-center">
                             <thead>
                                 <tr>
+                                    <th>Date and Time</th>
                                     <th>Therapist</th>
                                     <th>Type</th>
                                     <th>Mode</th>
-                                    <th>Date and Time</th>
                                     <th>Duration</th>
                                     <th>Status</th>
                                     <th>Payment</th>
@@ -49,13 +49,13 @@
                             <tbody>
                                 {% for appointment in appointments %}
                                     <tr>
+                                        <td>{{ appointment.time.strftime('%d %b %Y - %H:%M') }}</td>
                                         <td>
-                                            <a href="{{ url_for('therapist_directory.therapist', therapist_id=appointment.therapist_id) }}">{{ appointment.therapist.user.first_name }} {{ appointment.therapist.user.last_name }}</a>
+                                            <a href="{{ url_for('therapist_directory.therapist', therapist_id=appointment.therapist_id) }}">{{ appointment.therapist.user.full_name }}</a>
                                         </td>
                                         <td>{{ appointment.appointment_type.therapy_type.value }}</td>
                                         <td>{{ appointment.appointment_type.therapy_mode.value }}</td>
-                                        <td>{{ appointment.time.strftime('%d %b %Y - %H:%M') }}</td>
-                                        <td>{{ appointment.appointment_type.duration }} mins</td>
+                                        <td>{{ appointment.appointment_type.duration }} minutes</td>
                                         <td><span class="tag {{ appointment.appointment_status.name.lower() }}">{{ appointment.appointment_status.value }}</span></td>
                                         <td><span class="tag {{ appointment.payment_status.name.lower() }}">{{ appointment.payment_status.value }}</span></td>
                                         <td>

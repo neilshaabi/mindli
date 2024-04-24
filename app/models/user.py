@@ -131,3 +131,7 @@ class User(UserMixin, SeedableMixin, db.Model):
 
         db.session.commit()
         return
+
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"

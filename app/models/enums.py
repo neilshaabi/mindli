@@ -13,6 +13,9 @@ class EmailSubject(Enum):
     )
     PAYMENT_FAILED_CLIENT = "Payment failed"
     APPOINTMENT_CONFIRMED_CLIENT = "Appointment confirmed"
+    APPOINTMENT_RESCHEDULED = "Appointment rescheduled"
+    APPOINTMENT_CANCELLED = "Appointment cancelled"
+    APPOINTMENT_NO_SHOW_CLIENT = "Missed appointment"
 
 
 @unique

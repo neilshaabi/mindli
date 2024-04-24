@@ -4,6 +4,7 @@ from datetime import datetime
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from faker import Faker
+from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
@@ -11,7 +12,7 @@ from app.constants import EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
 from app.models.appointment_type import AppointmentType
 from app.models.client import Client
-from app.models.enums import AppointmentStatus, PaymentStatus
+from app.models.enums import AppointmentStatus, PaymentStatus, UserRole
 from app.models.therapist import Therapist
 from app.models.user import User
 
@@ -39,6 +40,20 @@ class Appointment(SeedableMixin, db.Model):
         back_populates="appointments"
     )
 
+    @property
+    def this_user(self) -> User:
+        if current_user.role == UserRole.THERAPIST:
+            return self.therapist.user
+        elif current_user.role == UserRole.CLIENT:
+            return self.client.user
+
+    @property
+    def other_user(self) -> User:
+        if current_user.role == UserRole.THERAPIST:
+            return self.client.user
+        elif current_user.role == UserRole.CLIENT:
+            return self.therapist.user
+
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
         # Helper function to adjust minutes to :00, :15, :30, or :45
@@ -65,7 +80,7 @@ class Appointment(SeedableMixin, db.Model):
                 therapist_id=example_therapist_user.therapist.id,
                 client_id=example_client_user.client.id,
                 appointment_type_id=random.choice(
-                    example_therapist_user.therapist.appointment_types
+                    example_therapist_user.therapist.active_appointment_types
                 ).id,
                 time=generate_reasonable_datetime(),
                 appointment_status=random.choice(list(AppointmentStatus)),

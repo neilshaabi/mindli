@@ -22,6 +22,7 @@ class AppointmentType(SeedableMixin, db.Model):
     duration: so.Mapped[int] = so.mapped_column(sa.Integer)
     fee_amount: so.Mapped[float] = so.mapped_column(sa.Float)
     fee_currency: so.Mapped[str] = so.mapped_column(sa.String(3))
+    active: so.Mapped[bool] = so.mapped_column(sa.Boolean, default=True)
 
     therapist: so.Mapped["Therapist"] = so.relationship(
         back_populates="appointment_types"

@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Therapist: {{ therapist.user.first_name }} {{ therapist.user.last_name }}
+    Therapist: {{ therapist.user.full_name }}
 {% endblock %}
 
 {% block content %}
@@ -13,16 +13,16 @@
                 <div class="my-card therapist-card">
                     <div class="row mb-3">
                         <div class="col-2">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ therapist.user.first_name }} {{ therapist.user.last_name }}">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ therapist.user.full_name }}">
                         </div>
                         <div class="col-10 ps-4">
-                            <h5>{{ therapist.user.first_name }} {{ therapist.user.last_name }}</h5>
+                            <h5>{{ therapist.user.full_name }}</h5>
                             <span class="text-muted">{{ therapist.qualifications }}</span>
                         </div>
                     </div>
                     <div>
-                        <p class="p-0">Types: {{ therapist.appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
-                        <p class="p-0">Modes: {{ therapist.appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
+                        <p class="p-0">Types: {{ therapist.active_appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
+                        <p class="p-0">Modes: {{ therapist.active_appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
                         <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
                         <p class="p-0">Gender: {{ therapist.user.gender.value }}</p>
                         <p class="p-0">Languages: {{ therapist.languages|join(', ', 'name') }}</p>
