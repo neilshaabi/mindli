@@ -41,3 +41,19 @@
         </div>
     </div>
 {% endmacro %}
+
+
+{% macro flashed_message(message, category) %}
+    {% set class_map = {
+        'success': ('alert-success', 'fa-solid fa-circle-check'),
+        'error': ('alert-danger', 'fa-solid fa-circle-exclamation'),
+        'warning': ('alert-warning', 'fa-solid fa-triangle-exclamation'),
+        'info': ('alert-info', 'fa-solid fa-circle-info')
+    } %}
+    {% set alert_class, icon_class = class_map.get(category, ('alert-primary', 'fa-solid fa-circle-info')) %}
+    
+    <div class="alert {{ alert_class }} alert-dismissible fade show" role='alert'>
+        <i class="{{ icon_class }}"></i> {{ message }}
+        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+    </div>
+{% endmacro %}

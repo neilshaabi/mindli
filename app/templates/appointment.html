@@ -37,10 +37,9 @@
                         <div class="col-auto">
                             <h6 class="mt-2 mb-3">Appointment Details</h6>
                             <ul>
-                                <li class="mb-2">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }}</li>
+                                <li class="mb-2">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }} ({{ appointment.appointment_type.duration }} minutes)</li>
                                 <li class="mb-2">Therapy type: {{ appointment.appointment_type.therapy_type.value }}</li>
                                 <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }}</li>
-                                <li class="mb-2">Duration: {{ appointment.appointment_type.duration }} minutes</li>
                                 <li class="mb-2">Fee: {{ appointment.appointment_type.fee_currency }}{{ appointment.appointment_type.fee_amount }}</li>
                                 <li class="mb-2">Payment status: &nbsp;<span class="tag {{ appointment.payment_status.value.lower() }}">{{ appointment.payment_status.value }}</span></li>
                             </ul>
@@ -49,36 +48,95 @@
 
                     
                     <!-- Actions -->
-                    <form id="{{ update_appointment_form.id }}" action="{{ update_appointment_form.endpoint }}" novalidate>
+                    <form id="{{ update_form.id }}" action="{{ update_form.endpoint }}" novalidate>
                         
-                        {{ update_appointment_form.csrf_token }}
+                        {{ update_form.csrf_token }}
                         
                         <h6 class="mb-3">Update Appointment</h6>
-                        <div class="row g-2 mb-3 align-items-center">
+                        
+                        <div class="row g-2 mb-4 align-items-center">
                             <div class="col-lg-4">
                                 <div class='form-floating'>
-                                    {{ update_appointment_form.action(class_='form-control form-select', placeholder=update_appointment_form.action.label.text, id='action-field') }}
-                                    {{ update_appointment_form.action.label(class_='floatingInput') }}
+                                    {{ update_form.action(class_='form-control form-select', placeholder=update_form.action.label.text, id='action') }}
+                                    {{ update_form.action.label }}
                                 </div>
                             </div>
+
                             <div class="col-lg-3 datetime-field hidden">
                                 <div class='form-floating'>
-                                    {{ update_appointment_form.new_date(class_='form-control', placeholder=update_appointment_form.new_date.label.text) }}
-                                    {{ update_appointment_form.new_date.label(class_='floatingInput') }}
+                                    {{ update_form.new_date(class_='form-control', placeholder=update_form.new_date.label.text) }}
+                                    {{ update_form.new_date.label }}
                                 </div>
                             </div>
+
                             <div class="col-lg-3 datetime-field hidden">
                                 <div class='form-floating'>
-                                    {{ update_appointment_form.new_time(class_='form-control', placeholder=update_appointment_form.new_time.label.text) }}
-                                    {{ update_appointment_form.new_time.label(class_='floatingInput') }}
+                                    {{ update_form.new_time(class_='form-control', placeholder=update_form.new_time.label.text) }}
+                                    {{ update_form.new_time.label }}
                                 </div>
                             </div>
+
                             <div class="col-lg-2">
-                                {{ submit_button(update_appointment_form.submit, id='submit-btn', disabled=True) }}
+                                {{ submit_button(update_form.submit, id='submit-btn', disabled=True) }}
                             </div>
+
                         </div>
                     </form>
 
+                    <hr>
+
+                    {% if current_user.role == UserRole.THERAPIST %}
+                        <!-- Notes -->
+                        <form id="{{ notes_form.id }}" action="{{ notes_form.endpoint }}" novalidate>
+                            
+                            {{ notes_form.csrf_token }}
+                            
+                            <h6 class="mt-4 mb-3">Appointment Notes</h6>
+
+                            <div class="row mb-3">
+                                <div class="col-lg-12">
+                                    <div class='form-floating'>
+                                        {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text) }}
+                                        {{ notes_form.text.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-lg-12">
+                                    <div class='form-floating'>
+                                        {{ notes_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                        {{ notes_form.issues.label }}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-lg-8">
+                                    <div class='form-floating'>
+                                        {{ notes_form.interventions(class_='form-control form-select', multiple='multiple') }}
+                                        {{ notes_form.interventions.label }}
+                                    </div>
+                                </div>
+                                
+                                <div class="col-lg-4">
+                                    <div class='form-floating'>
+                                        {{ notes_form.efficacy(class_='form-control', placeholder=notes_form.efficacy.label.text) }}
+                                        {{ notes_form.efficacy.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Rate the appointment's effectiveness, with 1 being ineffective and 5 being highly effective.">
+                                            <i class='fa-solid fa-circle-info'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-12">
+                                {{ submit_button(notes_form.submit) }}
+                            </div>
+
+                        </form>
+                    {% endif %}
                 </div>
             </div>
         </div>

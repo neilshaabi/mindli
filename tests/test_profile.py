@@ -29,7 +29,7 @@ def test_update_user_profile_success(client: FlaskClient, logged_in_client: User
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True and "url" in data
+    assert data["success"] is True
     updated_user = db.session.query(User).filter_by(id=logged_in_client.id).first()
     assert updated_user.first_name == user_profile_data["first_name"]
     assert updated_user.last_name == user_profile_data["last_name"]
@@ -95,7 +95,7 @@ def test_update_therapist_profile_success(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True and "url" in data
+    assert data["success"] is True
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
         == initial_therapist_count + 1
@@ -139,7 +139,7 @@ def test_update_client_profile_success(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is True and "url" in data
+    assert data["success"] is True
     assert (
         db.session.execute(db.select(db.func.count()).select_from(Client)).scalar()
         == initial_client_count + 1

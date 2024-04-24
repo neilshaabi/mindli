@@ -154,7 +154,7 @@ def verify_email() -> Response:
     )
     email_message.send()
 
-    flash(f"Email verification instructions sent to {user.email}")
+    flash(f"Email verification instructions sent to {user.email}", "info")
     return jsonify({"success": True, "url": url_for("auth.verify_email")})
 
 
@@ -176,14 +176,14 @@ def email_verification(token):
 
         # Log in user
         login_user(user)
-        flash("Success! Your email address has been verified")
+        flash("Success! Your email address has been verified", "success")
         return redirect(url_for("main.index"))
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
         flash(
-            "Invalid or expired verification link, "
-            "please sign in to request a new link"
+            "Invalid or expired verification link, please sign in to request a new link",
+            "error",
         )
         return redirect(url_for("auth.login"))
 
@@ -220,7 +220,7 @@ def request_password_reset() -> Response:
     )
     email_message.send()
 
-    flash(f"Password reset instructions sent to {form.email.data.lower()}")
+    flash(f"Password reset instructions sent to {form.email.data.lower()}", "info")
     return jsonify({"success": True, "url": url_for("main.index")})
 
 
@@ -234,7 +234,10 @@ def reset_password_with_token(token):
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
-        flash("Invalid or expired reset link, " "please request another password reset")
+        flash(
+            "Invalid or expired reset link, please request another password reset",
+            "error",
+        )
         return redirect(url_for("main.index"))
 
     form = ResetPasswordForm(
@@ -270,6 +273,7 @@ def reset_password():
     user.password_hash = generate_password_hash(form.password.data)
     db.session.commit()
 
-    # Redirect to login page
-    flash("Success! Your password has been reset")
+    # Login user and redirect
+    login_user(user)
+    flash("Success! Your password has been reset", "success")
     return jsonify({"success": True, "url": url_for("main.index")})

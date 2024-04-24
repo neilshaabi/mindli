@@ -1,5 +1,7 @@
 from datetime import datetime
 
+from flask import render_template_string
+
 
 def format_time_since(dt: datetime) -> str:
     """
@@ -24,3 +26,14 @@ def format_time_since(dt: datetime) -> str:
             return f"{period_value}{period_name}"
 
     return "now"
+
+
+def get_flashed_message_html(message: str, category: str) -> str:
+    return render_template_string(
+        """
+            {% from '_macros.html' import flashed_message %}
+            {{ flashed_message(message=message, category=category) }}
+        """,
+        message=message,
+        category=category,
+    )

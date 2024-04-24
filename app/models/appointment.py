@@ -39,6 +39,9 @@ class Appointment(SeedableMixin, db.Model):
     appointment_type: so.Mapped["AppointmentType"] = so.relationship(
         back_populates="appointments"
     )
+    notes: so.Mapped["AppointmentNotes"] = so.relationship(
+        back_populates="appointment", cascade="all, delete-orphan"
+    )
 
     @property
     def this_user(self) -> User:
@@ -77,7 +80,8 @@ class Appointment(SeedableMixin, db.Model):
         # Retrieve all clients excluding the example client
         other_clients = (
             db.session.execute(
-                db.select(Client).where(Client.id != example_client_user.client.id))
+                db.select(Client).where(Client.id != example_client_user.client.id)
+            )
             .scalars()
             .all()
         )

@@ -21,19 +21,19 @@
                     <h3>Appointment Types</h3>
                     
                     <!-- Define forms outside of the table to be valid HTML -->
-                    {% for form in update_appointment_type_forms %}
+                    {% for form in update_forms %}
                         <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
                             {{ form.csrf_token }}
                         </form>
                     {% endfor %}
                     
-                    <form id="{{ create_appointment_type_form.id }}" action="{{ create_appointment_type_form.endpoint }}" novalidate>
-                        {{ create_appointment_type_form.csrf_token }}
+                    <form id="{{ create_form.id }}" action="{{ create_form.endpoint }}" novalidate>
+                        {{ create_form.csrf_token }}
                     </form>
 
                     <table class="my-table">
                     
-                        {% for form in update_appointment_type_forms %}
+                        {% for form in update_forms %}
                             <tr>
                                 <td>
                                     <div class='form-floating'>
@@ -98,42 +98,42 @@
                         <tr>
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_appointment_type_form.therapy_type(class_='form-control form-select', placeholder=create_appointment_type_form.therapy_type.label.text, form=create_appointment_type_form.id) }}
-                                    {{ create_appointment_type_form.therapy_type.label }}
+                                    {{ create_form.therapy_type(class_='form-control form-select', placeholder=create_form.therapy_type.label.text, form=create_form.id) }}
+                                    {{ create_form.therapy_type.label }}
                                 </div>
                             </td>
 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_appointment_type_form.therapy_mode(class_='form-control form-select', placeholder=create_appointment_type_form.therapy_mode.label.text, form=create_appointment_type_form.id) }}
-                                    {{ create_appointment_type_form.therapy_mode.label }}
+                                    {{ create_form.therapy_mode(class_='form-control form-select', placeholder=create_form.therapy_mode.label.text, form=create_form.id) }}
+                                    {{ create_form.therapy_mode.label }}
                                 </div>
                             </td>
                                 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_appointment_type_form.duration(class_='form-control', placeholder=create_appointment_type_form.duration.label.text, form=create_appointment_type_form.id) }}
-                                    {{ create_appointment_type_form.duration.label }}
+                                    {{ create_form.duration(class_='form-control', placeholder=create_form.duration.label.text, form=create_form.id) }}
+                                    {{ create_form.duration.label }}
                                 </div>
                             </td>
 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_appointment_type_form.fee_amount(class_='form-control', placeholder=create_appointment_type_form.fee_amount.label.text, form=create_appointment_type_form.id) }}
-                                    {{ create_appointment_type_form.fee_amount.label }}
+                                    {{ create_form.fee_amount(class_='form-control', placeholder=create_form.fee_amount.label.text, form=create_form.id) }}
+                                    {{ create_form.fee_amount.label }}
                                 </div>
                             </td>
 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_appointment_type_form.fee_currency(class_='form-control form-select', placeholder=create_appointment_type_form.fee_currency.label.text, form=create_appointment_type_form.id) }}
-                                    {{ create_appointment_type_form.fee_currency.label }}
+                                    {{ create_form.fee_currency(class_='form-control form-select', placeholder=create_form.fee_currency.label.text, form=create_form.id) }}
+                                    {{ create_form.fee_currency.label }}
                                 </div>
                             </td>
                                 
                             <td>
                                 <div class="btn-container">
-                                    <button type="submit" form="{{ create_appointment_type_form.id }}" class="btn btn-icon"
+                                    <button type="submit" form="{{ create_form.id }}" class="btn btn-icon"
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Add">
                                         <i class="fa-regular fa-square-plus"></i>
                                     </button>
@@ -160,10 +160,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="{{ delete_appointment_type_form.id }}" action="{{ delete_appointment_type_form.endpoint }}" novalidate>
-                        {{ delete_appointment_type_form.csrf_token }}
-                        {{ delete_appointment_type_form.appointment_type_id }}
-                        {{ submit_button(delete_appointment_type_form.submit, class='btn btn-danger') }}
+                    <form id="{{ delete_form.id }}" action="{{ delete_form.endpoint }}" novalidate>
+                        {{ delete_form.csrf_token }}
+                        {{ delete_form.appointment_type_id }}
+                        {{ submit_button(delete_form.submit, class='btn btn-danger') }}
                     </form>
                 </div>
             </div>

@@ -192,7 +192,7 @@ def therapist(therapist_id):
 
     # Redirect to therapist directory if therapist not found
     if not therapist:
-        flash("Therapist not found")
+        flash("Therapist not found", "error")
         return redirect(url_for("therapist_directory.therapists"))
 
     # Render template with information for this therapist

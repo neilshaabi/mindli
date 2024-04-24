@@ -25,7 +25,7 @@ $(document).ready(function() {
 
 
     // Function to toggle input fields and enable submit button
-    $('#action-field').change(function() {
+    $('#action').change(function() {
 
         var selectedAction = $(this).val();
         var datetimeFields = $('.datetime-field');
@@ -136,13 +136,28 @@ function registerFormHandlers() {
                 $('.flashed-message').remove();
             },
             success: function(response) {
+
+                // Remove flashed messages
+                $('#flashed-messages-container').empty();
+
+                // Remove previous error messages for this form
+                var existingErrorMessages = $('.error-message[data-form-id="' + formId + '"]');
+                existingErrorMessages.each(function() {
+                    $(this).remove()
+                });
+
+                // Remove previous error indicators for this form
+                var existingErrorInputs = $('.input-error[data-form-id="' + formId + '"]');
+                existingErrorInputs.removeClass('input-error');
+
+                // Successful response
                 if (response.success) {
                     if (response.url) { // Redirect to url
                         window.location = response.url;
                     } else if (response.update_target) { // Replace element with new HTML
-                        $('#' + response.update_target).html(response.updated_html)
-                    } else {
-                        return
+                        $('#' + response.update_target).html(response.updated_html);
+                    } else if (response.flashed_message_html) { // Display flashed message using macro
+                        $('#flashed-messages-container').html(response.flashed_message_html);
                     }
                 } else if (response.errors) { // Display form errors
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";
@@ -164,9 +179,10 @@ function registerFormHandlers() {
 }
 
 function displayFormErrors(formId, formPrefix, errors) {
+    
+    var newErrorMessages = {};
     var existingErrorMessages = $('.error-message[data-form-id="' + formId + '"]');
     var existingErrorInputs = $('.input-error[data-form-id="' + formId + '"]');
-    var newErrorMessages = {};
 
     // Remove previous error indicators for this form
     existingErrorInputs.removeClass('input-error');

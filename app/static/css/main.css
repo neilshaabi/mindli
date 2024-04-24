@@ -201,7 +201,6 @@ input:-webkit-autofill:focus {
     box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
 }
 
-
 /* Buttons */
 
 .btn {
@@ -260,6 +259,22 @@ input:-webkit-autofill:focus {
     border: solid 1px var(--colour-primary) !important;
 }
 
+form .btn {
+    width: 100%;
+}
+
+.btn-icon {
+    font-size: 1.4rem;
+    color: var(--light-grey-text);
+    background: none !important;
+    height: auto !important;
+    padding: 0;
+}
+
+.btn-icon i:hover {
+    color: var(--dark-grey-text) !important;
+}
+
 .input-btn-icon {
     color: var(--light-grey-text);
     padding: var(--my-form-padding);
@@ -300,41 +315,6 @@ input:-webkit-autofill:focus {
     align-items: center;
 }
 
-.tag {
-    font-size: 0.9rem;
-    padding: 4px 8px;
-    border-radius: var(--my-border-radius);
-    background-color: var(--light-grey-bg);
-}
-
-.tag-lg {
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: var(--my-border-radius);
-    background-color:#414552;
-}
-
-.tag.confirmed,
-.tag.completed,
-.tag.succeeded {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.tag.scheduled,
-.tag.rescheduled,
-.tag.pending {
-    background-color: #2196F3;
-    color: white;
-}
-
-.tag.cancelled,
-.tag.no_show,
-.tag.failed {
-    background-color: #F44336;
-    color: white;
-}
-
 table th {
     font-weight: 500;
 }
@@ -348,18 +328,6 @@ table tr .btn-icon {
 table tr:hover .btn-icon {
     opacity: 1;
     pointer-events: auto;
-}
-
-.btn-icon {
-    font-size: 1.4rem;
-    color: var(--light-grey-text);
-    background: none !important;
-    height: auto !important;
-    padding: 0;
-}
-
-.btn-icon:hover {
-    color: var(--dark-grey-text) !important;
 }
 
 
@@ -397,10 +365,6 @@ table tr:hover .btn-icon {
     color: var(--light-grey-text);
     font-size: 0.8rem;
     line-height: 1.75;
-}
-
-form .btn {
-    width: 100%;
 }
 
 
@@ -494,36 +458,75 @@ form .btn {
 
 /* Miscellaneous */
 
-.hidden {
-    display: none;
+#flashed-messages-container {
+    position: fixed;
+    bottom: 0;
+    width: 80%;
+    z-index: 99;
 }
 
-.alert {
-    margin-bottom: 10px;
-    text-align: center;
+.hidden {
+    display: none;
 }
 
 .my-tooltip {
     --bs-tooltip-bg: var(--light-grey-bg);
     --bs-tooltip-color: var(--dark-grey-text);
-  }
+}
 
-.flashed-message {
-    color: var(--dark-grey-text);
-    background: white;
-    border: none;
-    z-index: 99;
+.tag {
+    font-size: 0.9rem;
+    padding: 4px 8px;
+    border-radius: var(--my-border-radius);
+    background-color: var(--light-grey-bg);
+}
+
+.tag-lg {
+    font-size: 1rem;
+    padding: 10px 20px;
+    border-radius: var(--my-border-radius);
+    background-color:#414552;
+}
+
+.tag.confirmed,
+.tag.completed,
+.tag.succeeded {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.tag.scheduled,
+.tag.rescheduled,
+.tag.pending {
+    background-color: #2196F3;
+    color: white;
+}
+
+.tag.cancelled,
+.tag.no_show,
+.tag.failed {
+    background-color: #F44336;
+    color: white;
+}
+
+
+/* Hide the increment/decrement arrows for input fields with btn-icon siblings */
+
+.form-floating .input-btn-icon + input[type="number"] {
+    appearance: none;
+    -moz-appearance: textfield;
+    -webkit-appearance: none;
     margin: 0;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    border-radius: 0;
-    text-align: left;
-    box-shadow: var(--my-box-shadow);
-}
-
-
-.sidebar-layout .flashed-message {
-    left: var(--sidebar-width);   
-}
+  }
+  
+  .form-floating .input-btn-icon + input[type="number"]::-webkit-inner-spin-button,
+  .form-floating .input-btn-icon + input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  
+  .form-floating .input-btn-icon + input[type="number"]::-moz-focus-inner,
+  .form-floating .input-btn-icon + input[type="number"]::-moz-focus-outer {
+    border: 0;
+    -moz-appearance: textfield;
+  }

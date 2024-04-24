@@ -1,14 +1,6 @@
 import os
 
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    jsonify,
-    render_template,
-    request,
-    url_for,
-)
+from flask import Blueprint, current_app, jsonify, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
@@ -23,6 +15,7 @@ from app.models.therapist import Therapist
 from app.models.title import Title
 from app.utils.decorators import client_required, therapist_required
 from app.utils.files import get_file_extension
+from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("profile", __name__)
 
@@ -81,9 +74,15 @@ def user_profile():
     current_user.gender = form.gender.data
     db.session.commit()
 
-    # Reload page
-    flash("Personal information updated")
-    return jsonify({"success": True, "url": url_for("profile.profile")})
+    # Flash message using AJAX
+    return jsonify(
+        {
+            "success": True,
+            "flashed_message_html": get_flashed_message_html(
+                "Personal information updated", "success"
+            ),
+        }
+    )
 
 
 @bp.route("/profile/therapist", methods=["POST"])
@@ -138,12 +137,13 @@ def therapist_profile():
 
     db.session.commit()
 
-    # Reload page
-    flash("Professional information updated")
+    # Flash message using AJAX
     return jsonify(
         {
             "success": True,
-            "url": url_for("profile.profile"),
+            "flashed_message_html": get_flashed_message_html(
+                "Professional information updated", "success"
+            ),
         }
     )
 
@@ -191,11 +191,12 @@ def client_profile():
 
     db.session.commit()
 
-    # Reload page
-    flash("Client background information updated")
+    # Flash message using AJAX
     return jsonify(
         {
             "success": True,
-            "url": url_for("profile.profile"),
+            "flashed_message_html": get_flashed_message_html(
+                "Background information updated", "success"
+            ),
         }
     )

@@ -37,7 +37,7 @@ class EmailMessage:
         elif self.subject == EmailSubject.PASSWORD_RESET:
             self.body = "Please use the link below to reset your account password."
             self.link_text = "Reset Password"
-            endpoint = "auth.reset_password_self.send_with_token"
+            endpoint = "auth.reset_password_with_token"
             self.send_with_token = True
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_CLIENT:

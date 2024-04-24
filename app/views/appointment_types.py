@@ -26,7 +26,7 @@ def index():
     )
 
     # Create a list of forms pre-populated with the data from each appointment type
-    update_appointment_type_forms = [
+    update_forms = [
         AppointmentTypeForm(
             obj=appointment_type,
             prefix=str(appointment_type.id),
@@ -40,14 +40,14 @@ def index():
     ]
 
     # Add an empty form for adding a new appointment type
-    create_appointment_type_form = AppointmentTypeForm(
+    create_form = AppointmentTypeForm(
         prefix="new",
         id="appointment_type_new",
         endpoint=url_for("appointment_types.create"),
     )
 
     # Add form to delete a given appointment type
-    delete_appointment_type_form = DeleteAppointmentTypeForm(
+    delete_form = DeleteAppointmentTypeForm(
         id="delete_appointment_type",
         endpoint=url_for("appointment_types.delete"),
     )
@@ -55,9 +55,9 @@ def index():
     # Render the page with the appointment forms
     return render_template(
         "appointment_types.html",
-        update_appointment_type_forms=update_appointment_type_forms,
-        create_appointment_type_form=create_appointment_type_form,
-        delete_appointment_type_form=delete_appointment_type_form,
+        update_forms=update_forms,
+        create_form=create_form,
+        delete_form=delete_form,
     )
 
 
@@ -84,7 +84,7 @@ def create():
     db.session.add(new_appointment_type)
     db.session.commit()
 
-    flash("New appointment type created")
+    flash("New appointment type created", "success")
     return jsonify({"success": True, "url": url_for("appointment_types.index")})
 
 
@@ -131,7 +131,7 @@ def update(appointment_type_id):
     db.session.add(new_appointment_type)
     db.session.commit()
 
-    flash("Appointment type updated")
+    flash("Appointment type updated", "success")
     return jsonify({"success": True, "url": url_for("appointment_types.index")})
 
 
@@ -159,5 +159,5 @@ def delete():
     db.session.commit()
 
     # Redirect to appointment types page
-    flash("Appointment type deleted")
+    flash("Appointment type deleted", "success")
     return jsonify({"success": True, "url": url_for("appointment_types.index")})

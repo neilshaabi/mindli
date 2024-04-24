@@ -1,8 +1,10 @@
-from wtforms import DateField, SubmitField, TimeField
-from wtforms.validators import DataRequired, Optional
+from wtforms import DateField, IntegerField, SubmitField, TextAreaField, TimeField
+from wtforms.validators import DataRequired, NumberRange, Optional
 
-from app.forms import CustomFlaskForm, CustomSelectField
+from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import AppointmentStatus, UserRole
+from app.models.intervention import Intervention
+from app.models.issue import Issue
 
 
 class BookAppointmentForm(CustomFlaskForm):
@@ -73,4 +75,34 @@ class UpdateAppointmentForm(CustomFlaskForm):
             if choice[0] != appointment.appointment_status.name
         ]
         self.action.choices.extend(filtered_actions)
+        return
+
+
+class AppointmentNotesForm(CustomFlaskForm):
+    text = TextAreaField("Notes", validators=[DataRequired()])
+    issues = CustomSelectMultipleField(
+        "Issues discussed",
+        validators=[Optional()],
+        coerce=int,
+    )
+    interventions = CustomSelectMultipleField(
+        "Interventions applied",
+        validators=[Optional()],
+        coerce=int,
+    )
+    efficacy = IntegerField(
+        "Efficacy (1-5)", validators=[Optional(), NumberRange(min=1, max=5)]
+    )
+    submit = SubmitField("Save")
+
+    def __init__(self, *args, **kwargs):
+        super(AppointmentNotesForm, self).__init__(*args, **kwargs)
+
+        self.issues.populate_choices(Issue)
+        self.interventions.populate_choices(Intervention)
+
+        appointment_note = kwargs.get("obj")
+        if appointment_note:
+            self.issues.preselect_choices(appointment_note.issues)
+            self.interventions.preselect_choices(appointment_note.interventions)
         return

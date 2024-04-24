@@ -36,3 +36,17 @@ therapist_title = sa.Table(
     sa.Column("therapist_id", sa.ForeignKey("therapist.id"), primary_key=True),
     sa.Column("title_id", sa.ForeignKey("title.id"), primary_key=True),
 )
+
+note_intervention = sa.Table(
+    "note_intervention",
+    db.Model.metadata,
+    sa.Column("note_id", sa.ForeignKey("appointment_notes.id"), primary_key=True),
+    sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
+)
+
+note_issue = sa.Table(
+    "note_issue",
+    db.Model.metadata,
+    sa.Column("note_id", sa.ForeignKey("appointment_notes.id"), primary_key=True),
+    sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
+)
