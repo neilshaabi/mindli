@@ -37,7 +37,13 @@
                             <thead>
                                 <tr>
                                     <th>Date and Time</th>
-                                    <th>Therapist</th>
+                                    <th>
+                                        {% if current_user.role == UserRole.THERAPIST %}
+                                            Client
+                                        {% elif current_user.role == UserRole.CLIENT %}
+                                            Therapist
+                                        {% endif %}
+                                    </th>
                                     <th>Type</th>
                                     <th>Mode</th>
                                     <th>Duration</th>
@@ -50,9 +56,7 @@
                                 {% for appointment in appointments %}
                                     <tr>
                                         <td>{{ appointment.time.strftime('%d %b %Y - %H:%M') }}</td>
-                                        <td>
-                                            <a href="{{ url_for('therapist_directory.therapist', therapist_id=appointment.therapist_id) }}">{{ appointment.therapist.user.full_name }}</a>
-                                        </td>
+                                        <td>{{ appointment.other_user.full_name }}</td>
                                         <td>{{ appointment.appointment_type.therapy_type.value }}</td>
                                         <td>{{ appointment.appointment_type.therapy_mode.value }}</td>
                                         <td>{{ appointment.appointment_type.duration }} minutes</td>
@@ -60,7 +64,7 @@
                                         <td><span class="tag {{ appointment.payment_status.name.lower() }}">{{ appointment.payment_status.value }}</span></td>
                                         <td>
                                             <div class="btn-container">
-                                                <a href="{{ url_for('appointment.view_appointment', appointment_id=appointment.id) }} " class="btn btn-icon"
+                                                <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }} " class="btn btn-icon"
                                                     data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="View details">
                                                     <i class="fa-solid fa-angle-right"></i>
                                                 </button>

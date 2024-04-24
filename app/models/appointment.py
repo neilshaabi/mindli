@@ -74,19 +74,32 @@ class Appointment(SeedableMixin, db.Model):
             db.select(User).filter_by(email=EXAMPLE_CLIENT_EMAIL)
         ).scalar_one()
 
-        # Insert appointments between the example therapist and client
-        for _ in range(8):
-            appointment = Appointment(
-                therapist_id=example_therapist_user.therapist.id,
-                client_id=example_client_user.client.id,
-                appointment_type_id=random.choice(
-                    example_therapist_user.therapist.active_appointment_types
-                ).id,
-                time=generate_reasonable_datetime(),
-                appointment_status=random.choice(list(AppointmentStatus)),
-                payment_status=random.choice(list(PaymentStatus)),
-            )
-            appointments.append(appointment)
+        # Retrieve all clients excluding the example client
+        other_clients = (
+            db.session.execute(
+                db.select(Client).where(Client.id != example_client_user.client.id))
+            .scalars()
+            .all()
+        )
+
+        # Select five different clients including example to make appointments with
+        selected_clients = [example_client_user.client]
+        selected_clients.extend(other_clients[:4])
+
+        # Insert between 2-5 appointments between the example therapist and selected clients
+        for client in selected_clients:
+            for _ in range(random.randint(2, 4)):
+                appointment = Appointment(
+                    therapist_id=example_therapist_user.therapist.id,
+                    client_id=client.id,
+                    appointment_type_id=random.choice(
+                        example_therapist_user.therapist.active_appointment_types
+                    ).id,
+                    time=generate_reasonable_datetime(),
+                    appointment_status=random.choice(list(AppointmentStatus)),
+                    payment_status=random.choice(list(PaymentStatus)),
+                )
+                appointments.append(appointment)
 
         db.session.add_all(appointments)
         db.session.commit()

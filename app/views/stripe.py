@@ -270,11 +270,11 @@ def create_checkout_session(appointment: Appointment) -> str:
             customer_email=current_user.email,
             stripe_account=appointment.therapist.stripe_account_id,
             success_url=url_for(
-                "appointment.view_appointment",
+                "appointments.appointment",
                 appointment_id=appointment.id,
                 _external=True,
             ),
-            cancel_url=url_for("appointments.appointments_client", _external=True),
+            cancel_url=url_for("appointments.index", _external=True),
             metadata={"appointment_id": appointment.id},
         )
 

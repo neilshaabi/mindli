@@ -71,12 +71,12 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
         seed_db(db=db, use_fake_data=app.config["FAKE_DATA"])
 
     # Register blueprints with endpoints
-    from app.views import appointment, appointments, auth, main, messages, profile
+    from app.views import appointment_types, appointments, auth, main, messages, profile
     from app.views import stripe as stripe_bp
     from app.views import therapist_directory
 
-    app.register_blueprint(appointment.bp)
     app.register_blueprint(appointments.bp)
+    app.register_blueprint(appointment_types.bp)
     app.register_blueprint(auth.bp)
     app.register_blueprint(main.bp)
     app.register_blueprint(messages.bp)

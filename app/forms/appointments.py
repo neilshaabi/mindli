@@ -1,64 +1,8 @@
-from wtforms import (
-    DateField,
-    DecimalField,
-    HiddenField,
-    IntegerField,
-    SelectField,
-    SubmitField,
-    TimeField,
-)
-from wtforms.validators import DataRequired, NumberRange
+from wtforms import DateField, SubmitField, TimeField
+from wtforms.validators import DataRequired, Optional
 
-from app.constants import CURRENCIES
 from app.forms import CustomFlaskForm, CustomSelectField
-from app.models.enums import TherapyMode, TherapyType
-from app.utils.validators import LocationRequired
-
-
-class AppointmentTypeForm(CustomFlaskForm):
-    therapy_type = CustomSelectField(
-        "Type",
-        choices=[("", "Select type")]
-        + [(choice.name, choice.value) for choice in TherapyType],
-        default="",
-        validators=[DataRequired()],
-    )
-    therapy_mode = CustomSelectField(
-        "Mode",
-        choices=[("", "Select mode")]
-        + [(choice.name, choice.value) for choice in TherapyMode],
-        default="",
-        validators=[DataRequired(), LocationRequired()],
-    )
-    duration = IntegerField(
-        "Duration (minutes)",
-        validators=[DataRequired(), NumberRange(min=1)],
-    )
-    fee_amount = DecimalField(
-        "Fee",
-        validators=[DataRequired(), NumberRange(min=0.01)],
-    )
-    fee_currency = SelectField(
-        "Currency",
-        choices=[("", "Select currency")]
-        + [(currency, currency) for currency in CURRENCIES],
-        validators=[DataRequired()],
-    )
-
-    def __init__(self, *args, **kwargs):
-        super(AppointmentTypeForm, self).__init__(*args, **kwargs)
-        appointment_type = kwargs.get("obj")
-        if appointment_type:
-            self.therapy_type.preselect_choices(appointment_type.therapy_type)
-            self.therapy_mode.preselect_choices(appointment_type.therapy_mode)
-        return
-
-
-class DeleteAppointmentTypeForm(CustomFlaskForm):
-    appointment_type_id = HiddenField(
-        "Appointment type ID", validators=[DataRequired()]
-    )
-    submit = SubmitField("Delete")
+from app.models.enums import AppointmentStatus, UserRole
 
 
 class BookAppointmentForm(CustomFlaskForm):
@@ -86,4 +30,47 @@ class BookAppointmentForm(CustomFlaskForm):
                 for at in therapist.active_appointment_types
             ]
         )
+        return
+
+
+class UpdateAppointmentForm(CustomFlaskForm):
+    action = CustomSelectField(
+        "Action",
+        choices=[
+            ("", "Select action"),
+        ],
+        default="",
+        validators=[DataRequired()],
+    )
+    new_date = DateField("Date", format="%Y-%m-%d", validators=[Optional()])
+    new_time = TimeField("Time", validators=[Optional()])
+    submit = SubmitField("Update")
+
+    def __init__(self, role: UserRole, *args, **kwargs):
+        super(UpdateAppointmentForm, self).__init__(*args, **kwargs)
+
+        appointment = kwargs.get("obj")
+
+        # Define choices for actions depending on user role
+        if role == UserRole.THERAPIST:
+            action_choices = [
+                (AppointmentStatus.CONFIRMED.name, "Confirm"),
+                (AppointmentStatus.RESCHEDULED.name, "Reschedule"),
+                (AppointmentStatus.COMPLETED.name, "Completed"),
+                (AppointmentStatus.CANCELLED.name, "Cancel"),
+                (AppointmentStatus.NO_SHOW.name, "No Show"),
+            ]
+        elif role == UserRole.CLIENT:
+            action_choices = [
+                (AppointmentStatus.RESCHEDULED.name, "Reschedule"),
+                (AppointmentStatus.CANCELLED.name, "Cancel"),
+            ]
+
+        # Filter out the choice that matches the current status
+        filtered_actions = [
+            choice
+            for choice in action_choices
+            if choice[0] != appointment.appointment_status.name
+        ]
+        self.action.choices.extend(filtered_actions)
         return

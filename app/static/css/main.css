@@ -220,10 +220,8 @@ input:-webkit-autofill:focus {
 .btn:focus-visible {
     outline: none;
     box-shadow: none;
-    border: inherit;
 }
 
-.btn:hover,
 .btn-primary,
 .btn-primary.show,
 .btn-primary:disabled {
@@ -249,7 +247,8 @@ input:-webkit-autofill:focus {
     border: solid 1px var(--light-grey-outline);
 }
 
-.btn-check + .btn:hover {
+.btn-check + .btn:hover,
+.btn-outline-primary:hover {
     color: var(--light-grey-text);
     background: rgba(var(--colour-primary-rgb), 0.1);
     border: solid 1px var(--light-grey-outline);
@@ -303,14 +302,14 @@ input:-webkit-autofill:focus {
 
 .tag {
     font-size: 0.9rem;
-    padding: 5px 15px;
+    padding: 4px 8px;
     border-radius: var(--my-border-radius);
-    background-color:#414552;
+    background-color: var(--light-grey-bg);
 }
 
 .tag-lg {
     font-size: 1rem;
-    padding: 10px 30px;
+    padding: 10px 20px;
     border-radius: var(--my-border-radius);
     background-color:#414552;
 }
@@ -336,10 +335,6 @@ input:-webkit-autofill:focus {
     color: white;
 }
 
-table tr:hover {
-    background: var(--light-grey-bg);
-}
-
 table th {
     font-weight: 500;
 }
@@ -361,7 +356,6 @@ table tr:hover .btn-icon {
     background: none !important;
     height: auto !important;
     padding: 0;
-    transition: 0;
 }
 
 .btn-icon:hover {

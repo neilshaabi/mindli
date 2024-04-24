@@ -1,4 +1,5 @@
 import phonenumbers
+from currency_converter import CurrencyConverter
 from flask_login import current_user
 from wtforms.validators import ValidationError
 
@@ -54,3 +55,21 @@ class LocationRequired:
             and current_user.therapist.location is None
         ):
             raise ValidationError("Location required for in-person appointments.")
+
+
+class MinimumFeeAmount:
+    def __call__(self, form, field):
+        amount = form.fee_amount.data
+        currency = form.fee_currency.data
+
+        if currency != "USD":
+            converter = CurrencyConverter()
+            amount = converter.convert(
+                amount=amount, currency=currency, new_currency="USD"
+            )
+
+        # Minimum amount for a Stripe charge
+        if amount < 0.5:
+            raise ValidationError(
+                "Fee amount must be at least $0.50 USD or equivalent in charge currency"
+            )

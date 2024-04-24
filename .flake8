@@ -1,5 +1,5 @@
 [flake8]
-ignore = E501, W503
+ignore = E501, W503, E712
 per-file-ignores =
     ./app/models/__init__.py:F401, E402,
     ./app/models/*.py:F821
