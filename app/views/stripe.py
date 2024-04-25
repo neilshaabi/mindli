@@ -1,15 +1,6 @@
 import stripe
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    json,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, current_app, flash, json, jsonify, redirect,
+                   render_template, request, url_for)
 from flask_login import current_user, login_required
 
 from app import csrf, db

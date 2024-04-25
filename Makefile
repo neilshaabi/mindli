@@ -38,12 +38,12 @@ reset-db:
 	flask db upgrade
 
 lint:
-	@echo "Reorganising imports..."
-	isort .
 	@echo "Formatting Python files..."
 	black . --exclude '/(\.venv|migrations)/'
 	@echo "Linting Python files..."
 	flake8 --exclude .venv,./migrations
+	@echo "Reorganising imports..."
+	isort .
 
 test:
 	@echo "Running tests with pytest..."

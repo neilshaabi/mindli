@@ -2,7 +2,8 @@ from flask import Blueprint, flash, jsonify, redirect, render_template, url_for
 from flask_login import current_user, login_required
 
 from app import db
-from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
+from app.forms.appointment_types import (AppointmentTypeForm,
+                                         DeleteAppointmentTypeForm)
 from app.models.appointment_type import AppointmentType
 from app.utils.decorators import therapist_required
 

@@ -1,14 +1,5 @@
-from flask import (
-    Blueprint,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, flash, jsonify, redirect, render_template,
+                   render_template_string, request, session, url_for)
 from flask_login import login_required
 from sqlalchemy import func
 
