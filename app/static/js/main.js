@@ -15,6 +15,17 @@ $(document).ready(function() {
         }
     }
 
+    // Updates preview of profile picture when uploaded
+    $('#profile_picture').change(function(event) {
+        var reader = new FileReader();
+        reader.onload = function(){
+            var output = $('#profile-picture-preview');
+            output.attr('src', reader.result);
+            output.removeClass('default-profile-picture');
+        };
+        reader.readAsDataURL(event.target.files[0]);
+    });
+
     
     // Initially disable all submit buttons
     $('form').find(':submit.btn-primary').prop('disabled', true);
@@ -114,18 +125,6 @@ $(document).ready(function() {
         $(this).find('input[name="appointment_type_id"]').val(appointment_type_id);
     });
 });
-
-
-// Updates profile picture preview before form is submitted
-function previewImage(event) {
-    var reader = new FileReader();
-    reader.onload = function(){
-        var output = $('#profile-picture-preview');
-        output.attr('src', reader.result);
-        output.removeClass('default-profile-picture');
-    };
-    reader.readAsDataURL(event.target.files[0]);
-}
 
 
 function registerFormHandlers() {

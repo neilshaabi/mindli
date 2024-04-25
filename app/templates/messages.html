@@ -79,7 +79,7 @@
                     <hr>
                     
                     <!-- Messages container -->
-                    <div class="messages-container flex-grow-1 overflow-auto mb-3">
+                    <div id='messages-container' class="mb-3">
                         {% if opened_conversation.messages %}
                             {% for message in opened_conversation.messages %}
                             <div class="message p-2 mb-1 {% if message.author_id == current_user.id %}from_current_user{% else %}from_other_user{% endif %}"

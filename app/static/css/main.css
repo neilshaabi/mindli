@@ -424,6 +424,10 @@ table tr:hover .btn-icon {
     z-index: 1;
 }
 
+#profile-picture-container i {
+    margin: 0;
+}
+
 #profile-picture-upload {
     color: white;
     padding: 0;
@@ -492,7 +496,6 @@ table tr:hover .btn-icon {
     padding: 4px 8px;
     border-radius: var(--my-border-radius);
     background-color: var(--light-grey-bg);
-    margin: 1px;
 }
 
 .tag-lg {

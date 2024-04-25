@@ -36,13 +36,15 @@
                             <div class="row align-items-center">
                                 <div class="col-auto">Appointment details</div>
                             </div>
-                        </li> 
+                        </li>
                         <li class="list-group-item list-group-item-action {% if current_user.role != UserRole.THERAPIST %}disabled{% endif %}" data-target="#notes-section">
                             <div class="row align-items-center">
                                 <div class="col-auto">Appointment notes</div>
                                     <div class="col-auto ms-auto">
-                                        <i class="fa-solid fa-lock"
-                                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Restricted to therapist"></i>
+                                        <span class="tag tag-sm">
+                                            <i class="fa-solid fa-lock"
+                                            data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Restricted to therapist"></i>
+                                        </span>
                                     </div>    
                             </div>
                         </li>
