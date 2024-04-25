@@ -58,16 +58,28 @@
     </div>
 {% endmacro %}
 
+{% macro tag(label, status, with_icon=False, additional_class='') %}
+    {% set tag_map = {
+        
+        'not set': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
+        'incomplete': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
+        
+        'scheduled': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
+        'confirmed': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
+        'completed': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'rescheduled': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
+        'cancelled': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
+        'no_show': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
 
-
-{% macro bool_to_completion_tag(bool_value, class=None) %}
-    {% set completion_tag_map = {
-        False: ('Complete', 'fa-solid fa-circle-check'),
-        True: ('Incomplete', 'fa-solid fa-circle-exclamation')
+        'pending': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
+        'succeeded': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'failed': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
     } %}
-    {% set status, icon_class = completion_tag_map.get(bool_value) %}
-                                    
-    <span class="tag {{ class }} {{ status.lower() }}">
-        <i class="{{ icon_class }}"></i> {{ status.title() }}
+    {% set class, icon_class = tag_map.get(status.lower(), ('bg-light-subtle text-light-emphasis', None)) %}
+    <span class="tag {{ class }} {{ additional_class }}">
+        {% if icon_class and with_icon %}
+            <i class="{{ icon_class }}" style="font-size:small;"></i>
+        {% endif %}
+        {{ label }}
     </span>
 {% endmacro %}

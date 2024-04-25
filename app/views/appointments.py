@@ -410,10 +410,10 @@ def exercise(appointment_id: int) -> Response:
     # Construct template string to updated completion status via AJAX
     completion_tag_html = render_template_string(
         """
-        {% from "_macros.html" import bool_to_completion_tag %}
-        {{ bool_to_completion_tag(completed) }}
+        {% from '_macros.html' import tag %}
+        {{ tag(label=status, status=status, with_icon=True) }}
     """,
-        completed=appointment.exercise.completed,
+        status="Completed" if appointment.exercise.completed else "Incomplete",
     )
 
     # Flash message using AJAX and update completion status

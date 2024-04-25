@@ -484,31 +484,6 @@ table tr:hover .btn-icon {
 .tag-lg {
     font-size: 1rem;
     padding: 10px 20px;
-    border-radius: var(--my-border-radius);
-    background-color:#414552;
-}
-
-.tag.confirmed,
-.tag.complete,
-.tag.succeeded,
-.tag.completed {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.tag.scheduled,
-.tag.rescheduled,
-.tag.pending,
-.tag.incomplete {
-    background-color: #2196F3;
-    color: white;
-}
-
-.tag.cancelled,
-.tag.no_show,
-.tag.failed {
-    background-color: #F44336;
-    color: white;
 }
 
 

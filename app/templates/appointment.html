@@ -10,7 +10,7 @@
 
         <div class='row mb-3 g-4'>
             <div class='col-lg-12'>
-                <h3>{{ current_user.role.value }} Profile</h3>
+                <h3>TODO</h3>
             </div>
         </div>
         
@@ -24,9 +24,7 @@
                             <h3 class="mb-0">Appointment with {{ appointment.other_user.full_name }}</h3>
                         </div>
                         <div class="col-auto ms-auto">
-                            <span class="tag tag-lg {{ appointment.appointment_status.name.lower() }}" >
-                                {{ appointment.appointment_status.value }}
-                            </span>
+                            {{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=True, additional_class='tag-lg') }}
                         </div>
                     </div>
                         
@@ -41,7 +39,7 @@
                                 <li class="mb-2">Therapy type: {{ appointment.appointment_type.therapy_type.value }}</li>
                                 <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }}</li>
                                 <li class="mb-2">Fee: {{ appointment.appointment_type.fee_currency }}{{ appointment.appointment_type.fee_amount }}</li>
-                                <li class="mb-2">Payment status: &nbsp;<span class="tag {{ appointment.payment_status.value.lower() }}">{{ appointment.payment_status.value }}</span></li>
+                                <li class="mb-2">Payment status: {{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=True) }}</li>
                             </ul>
                         </div>
                     </div>
@@ -156,7 +154,12 @@
                                 <h6 class="mb-0">Therapy Exercise</h6>
                             </div>
                             <div class="col-auto ms-auto" id="completion-tag">
-                                {{ bool_to_completion_tag(appointment.exercise.completed) }}
+                                {% if appointment.exercise %}
+                                    {% set status = 'Completed' if appointment.exercise.completed else 'Incomplete' %}
+                                {% else %}
+                                    {% set status = 'Not set' %}
+                                {% endif %}
+                                {{ tag(label=status, status=status, with_icon=True) }}
                             </div>
                         </div>
 

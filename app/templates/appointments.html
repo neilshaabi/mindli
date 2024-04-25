@@ -60,8 +60,8 @@
                                         <td>{{ appointment.appointment_type.therapy_type.value }}</td>
                                         <td>{{ appointment.appointment_type.therapy_mode.value }}</td>
                                         <td>{{ appointment.appointment_type.duration }} minutes</td>
-                                        <td><span class="tag {{ appointment.appointment_status.name.lower() }}">{{ appointment.appointment_status.value }}</span></td>
-                                        <td><span class="tag {{ appointment.payment_status.name.lower() }}">{{ appointment.payment_status.value }}</span></td>
+                                        <td>{{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=False) }}</td>
+                                        <td>{{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=False) }}</td>
                                         <td>
                                             <div class="btn-container">
                                                 <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }} " class="btn btn-icon"
