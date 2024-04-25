@@ -479,6 +479,7 @@ table tr:hover .btn-icon {
     padding: 4px 8px;
     border-radius: var(--my-border-radius);
     background-color: var(--light-grey-bg);
+    margin: 1px;
 }
 
 .tag-lg {

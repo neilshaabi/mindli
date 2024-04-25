@@ -36,8 +36,8 @@
                             <h6 class="mt-2 mb-3">Appointment Details</h6>
                             <ul>
                                 <li class="mb-2">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }} ({{ appointment.appointment_type.duration }} minutes)</li>
-                                <li class="mb-2">Therapy type: {{ appointment.appointment_type.therapy_type.value }}</li>
-                                <li class="mb-2">Mode: {{ appointment.appointment_type.therapy_mode.value }}</li>
+                                <li class="mb-2">Therapy type: {{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</li>
+                                <li class="mb-2">Mode: {{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=True) }}</li>
                                 <li class="mb-2">Fee: {{ appointment.appointment_type.fee_currency }}{{ appointment.appointment_type.fee_amount }}</li>
                                 <li class="mb-2">Payment status: {{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=True) }}</li>
                             </ul>

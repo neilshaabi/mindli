@@ -27,15 +27,34 @@
                 </div>
             </div>
             <div>
-                <p class="p-0">Types: {{ therapist.active_appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
-                <p class="p-0">Modes: {{ therapist.active_appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
                 <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
-                <p class="p-0">Gender: {{ therapist.user.gender.value }}</p>
+                <p class="p-0">
+                    Types: 
+                    {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
+                        {{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}
+                    {% endfor %}
+                </p>
+                <p class="p-0">
+                    Modes: 
+                    {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
+                        {{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}
+                    {% endfor %}
+                </p>
                 <p class="p-0">Languages: {{ therapist.languages|join(', ', 'name') }}</p>
                 <p class="p-0">Based in: {{ therapist.country }}</p>
                 <p class="p-0">Years of Experience: {{ therapist.years_of_experience }}</p>
-                <p class="p-0">Specialisations: {{ therapist.specialisations|join(', ', 'name') }}</p>
-                <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
+                <p class="p-0">
+                    Specialisations:
+                    {% for specialisation in therapist.specialisations %}
+                        {{ tag(label=specialisation.name) }}
+                    {% endfor %}
+                </p>
+                <p class="p-0">
+                    Interventions:
+                    {% for intervention in therapist.interventions %}
+                        {{ tag(label=intervention.name) }}
+                    {% endfor %}
+                </p>
                 <a href="{{ url_for('therapist_directory.therapist', therapist_id=therapist.id) }}" class="btn btn-primary">View Profile</a>
             </div>
         </div>
@@ -59,27 +78,39 @@
 {% endmacro %}
 
 {% macro tag(label='', status='', with_icon=False, additional_class='') %}
+    
+    {% set default_class = 'bg-light text-dark' %}
+
     {% set tag_map = {
         
-        'not_set': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
-        'incomplete': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
+        'IN_PERSON': (default_class, 'fa-solid fa-user'),
+        'AUDIO': (default_class, 'fa-solid fa-phone'),
+        'VIDEO': (default_class, 'fa-solid fa-video'),
         
-        'scheduled': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
-        'confirmed': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
-        'completed': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        'rescheduled': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
-        'cancelled': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
-        'no_show': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
+        'INDIVIDUAL': (default_class, 'fa-solid fa-person'),
+        'COUPLES': (default_class, 'fa-solid fa-handshake-simple'),
+        'FAMILY': (default_class, 'fa-solid fa-people-group'),
+        'PSYCHOMETRICS': (default_class, 'fa-solid fa-stethoscope'),
+        
+        'NOT_SET': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
+        'INCOMPLETE': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
+        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        
+        'SCHEDULED': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
+        'CONFIRMED': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
+        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'RESCHEDULED': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
+        'CANCELLED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
+        'NO_SHOW': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
 
-        'pending': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
-        'succeeded': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        'failed': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
+        'PENDING': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
+        'SUCCEEDED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'FAILED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
     } %}
-    {% set class, icon_class = tag_map.get(status.lower(), ('bg-light-subtle text-light-emphasis', None)) %}
+    {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
     <span class="tag {{ class }} {{ additional_class }}">
         {% if icon_class and with_icon %}
             <i class="{{ icon_class }}" style="font-size:small;"></i>
         {% endif %}
-        {{ label }}
-    </span>
+        {{ label }}</span>
 {% endmacro %}

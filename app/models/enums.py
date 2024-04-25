@@ -47,7 +47,7 @@ class TherapyType(Enum):
     INDIVIDUAL = "Individual"
     COUPLES = "Couples"
     FAMILY = "Family"
-    PSYCHOMETRIC_TESTING = "Psychometric Testing"
+    PSYCHOMETRICS = "Psychometrics"
 
 
 @unique
