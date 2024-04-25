@@ -242,11 +242,13 @@ def update(appointment_id: int) -> Response:
     # Handle missing date and time fields for rescheduled
     if new_status == AppointmentStatus.RESCHEDULED:
         datetime_errors = {}
-        if not form.new_date.data:
+        if form.new_date.data is None:
             datetime_errors["new_date"] = ["New date is required."]
-        if not form.new_time.data:
+        if form.new_time.data is None:
             datetime_errors["new_time"] = ["New time is required."]
-        return jsonify({"success": False, "errors": datetime_errors})
+
+        if datetime_errors:
+            return jsonify({"success": False, "errors": datetime_errors})
 
     flashed_message_text = None
     flashed_message_category = "success"
