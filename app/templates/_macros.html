@@ -58,7 +58,7 @@
     </div>
 {% endmacro %}
 
-{% macro tag(label, status, with_icon=False, additional_class='') %}
+{% macro tag(label='', status='', with_icon=False, additional_class='') %}
     {% set tag_map = {
         
         'not set': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
