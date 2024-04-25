@@ -2,6 +2,7 @@ from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app.models.appointment import Appointment
+from app.models.appointment_notes import AppointmentNotes
 from app.models.appointment_type import AppointmentType
 from app.models.client import Client
 from app.models.conversation import Conversation
@@ -30,4 +31,5 @@ def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
         Message.seed(db, fake)
         AppointmentType.seed(db, fake)
         Appointment.seed(db, fake)
+        AppointmentNotes.seed(db, fake)
     return
