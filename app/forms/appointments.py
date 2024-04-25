@@ -59,8 +59,6 @@ class UpdateAppointmentForm(CustomFlaskForm):
     def __init__(self, role: UserRole, *args, **kwargs):
         super(UpdateAppointmentForm, self).__init__(*args, **kwargs)
 
-        appointment = kwargs.get("obj")
-
         # Define choices for actions depending on user role
         if role == UserRole.THERAPIST:
             action_choices = [
@@ -75,14 +73,7 @@ class UpdateAppointmentForm(CustomFlaskForm):
                 (AppointmentStatus.RESCHEDULED.name, "Reschedule"),
                 (AppointmentStatus.CANCELLED.name, "Cancel"),
             ]
-
-        # Filter out the choice that matches the current status
-        filtered_actions = [
-            choice
-            for choice in action_choices
-            if choice[0] != appointment.appointment_status.name
-        ]
-        self.action.choices.extend(filtered_actions)
+        self.action.choices.extend(action_choices)
         return
 
 

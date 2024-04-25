@@ -110,7 +110,8 @@
     {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
     <span class="tag {{ class }} {{ additional_class }}">
         {% if icon_class and with_icon %}
-            <i class="{{ icon_class }}" style="font-size:small;"></i>
+            <i class="{{ icon_class }}" {% if not label %}style="margin-right:0;"{% endif %}></i>
         {% endif %}
-        {{ label }}</span>
+        {% if label %}{{ label }}{% endif %}
+    </span>
 {% endmacro %}

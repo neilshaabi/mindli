@@ -161,8 +161,9 @@ def filtered_therapists():
         return jsonify(
             {
                 "success": True,
-                "update_target": "therapist-cards",
-                "updated_html": therapists_html,
+                "update_targets": {
+                    "therapist-cards": therapists_html,
+                },
             }
         )
 

@@ -150,7 +150,6 @@ i {
     border-radius: var(--my-border-radius);
 }
 
-
 .form-control:focus {
     color: var(--dark-grey-text);
     border-color: var(--colour-primary);
@@ -171,6 +170,10 @@ input:-webkit-autofill:focus {
     -webkit-box-shadow: none;
     box-shadow: none;
     transition: all 0s 50000s;
+}
+
+textarea {
+    height: calc(2* var(--my-form-height)) !important;
 }
 
 .input-error {
@@ -198,6 +201,9 @@ input:-webkit-autofill:focus {
 .form-check-input:checked {
     background-color: var(--colour-primary);
     border-color: var(--colour-primary);
+}
+
+.form-check-input:focus {
     box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
 }
 
@@ -408,6 +414,7 @@ table tr:hover .btn-icon {
 }
 
 #profile-picture-upload {
+    color: white;
     padding: 0;
     width: 30px;
     height: 30px;
@@ -416,11 +423,6 @@ table tr:hover .btn-icon {
     right: 0;
     border-radius: 50%;
     z-index: 2;
-}
-
-#profile-picture-upload i {
-    color: white;
-    margin: 0;
 }
 
 .profile-pic {
@@ -485,6 +487,11 @@ table tr:hover .btn-icon {
 .tag-lg {
     font-size: 1rem;
     padding: 10px 20px;
+}
+
+.tag-sm {
+    font-size: 0.8rem;
+    padding: 4px 6px;
 }
 
 

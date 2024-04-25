@@ -4,6 +4,7 @@ $(document).ready(function() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     
+
     // Toggle active state for navbar link when selected
     var pathname = window.location.pathname;
     var links = document.getElementsByClassName('nav-link');
@@ -13,7 +14,33 @@ $(document).ready(function() {
             break;
         }
     }
+
     
+    // Initially disable all submit buttons
+    $('form').find(':submit').prop('disabled', true);
+    
+    // Enable submit button after changes in any input, textarea or select element within forms
+    $('form').on('change input', 'input, textarea, select', function() {
+        $(this).closest('form').find(':submit').prop('disabled', false);
+    });
+    
+
+    // Toggle section when corresponding item in section selector is clicked
+    $('#section-selector .list-group-item').click(function() {
+    
+        // Remove active class from all items and add to the clicked one
+        $('#section-selector .list-group-item').removeClass('active');
+        $(this).addClass('active');
+
+        // Hide all sections
+        $('.section').hide();
+
+        // Show the section corresponding to the clicked item
+        var target = $(this).data('target');
+        $(target).show();
+    });
+    
+
     // Function to toggle disabled attribute on input fields and button visibility
     $('.edit-disabled-form-button').click(function() {
         var formId = $(this).attr('form');
@@ -29,7 +56,7 @@ $(document).ready(function() {
 
         var selectedAction = $(this).val();
         var datetimeFields = $('.datetime-field');
-        
+                
         // Disable input button when no action selected
         var submitBtn = $('#submit-btn');
         if (selectedAction === '') {
@@ -46,6 +73,7 @@ $(document).ready(function() {
         }
     });
     
+
     // Event listener for the toggle button
     $('#togglePassword').click(function() {
         
@@ -62,6 +90,7 @@ $(document).ready(function() {
         }
     });
 
+
     // Setup CSRF token for AJAX requests
     var csrf_token = "{{ csrf_token() }}";
     $.ajaxSetup({
@@ -72,9 +101,11 @@ $(document).ready(function() {
         }
     });
 
+
     // Register submission handlers for all forms using AJAX
     registerFormHandlers();
  
+    
     // Set the delete modal's hidden field with the correct appointment type id
     $('#deleteAppointmentTypeModal').on('show.bs.modal', function (event) {
         var modalToggler = $(event.relatedTarget);
@@ -159,8 +190,10 @@ function registerFormHandlers() {
                 if (response.success) {
                     if (response.url) { // Redirect to url
                         window.location = response.url;
-                    } else if (response.update_target) { // Replace element with new HTML
-                        $('#' + response.update_target).html(response.updated_html);
+                    } else if (response.update_targets) { // Replace multiple elements with new HTML
+                        for (var target in response.update_targets) {
+                            $('#' + target).html(response.update_targets[target]);
+                        }
                     }
                 } else if (response.errors) { // Display form errors
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";

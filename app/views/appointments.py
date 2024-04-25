@@ -83,7 +83,6 @@ def appointment(appointment_id: int) -> Response:
             appointment_id=appointment_id,
         ),
         role=current_user.role,
-        obj=appointment,
     )
 
     # Create form to set and update a therapy exercise
@@ -199,7 +198,7 @@ def update(appointment_id: int) -> Response:
             url_for("appointments.appointment", appointment_id=appointment_id)
         )
 
-    form = UpdateAppointmentForm(role=current_user.role, obj=appointment)
+    form = UpdateAppointmentForm(role=current_user.role)
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():
@@ -210,6 +209,18 @@ def update(appointment_id: int) -> Response:
     # Do nothing if status has not changed
     if appointment.appointment_status == new_status:
         return jsonify({"success": True})
+
+    # Handle missing date and time fields for rescheduled
+    if new_status == AppointmentStatus.RESCHEDULED:
+        datetime_errors = {}
+        if not form.new_date.data:
+            datetime_errors["new_date"] = ["New date is required."]
+        if not form.new_time.data:
+            datetime_errors["new_time"] = ["New time is required."]
+        return jsonify({"success": False, "errors": datetime_errors})
+
+    flashed_message_text = None
+    flashed_message_category = "success"
 
     # Handle actions differently depending on role of current user
     if current_user.role == UserRole.THERAPIST:
@@ -229,12 +240,11 @@ def update(appointment_id: int) -> Response:
                 subject=EmailSubject.APPOINTMENT_RESCHEDULED,
             )
             appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
-            flash("Appointment rescheduled, client notified", "success")
+            flashed_message_text = "Appointment rescheduled, client notified"
 
         # COMPLETED - do nothing
         elif new_status == AppointmentStatus.COMPLETED:
-            flash("Appointment marked as completed", "success")
-            pass
+            flashed_message_text = "Appointment marked as completed"
 
         # CANCELLED - notify client
         elif new_status == AppointmentStatus.CANCELLED:
@@ -243,7 +253,7 @@ def update(appointment_id: int) -> Response:
                 recipient=appointment.client.user,
                 subject=EmailSubject.APPOINTMENT_CANCELLED,
             )
-            flash("Appointment cancelled, client notified", "success")
+            flashed_message_text = "Appointment cancelled, client notified"
 
         # NO SHOW - notify client
         elif new_status == AppointmentStatus.NO_SHOW:
@@ -252,7 +262,7 @@ def update(appointment_id: int) -> Response:
                 recipient=appointment.client.user,
                 subject=EmailSubject.APPOINTMENT_NO_SHOW_CLIENT,
             )
-            flash("Appointment marked as a No Show, client notified", "success")
+            flashed_message_text = "Appointment marked as a No Show, client notified"
 
         else:
             return jsonify(
@@ -268,7 +278,7 @@ def update(appointment_id: int) -> Response:
                 subject=EmailSubject.APPOINTMENT_RESCHEDULED,
             )
             appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
-            flash("Appointment rescheduled, therapist notified", "success")
+            flashed_message_text = "Appointment rescheduled, therapist notified"
 
         # CANCELLED - notify therapist
         elif new_status == AppointmentStatus.CANCELLED:
@@ -277,7 +287,7 @@ def update(appointment_id: int) -> Response:
                 recipient=appointment.therapist.user,
                 subject=EmailSubject.APPOINTMENT_CANCELLED,
             )
-            flash("Appointment cancelled, therapist notified", "success")
+            flashed_message_text = "Appointment cancelled, therapist notified"
 
         else:
             return jsonify(
@@ -288,11 +298,24 @@ def update(appointment_id: int) -> Response:
     appointment.appointment_status = new_status
     db.session.commit()
 
+    # Construct template string to updated appointment status via AJAX
+    status_tag_html = render_template_string(
+        """
+        {% from '_macros.html' import tag %}
+        {{ tag(label=label, status=status, with_icon=True, additional_class='tag-lg') }}
+    """,
+        label=appointment.appointment_status.value,
+        status=appointment.appointment_status.name,
+    )
+
     # Redirect to appointment page
     return jsonify(
         {
             "success": True,
-            "url": url_for("appointments.appointment", appointment_id=appointment.id),
+            "update_targets": {"status-tag": status_tag_html},
+            "flashed_message_html": get_flashed_message_html(
+                flashed_message_text, flashed_message_category
+            ),
         }
     )
 
@@ -407,21 +430,31 @@ def exercise(appointment_id: int) -> Response:
 
     db.session.commit()
 
-    # Construct template string to updated completion status via AJAX
+    # Construct template strings to updated completion status via AJAX
+    status = "Completed" if appointment.exercise.completed else "Incomplete"
     completion_tag_html = render_template_string(
         """
         {% from '_macros.html' import tag %}
         {{ tag(label=status, status=status, with_icon=True) }}
     """,
-        status="Completed" if appointment.exercise.completed else "Incomplete",
+        status=status,
+    )
+    completion_tag_sm_html = render_template_string(
+        """
+        {% from '_macros.html' import tag %}
+        {{ tag(status=status, with_icon=True, additional_class='tag-sm') }}
+    """,
+        status=status,
     )
 
     # Flash message using AJAX and update completion status
     return jsonify(
         {
             "success": True,
-            "update_target": "completion-tag",
-            "updated_html": completion_tag_html,
+            "update_targets": {
+                "completion-tag": completion_tag_html,
+                "completion-tag-sm": completion_tag_sm_html,
+            },
             "flashed_message_html": get_flashed_message_html(
                 "Therapy exercise updated", "success"
             ),
