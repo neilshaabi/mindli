@@ -373,6 +373,21 @@ table tr:hover .btn-icon {
     line-height: 1.75;
 }
 
+.list-group {
+    border: none;
+
+}
+
+.list-group li:hover {
+    cursor: pointer;
+}
+
+.list-group-item.active {
+    z-index: 2;
+    color: inherit;
+    background: rgba(var(--colour-primary-rgb), 0.1);
+    border-color: var(--light-grey-outline);
+}
 
 /* Home page */
 
