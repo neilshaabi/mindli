@@ -96,7 +96,7 @@
                             <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class='form-floating'>
-                                        {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text, rows=20) }}
+                                        {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text) }}
                                         {{ notes_form.text.label }}
                                     </div>
                                 </div>
@@ -145,6 +145,62 @@
 
                         </form>
                     {% endif %}
+
+                    <!-- Therapy Exercise -->
+                    <form id="{{ exercise_form.id }}" action="{{ exercise_form.endpoint }}" novalidate>
+                            
+                        {{ exercise_form.csrf_token }}
+                        
+                        <div class="row mt-4 mb-3 align-items-center">
+                            <div class="col-auto">
+                                <h6 class="mb-0">Therapy Exercise</h6>
+                            </div>
+                            <div class="col-auto ms-auto" id="completion-tag">
+                                {{ bool_to_completion_tag(appointment.exercise.completed) }}
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class='form-floating'>
+                                    {{ exercise_form.title(class_='form-control', placeholder=exercise_form.title.label.text) }}
+                                    {{ exercise_form.title.label }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class='form-floating'>
+                                    {{ exercise_form.description(class_='form-control', placeholder=exercise_form.description.label.text) }}
+                                    {{ exercise_form.description.label }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class='form-floating'>
+                                    {{ exercise_form.client_response(class_='form-control', placeholder=exercise_form.client_response.label.text) }}
+                                    {{ exercise_form.client_response.label }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-md-12">
+                                <div class="form-check form-switch">
+                                    {{ exercise_form.completed(class_='form-check-input') }}
+                                    {{ exercise_form.completed.label(class_='form-check-label') }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            {{ submit_button(exercise_form.submit) }}
+                        </div>
+
+                    </form>
                 </div>
             </div>
         </div>

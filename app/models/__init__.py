@@ -30,5 +30,6 @@ from .issue import Issue
 from .language import Language
 from .message import Message
 from .therapist import Therapist
+from .therapy_exercise import TherapyExercise
 from .title import Title
 from .user import User

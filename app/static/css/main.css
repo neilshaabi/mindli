@@ -489,15 +489,17 @@ table tr:hover .btn-icon {
 }
 
 .tag.confirmed,
-.tag.completed,
-.tag.succeeded {
+.tag.complete,
+.tag.succeeded,
+.tag.completed {
     background-color: #4CAF50;
     color: white;
 }
 
 .tag.scheduled,
 .tag.rescheduled,
-.tag.pending {
+.tag.pending,
+.tag.incomplete {
     background-color: #2196F3;
     color: white;
 }

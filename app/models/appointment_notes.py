@@ -41,7 +41,7 @@ class AppointmentNotes(SeedableMixin, db.Model):
         for appointment in appointments:
             note = AppointmentNotes(
                 appointment_id=appointment.id,
-                text=fake.sentence(nb_words=random.randint(20, 50)),
+                text=fake.text(max_nb_chars=200),
                 efficacy=random.randint(1, 5),
             )
             db.session.add(note)

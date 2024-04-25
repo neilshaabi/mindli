@@ -11,6 +11,7 @@ from app.models.issue import Issue
 from app.models.language import Language
 from app.models.message import Message
 from app.models.therapist import Therapist
+from app.models.therapy_exercise import TherapyExercise
 from app.models.title import Title
 from app.models.user import User
 
@@ -32,4 +33,5 @@ def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
         AppointmentType.seed(db, fake)
         Appointment.seed(db, fake)
         AppointmentNotes.seed(db, fake)
+        TherapyExercise.seed(db, fake)
     return

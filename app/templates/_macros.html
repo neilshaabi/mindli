@@ -57,3 +57,17 @@
         <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
     </div>
 {% endmacro %}
+
+
+
+{% macro bool_to_completion_tag(bool_value, class=None) %}
+    {% set completion_tag_map = {
+        False: ('Complete', 'fa-solid fa-circle-check'),
+        True: ('Incomplete', 'fa-solid fa-circle-exclamation')
+    } %}
+    {% set status, icon_class = completion_tag_map.get(bool_value) %}
+                                    
+    <span class="tag {{ class }} {{ status.lower() }}">
+        <i class="{{ icon_class }}"></i> {{ status.title() }}
+    </span>
+{% endmacro %}

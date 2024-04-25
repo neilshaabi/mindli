@@ -150,14 +150,17 @@ function registerFormHandlers() {
                 var existingErrorInputs = $('.input-error[data-form-id="' + formId + '"]');
                 existingErrorInputs.removeClass('input-error');
 
+                // Display flashed message using macro
+                if (response.flashed_message_html) {
+                    $('#flashed-messages-container').html(response.flashed_message_html);
+                }
+                
                 // Successful response
                 if (response.success) {
                     if (response.url) { // Redirect to url
                         window.location = response.url;
                     } else if (response.update_target) { // Replace element with new HTML
                         $('#' + response.update_target).html(response.updated_html);
-                    } else if (response.flashed_message_html) { // Display flashed message using macro
-                        $('#flashed-messages-container').html(response.flashed_message_html);
                     }
                 } else if (response.errors) { // Display form errors
                     var formPrefix = response.form_prefix ? response.form_prefix + "-" : "";

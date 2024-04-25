@@ -7,6 +7,7 @@ from flask import (
     jsonify,
     redirect,
     render_template,
+    render_template_string,
     url_for,
 )
 from flask_login import current_user, login_required
@@ -15,6 +16,7 @@ from app import db
 from app.forms.appointments import (
     AppointmentNotesForm,
     BookAppointmentForm,
+    TherapyExerciseForm,
     UpdateAppointmentForm,
 )
 from app.models.appointment import Appointment
@@ -23,6 +25,7 @@ from app.models.enums import AppointmentStatus, EmailSubject, PaymentStatus, Use
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
+from app.models.therapy_exercise import TherapyExercise
 from app.models.user import User
 from app.utils.decorators import client_required, therapist_required
 from app.utils.formatters import get_flashed_message_html
@@ -83,7 +86,15 @@ def appointment(appointment_id: int) -> Response:
         obj=appointment,
     )
 
-    # Display appointment notes for therapists
+    # Create form to set and update a therapy exercise
+    exercise_form = TherapyExerciseForm(
+        id="therapy-exercise-form",
+        endpoint=url_for("appointments.exercise", appointment_id=appointment_id),
+        role=current_user.role,
+        obj=appointment.exercise,
+    )
+
+    # Create appointment notes form for therapist only
     if current_user.role == UserRole.THERAPIST:
         notes_form = AppointmentNotesForm(
             id="appointment-notes-form",
@@ -91,6 +102,7 @@ def appointment(appointment_id: int) -> Response:
             obj=appointment.notes,
         )
     else:
+        # Do not give other users access to appointment notes
         notes_form = None
 
     # Render the page with the appointment details and forms
@@ -99,6 +111,7 @@ def appointment(appointment_id: int) -> Response:
         appointment=appointment,
         update_form=update_form,
         notes_form=notes_form,
+        exercise_form=exercise_form,
     )
 
 
@@ -174,22 +187,13 @@ def process_book_appointment(therapist_id: int) -> Response:
 @bp.route("/update/<int:appointment_id>", methods=["POST"])
 @login_required
 def update(appointment_id: int) -> Response:
-    # Determine which function to call based on role
-    if current_user.role == UserRole.THERAPIST:
-        return update_therapist(appointment_id)
-    elif current_user.role == UserRole.CLIENT:
-        return update_client(appointment_id)
-
-
-@therapist_required
-def update_therapist(appointment_id: int) -> Response:
     # Fetch appointment with this ID
     appointment: Appointment = db.session.execute(
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one()
 
-    # Redirect if appointment does not belong to this therapist
-    if not appointment or current_user.id != appointment.therapist.user_id:
+    # Redirect if appointment does not belong to this user
+    if not appointment or appointment.this_user.id != current_user.id:
         flash("You do not have permission to perform this action", "error")
         return redirect(
             url_for("appointments.appointment", appointment_id=appointment_id)
@@ -207,118 +211,84 @@ def update_therapist(appointment_id: int) -> Response:
     if appointment.appointment_status == new_status:
         return jsonify({"success": True})
 
-    # CONFIRMED - notify client
-    if new_status == AppointmentStatus.CONFIRMED:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.client.user,
-            subject=EmailSubject.APPOINTMENT_CONFIRMED_CLIENT,
-        )
+    # Handle actions differently depending on role of current user
+    if current_user.role == UserRole.THERAPIST:
+        # CONFIRMED - notify client
+        if new_status == AppointmentStatus.CONFIRMED:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.client.user,
+                subject=EmailSubject.APPOINTMENT_CONFIRMED_CLIENT,
+            )
 
-    # RESCHEDULED - notify client and update appointment time
-    elif new_status == AppointmentStatus.RESCHEDULED:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.client.user,
-            subject=EmailSubject.APPOINTMENT_RESCHEDULED,
-        )
-        appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
-        flash("Appointment rescheduled, client notified", "success")
+        # RESCHEDULED - notify client and update appointment time
+        elif new_status == AppointmentStatus.RESCHEDULED:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.client.user,
+                subject=EmailSubject.APPOINTMENT_RESCHEDULED,
+            )
+            appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
+            flash("Appointment rescheduled, client notified", "success")
 
-    # COMPLETED - do nothing
-    elif new_status == AppointmentStatus.COMPLETED:
-        flash("Appointment marked as completed", "success")
-        pass
+        # COMPLETED - do nothing
+        elif new_status == AppointmentStatus.COMPLETED:
+            flash("Appointment marked as completed", "success")
+            pass
 
-    # CANCELLED - notify client
-    elif new_status == AppointmentStatus.CANCELLED:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.client.user,
-            subject=EmailSubject.APPOINTMENT_CANCELLED,
-        )
-        flash("Appointment cancelled, client notified", "success")
+        # CANCELLED - notify client
+        elif new_status == AppointmentStatus.CANCELLED:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.client.user,
+                subject=EmailSubject.APPOINTMENT_CANCELLED,
+            )
+            flash("Appointment cancelled, client notified", "success")
 
-    # NO SHOW - notify client
-    elif new_status == AppointmentStatus.NO_SHOW:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.client.user,
-            subject=EmailSubject.APPOINTMENT_NO_SHOW_CLIENT,
-        )
-        flash("Appointment marked as a No Show, client notified", "success")
+        # NO SHOW - notify client
+        elif new_status == AppointmentStatus.NO_SHOW:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.client.user,
+                subject=EmailSubject.APPOINTMENT_NO_SHOW_CLIENT,
+            )
+            flash("Appointment marked as a No Show, client notified", "success")
 
-    else:
-        return jsonify(
-            {"success": False, "errors": {"action": "Invalid action selected"}}
-        )
+        else:
+            return jsonify(
+                {"success": False, "errors": {"action": "Invalid action selected"}}
+            )
+
+    elif current_user.role == UserRole.CLIENT:
+        # RESCHEDULED - notify therapist and update appointment time
+        if new_status == AppointmentStatus.RESCHEDULED:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.therapist.user,
+                subject=EmailSubject.APPOINTMENT_RESCHEDULED,
+            )
+            appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
+            flash("Appointment rescheduled, therapist notified", "success")
+
+        # CANCELLED - notify therapist
+        elif new_status == AppointmentStatus.CANCELLED:
+            send_appointment_update_email(
+                appointment=appointment,
+                recipient=appointment.therapist.user,
+                subject=EmailSubject.APPOINTMENT_CANCELLED,
+            )
+            flash("Appointment cancelled, therapist notified", "success")
+
+        else:
+            return jsonify(
+                {"success": False, "errors": {"action": "Invalid action selected"}}
+            )
 
     # Update the appointment status with form data
     appointment.appointment_status = new_status
     db.session.commit()
 
     # Redirect to appointment page
-    return jsonify(
-        {
-            "success": True,
-            "url": url_for("appointments.appointment", appointment_id=appointment.id),
-        }
-    )
-
-
-@client_required
-def update_client(appointment_id: int) -> Response:
-    # Fetch appointment with this ID
-    appointment: Appointment = db.session.execute(
-        db.select(Appointment).filter_by(id=appointment_id)
-    ).scalar_one()
-
-    # Redirect if appointment does not belong to this client
-    if not appointment or current_user.id != appointment.client.user_id:
-        flash("You do not have permission to perform this action", "error")
-        return redirect(
-            url_for("appointments.appointment", appointment_id=appointment_id)
-        )
-
-    form = UpdateAppointmentForm(role=current_user.role, obj=appointment)
-
-    # Invalid form submission - return errors
-    if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors})
-
-    new_status = AppointmentStatus[form.action.data]
-
-    # Do nothing if status has not changed
-    if appointment.appointment_status == new_status:
-        return jsonify({"success": True})
-
-    # RESCHEDULED - notify therapist and update appointment time
-    if new_status == AppointmentStatus.RESCHEDULED:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.therapist.user,
-            subject=EmailSubject.APPOINTMENT_RESCHEDULED,
-        )
-        appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
-        flash("Appointment rescheduled, therapist notified", "success")
-
-    # CANCELLED - notify therapist
-    elif new_status == AppointmentStatus.CANCELLED:
-        send_appointment_update_email(
-            appointment=appointment,
-            recipient=appointment.therapist.user,
-            subject=EmailSubject.APPOINTMENT_CANCELLED,
-        )
-        flash("Appointment cancelled, therapist notified", "success")
-
-    else:
-        return jsonify(
-            {"success": False, "errors": {"action": "Invalid action selected"}}
-        )
-
-    appointment.appointment_status = new_status
-    db.session.commit()
-
     return jsonify(
         {
             "success": True,
@@ -341,6 +311,7 @@ def send_appointment_update_email(
 
 
 @bp.route("/<int:appointment_id>/notes", methods=["POST"])
+@login_required
 @therapist_required
 def notes(appointment_id: int) -> Response:
     # Fetch appointment with this ID
@@ -363,7 +334,7 @@ def notes(appointment_id: int) -> Response:
 
     # Create new appointment notes if one does not exist
     if not appointment.notes:
-        appointment.notes = AppointmentNotes()
+        appointment.notes = AppointmentNotes(appointment_id=appointment.id)
         db.session.add(appointment.notes)
 
     # Update appointment notes with form data
@@ -386,6 +357,73 @@ def notes(appointment_id: int) -> Response:
             "success": True,
             "flashed_message_html": get_flashed_message_html(
                 "Appointment notes updated", "success"
+            ),
+        }
+    )
+
+
+@bp.route("/<int:appointment_id>/exercise", methods=["POST"])
+@login_required
+def exercise(appointment_id: int) -> Response:
+    # Fetch appointment with this ID
+    appointment: Appointment = db.session.execute(
+        db.select(Appointment).filter_by(id=appointment_id)
+    ).scalar_one()
+
+    # Redirect if appointment does not belong to this user
+    if not appointment or current_user.id != appointment.this_user.id:
+        flash("You do not have permission to perform this action", "error")
+        return redirect(
+            url_for("appointments.appointment", appointment_id=appointment_id)
+        )
+
+    form = TherapyExerciseForm(role=current_user.role)
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Create new exercise if one does not exist and current user is therapist
+    if not appointment.exercise and current_user.role == UserRole.THERAPIST:
+        appointment.exercise = TherapyExercise(
+            appointment_id=appointment.id,
+            title=form.title.data,
+            description=form.description.data,
+            client_response=None,
+            completed=False,
+        )
+        db.session.add(appointment.exercise)
+
+    # Update exercise with form data as therapist
+    elif current_user.role == UserRole.THERAPIST:
+        appointment.exercise.title = form.title.data
+        appointment.exercise.description = form.description.data
+        appointment.exercise.completed = form.completed.data
+
+    # Update exercise with form data as client
+    elif current_user.role == UserRole.CLIENT:
+        appointment.exercise.client_response = form.client_response.data
+        appointment.exercise.completed = form.completed.data
+
+    db.session.commit()
+
+    # Construct template string to updated completion status via AJAX
+    completion_tag_html = render_template_string(
+        """
+        {% from "_macros.html" import bool_to_completion_tag %}
+        {{ bool_to_completion_tag(completed) }}
+    """,
+        completed=appointment.exercise.completed,
+    )
+
+    # Flash message using AJAX and update completion status
+    return jsonify(
+        {
+            "success": True,
+            "update_target": "completion-tag",
+            "updated_html": completion_tag_html,
+            "flashed_message_html": get_flashed_message_html(
+                "Therapy exercise updated", "success"
             ),
         }
     )

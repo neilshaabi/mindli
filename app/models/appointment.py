@@ -40,7 +40,10 @@ class Appointment(SeedableMixin, db.Model):
         back_populates="appointments"
     )
     notes: so.Mapped["AppointmentNotes"] = so.relationship(
-        back_populates="appointment", cascade="all, delete-orphan"
+        back_populates="appointment",
+    )
+    exercise: so.Mapped["TherapyExercise"] = so.relationship(
+        back_populates="appointment",
     )
 
     @property

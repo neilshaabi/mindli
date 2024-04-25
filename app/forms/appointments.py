@@ -1,5 +1,13 @@
-from wtforms import DateField, IntegerField, SubmitField, TextAreaField, TimeField
-from wtforms.validators import DataRequired, NumberRange, Optional
+from wtforms import (
+    BooleanField,
+    DateField,
+    IntegerField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+    TimeField,
+)
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import AppointmentStatus, UserRole
@@ -105,4 +113,27 @@ class AppointmentNotesForm(CustomFlaskForm):
         if appointment_note:
             self.issues.preselect_choices(appointment_note.issues)
             self.interventions.preselect_choices(appointment_note.interventions)
+        return
+
+
+class TherapyExerciseForm(CustomFlaskForm):
+    title = StringField("Title", validators=[Length(max=255)])
+    description = TextAreaField("Description", validators=[Optional()])
+    client_response = TextAreaField("Client response", validators=[Optional()])
+    completed = BooleanField(
+        "Mark as completed",
+        validators=[],
+        default=False,
+    )
+    submit = SubmitField("Save")
+
+    def __init__(self, role: UserRole, *args, **kwargs):
+        super(TherapyExerciseForm, self).__init__(*args, **kwargs)
+
+        # Disable fields depending on role
+        if role == UserRole.THERAPIST:
+            self.client_response.render_kw = {"disabled": "disabled"}
+        elif role == UserRole.CLIENT:
+            self.title.render_kw = {"disabled": "disabled"}
+            self.description.render_kw = {"disabled": "disabled"}
         return
