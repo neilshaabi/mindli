@@ -73,7 +73,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     # Register blueprints with endpoints
     from app.views import appointment_types, appointments, auth, main, messages, profile
     from app.views import stripe as stripe_bp
-    from app.views import therapist_directory
+    from app.views import therapists
 
     app.register_blueprint(appointments.bp)
     app.register_blueprint(appointment_types.bp)
@@ -82,7 +82,7 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     app.register_blueprint(messages.bp)
     app.register_blueprint(stripe_bp.bp)
     app.register_blueprint(profile.bp)
-    app.register_blueprint(therapist_directory.bp)
+    app.register_blueprint(therapists.bp)
 
     # Register handler to redirect to custom error page
     from app.views.errors import register_error_handlers

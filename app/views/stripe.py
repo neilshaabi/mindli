@@ -48,7 +48,7 @@ def create_account():
                 "mcc": "8099",  # Medical Services
                 "product_description": "Mindli provides online psychotherapy services, connecting mental health practioners with clients for support. Services include individual, couples and family therapy sessions.",
                 "url": url_for(
-                    "therapist_directory.therapist",
+                    "therapists.therapist",
                     therapist_id=current_user.therapist.id,
                     _external=True,
                 ),

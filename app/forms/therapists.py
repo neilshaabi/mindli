@@ -21,14 +21,14 @@ class FilterTherapistsForm(CustomFlaskForm):
         "Mode",
         validators=[Optional()],
     )
-    duration = IntegerField("Duration", validators=[Optional()])
+    duration = IntegerField("Duration (mins)", validators=[Optional()])
     titles = CustomSelectMultipleField(
         "Titles",
         validators=[Optional()],
         coerce=int,
     )
     years_of_experience = IntegerField(
-        "Minimum years of experience", validators=[Optional()], default=0
+        "Min. years of experience", validators=[Optional()], default=0
     )
     gender = CustomSelectField(
         "Gender",

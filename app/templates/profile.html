@@ -19,7 +19,13 @@
             <div class='col-lg-4'>
                 
                 <div class='my-card'>
-                    <h3>Personal Information</h3>
+
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-auto">
+                            <h5 class="mb-0">Personal Information</h5>
+                        </div>
+                    </div>
+
                     <form id="{{ user_form.id }}" action="{{ user_form.endpoint }}" enctype="multipart/form-data" novalidate>
                         
                         {{ user_form.csrf_token }}
@@ -59,7 +65,7 @@
                         <div class="row mb-3">
                             <div class="col-12">
                                 <div class='form-floating'>
-                                    {{ user_form.gender(class_='form-control form-select', placeholder=user_form.gender.label.text) }}
+                                    {{ user_form.gender(class_='form-control', placeholder=user_form.gender.label.text) }}
                                     {{ user_form.gender.label }}
                                 </div>
                             </div>
@@ -80,7 +86,11 @@
 
                     {% if current_user.role == UserRole.THERAPIST %}
 
-                        <h3>Professional Information</h3>
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-auto">
+                                <h5 class="mb-0">Professional Information</h5>
+                            </div>
+                        </div>
                         
                         <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
                             
@@ -89,7 +99,7 @@
                             <div class="row mb-3 g-2">
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.titles(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.titles(class_='form-control') }}
                                         {{ role_form.titles.label }}
                                     </div>
                                 </div>
@@ -123,14 +133,14 @@
                             <div class="row mb-3 g-2">
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.country(class_='form-control form-select', placeholder=role_form.country.label.text) }}
+                                        {{ role_form.country(class_='form-control', placeholder=role_form.country.label.text) }}
                                         {{ role_form.country.label }}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.languages(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.languages(class_='form-control') }}
                                         {{ role_form.languages.label }}
                                     </div>
                                 </div>
@@ -155,14 +165,14 @@
                             <div class="row mb-3 g-2">
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.issues(class_='form-control') }}
                                         {{ role_form.issues.label }}
                                     </div>
                                 </div>
                                 
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.interventions(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.interventions(class_='form-control') }}
                                         {{ role_form.interventions.label }}
                                     </div>
                                 </div>
@@ -178,7 +188,11 @@
                     
                     {% elif current_user.role == UserRole.CLIENT %}
                         
-                        <h3>Background Information</h3>
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-auto">
+                                <h5 class="mb-0">Background Information</h5>
+                            </div>
+                        </div>
 
                         <form id="{{ role_form.id }}" action="{{ role_form.endpoint }}" novalidate>
                         
@@ -195,7 +209,7 @@
                             
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.occupation(class_='form-control form-select', placeholder=role_form.occupation.label.text) }}
+                                        {{ role_form.occupation(class_='form-control', placeholder=role_form.occupation.label.text) }}
                                         {{ role_form.occupation.label }}
                                     </div>
                                 </div>
@@ -237,14 +251,14 @@
                                 <div class="col-md-6">
                                 
                                     <div class='form-floating'>
-                                        {{ role_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                        {{ role_form.issues(class_='form-control') }}
                                         {{ role_form.issues.label }}
                                     </div>
                                 </div>
 
                                 <div class="col-md-6">
                                     <div class='form-floating'>
-                                        {{ role_form.referral_source(class_='form-control form-select', placeholder=role_form.referral_source.label.text) }}
+                                        {{ role_form.referral_source(class_='form-control', placeholder=role_form.referral_source.label.text) }}
                                         {{ role_form.referral_source.label }}
                                     </div>
                                 </div>

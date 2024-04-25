@@ -37,14 +37,14 @@
                             <tr>
                                 <td>
                                     <div class='form-floating'>
-                                        {{ form.therapy_type(class_='form-control form-select', placeholder=form.therapy_type.label.text, form=form.id, disabled=True) }}
+                                        {{ form.therapy_type(class_='form-control', placeholder=form.therapy_type.label.text, form=form.id, disabled=True) }}
                                         {{ form.therapy_type.label }}
                                     </div>
                                 </td>
 
                                 <td>
                                     <div class='form-floating'>
-                                        {{ form.therapy_mode(class_='form-control form-select', placeholder=form.therapy_mode.label.text, form=form.id, disabled=True) }}
+                                        {{ form.therapy_mode(class_='form-control', placeholder=form.therapy_mode.label.text, form=form.id, disabled=True) }}
                                         {{ form.therapy_mode.label }}
                                     </div>
                                 </td>
@@ -65,7 +65,7 @@
 
                                 <td>
                                     <div class='form-floating'>
-                                        {{ form.fee_currency(class_='form-control form-select', placeholder=form.fee_currency.label.text, form=form.id, disabled=True) }}
+                                        {{ form.fee_currency(class_='form-control', placeholder=form.fee_currency.label.text, form=form.id, disabled=True) }}
                                         {{ form.fee_currency.label }}
                                     </div>
                                 </td>
@@ -98,14 +98,14 @@
                         <tr>
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_form.therapy_type(class_='form-control form-select', placeholder=create_form.therapy_type.label.text, form=create_form.id) }}
+                                    {{ create_form.therapy_type(class_='form-control', placeholder=create_form.therapy_type.label.text, form=create_form.id) }}
                                     {{ create_form.therapy_type.label }}
                                 </div>
                             </td>
 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_form.therapy_mode(class_='form-control form-select', placeholder=create_form.therapy_mode.label.text, form=create_form.id) }}
+                                    {{ create_form.therapy_mode(class_='form-control', placeholder=create_form.therapy_mode.label.text, form=create_form.id) }}
                                     {{ create_form.therapy_mode.label }}
                                 </div>
                             </td>
@@ -126,7 +126,7 @@
 
                             <td>
                                 <div class='form-floating'>
-                                    {{ create_form.fee_currency(class_='form-control form-select', placeholder=create_form.fee_currency.label.text, form=create_form.id) }}
+                                    {{ create_form.fee_currency(class_='form-control', placeholder=create_form.fee_currency.label.text, form=create_form.id) }}
                                     {{ create_form.fee_currency.label }}
                                 </div>
                             </td>

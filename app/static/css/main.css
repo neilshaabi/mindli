@@ -270,7 +270,7 @@ form .btn {
 }
 
 .btn-icon {
-    font-size: 1.4rem;
+    font-size: 1.2rem;
     color: var(--light-grey-text);
     background: none !important;
     height: auto !important;
@@ -321,8 +321,17 @@ form .btn {
     align-items: center;
 }
 
+.table>:not(caption)>*>* {
+    color: var(--dark-grey-text);
+}
+
+
 table th {
     font-weight: 500;
+}
+
+.table tr:hover {
+    background-color: var(--light-grey-bg) !important;
 }
 
 table tr .btn-icon {
@@ -338,18 +347,6 @@ table tr:hover .btn-icon {
 
 
 /* Containers */
-
-.page-header {
-    margin-bottom: 20px;
-}
-
-.page-content {
-    display: flex;
-    flex-direction: row;
-    align-items: baseline;
-    justify-content: space-around;
-    gap: 40px;
-}
 
 .my-card {
     color: var(--dark-grey-text);
@@ -373,11 +370,6 @@ table tr:hover .btn-icon {
     line-height: 1.75;
 }
 
-.list-group {
-    border: none;
-
-}
-
 .list-group li:hover {
     cursor: pointer;
 }
@@ -387,6 +379,10 @@ table tr:hover .btn-icon {
     color: inherit;
     background: rgba(var(--colour-primary-rgb), 0.1);
     border-color: var(--light-grey-outline);
+}
+
+.col-lg-auto {
+    min-width: 200px;
 }
 
 /* Home page */
@@ -507,6 +503,32 @@ table tr:hover .btn-icon {
 .tag-sm {
     font-size: 0.8rem;
     padding: 4px 6px;
+}
+
+
+/* Accordions */
+
+.accordion-item {
+    color: var(--dark-grey-text);
+}
+
+.accordion-button {
+    color: inherit;
+    background: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    padding: 0;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border: none;
+}
+
+.accordion-button:not(.collapsed) {
+    color: inherit;
+    background-color: inherit;
+    box-shadow: none;
 }
 
 

@@ -1,3 +1,59 @@
+{% macro flashed_message(message, category) %}
+    {% set class_map = {
+        'success': ('alert-success', 'fa-solid fa-circle-check'),
+        'error': ('alert-danger', 'fa-solid fa-circle-exclamation'),
+        'warning': ('alert-warning', 'fa-solid fa-triangle-exclamation'),
+        'info': ('alert-info', 'fa-solid fa-circle-info')
+    } %}
+    {% set alert_class, icon_class = class_map.get(category, ('alert-primary', 'fa-solid fa-circle-info')) %}
+    
+    <div class="alert {{ alert_class }} alert-dismissible fade show" role='alert'>
+        <i class="{{ icon_class }}"></i> {{ message }}
+        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
+    </div>
+{% endmacro %}
+
+
+{% macro tag(label='', status='', with_icon=False, additional_class='') %}
+    
+    {% set default_class = 'bg-light text-dark' %}
+
+    {% set tag_map = {
+        
+        'IN_PERSON': (default_class, 'fa-solid fa-user'),
+        'AUDIO': (default_class, 'fa-solid fa-phone'),
+        'VIDEO': (default_class, 'fa-solid fa-video'),
+        
+        'INDIVIDUAL': (default_class, 'fa-solid fa-person'),
+        'COUPLES': (default_class, 'fa-solid fa-handshake-simple'),
+        'FAMILY': (default_class, 'fa-solid fa-people-group'),
+        'PSYCHOMETRICS': (default_class, 'fa-solid fa-stethoscope'),
+        
+        'NOT_SET': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
+        'INCOMPLETE': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
+        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        
+        'SCHEDULED': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
+        'CONFIRMED': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
+        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'RESCHEDULED': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
+        'CANCELLED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
+        'NO_SHOW': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
+
+        'PENDING': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
+        'SUCCEEDED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'FAILED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
+    } %}
+    {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
+    <span class="tag {{ class }} {{ additional_class }}">
+        {% if icon_class and with_icon %}
+            <i class="{{ icon_class }}" {% if not label %}style="margin-right:0;"{% endif %}></i>
+        {% endif %}
+        {% if label %}{{ label }}{% endif %}
+    </span>
+{% endmacro %}
+
+
 {% macro submit_button(submit_field, id=None, class=None, disabled=False) %}
     <button type="submit" 
     id="{% if id %}{{ id }}{% endif %}"
@@ -55,63 +111,30 @@
                         {{ tag(label=intervention.name) }}
                     {% endfor %}
                 </p>
-                <a href="{{ url_for('therapist_directory.therapist', therapist_id=therapist.id) }}" class="btn btn-primary">View Profile</a>
+                <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}" class="btn btn-primary">View Profile</a>
             </div>
         </div>
     </div>
 {% endmacro %}
 
 
-{% macro flashed_message(message, category) %}
-    {% set class_map = {
-        'success': ('alert-success', 'fa-solid fa-circle-check'),
-        'error': ('alert-danger', 'fa-solid fa-circle-exclamation'),
-        'warning': ('alert-warning', 'fa-solid fa-triangle-exclamation'),
-        'info': ('alert-info', 'fa-solid fa-circle-info')
-    } %}
-    {% set alert_class, icon_class = class_map.get(category, ('alert-primary', 'fa-solid fa-circle-info')) %}
-    
-    <div class="alert {{ alert_class }} alert-dismissible fade show" role='alert'>
-        <i class="{{ icon_class }}"></i> {{ message }}
-        <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
-    </div>
+{% macro appointment_row(appointment) %}
+    <tr>
+        <td>{{ appointment.time.strftime('%d %b %Y – %H:%M') }}</td>
+        <td>{{ appointment.other_user.full_name }}</td>
+        <td>{{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=False) }}</td>
+        <td>{{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=False) }}</td>
+        <td>{{ appointment.appointment_type.duration }} minutes</td>
+        <td>{{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=False) }}</td>
+        <td>{{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=False) }}</td>
+        <td>
+            <div class="btn-container">                
+                <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }}" class="btn btn-icon"
+                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="View details">
+                    <i class="fa-solid fa-ellipsis"></i>
+                </a>
+            </div>
+        </td>
+    </tr>
 {% endmacro %}
 
-{% macro tag(label='', status='', with_icon=False, additional_class='') %}
-    
-    {% set default_class = 'bg-light text-dark' %}
-
-    {% set tag_map = {
-        
-        'IN_PERSON': (default_class, 'fa-solid fa-user'),
-        'AUDIO': (default_class, 'fa-solid fa-phone'),
-        'VIDEO': (default_class, 'fa-solid fa-video'),
-        
-        'INDIVIDUAL': (default_class, 'fa-solid fa-person'),
-        'COUPLES': (default_class, 'fa-solid fa-handshake-simple'),
-        'FAMILY': (default_class, 'fa-solid fa-people-group'),
-        'PSYCHOMETRICS': (default_class, 'fa-solid fa-stethoscope'),
-        
-        'NOT_SET': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
-        'INCOMPLETE': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
-        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        
-        'SCHEDULED': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
-        'CONFIRMED': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
-        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        'RESCHEDULED': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
-        'CANCELLED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
-        'NO_SHOW': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
-
-        'PENDING': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
-        'SUCCEEDED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        'FAILED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
-    } %}
-    {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
-    <span class="tag {{ class }} {{ additional_class }}">
-        {% if icon_class and with_icon %}
-            <i class="{{ icon_class }}" {% if not label %}style="margin-right:0;"{% endif %}></i>
-        {% endif %}
-        {% if label %}{{ label }}{% endif %}
-    </span>
-{% endmacro %}

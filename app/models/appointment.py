@@ -10,10 +10,8 @@ from flask_sqlalchemy import SQLAlchemy
 from app import db
 from app.constants import EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
-from app.models.appointment_type import AppointmentType
 from app.models.client import Client
 from app.models.enums import AppointmentStatus, PaymentStatus, UserRole
-from app.models.therapist import Therapist
 from app.models.user import User
 
 

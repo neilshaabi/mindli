@@ -1,0 +1,159 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    Therapists
+{% endblock %}
+
+{% block content %}
+
+    <div class='container'>
+        
+        <div class='row mb-3 g-4'>
+            <div class='col-lg-12'>
+                <h3>Therapist Directory</h3>
+            </div>
+        </div>
+        
+        <div class="row g-4 mb-4">
+            <div class='col-lg-12'>
+                <div class='my-card'>
+                    
+                    <div class="accordion accordion-flush" id="therapistFilterAccordion">
+                        <div class="accordion-item">
+                    
+                            <h5 class="mb-0">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filterFormCollapse" aria-expanded="false" aria-controls="filterFormCollapse">
+                                    Find a Therapist
+                                </button>
+                            </h5>
+
+                            <div id="filterFormCollapse" class="accordion-collapse collapse" data-bs-parent="#therapistFilterAccordion">
+                            
+                                <form id="{{ filter_form.id }}" action="{{ filter_form.endpoint }}" novalidate>
+                                    
+                                    {{ filter_form.csrf_token }}
+                                    
+                                    <div class="row mt-4 mb-2">
+                                        <div class="col-lg-auto text-muted">By therapist profile</div>
+                                    </div>
+
+                                    <div class="row g-2 mb-2">
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.name(class_='form-control', placeholder=filter_form.name.label.text) }}
+                                                {{ filter_form.name.label }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.titles(class_='form-control') }}
+                                                {{ filter_form.titles.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.years_of_experience(class_='form-control', placeholder=filter_form.years_of_experience.label.text) }}
+                                                {{ filter_form.years_of_experience.label }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.gender(class_='form-control', placeholder=filter_form.gender.label.text) }}
+                                                {{ filter_form.gender.label }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.language(class_='form-control', placeholder=filter_form.language.label.text) }}
+                                                {{ filter_form.language.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.country(class_='form-control', placeholder=filter_form.country.label.text) }}
+                                                {{ filter_form.country.label }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.specialisations(class_='form-control') }}
+                                                {{ filter_form.specialisations.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.interventions(class_='form-control') }}
+                                                {{ filter_form.interventions.label }}
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mt-4 mb-2">
+                                        <div class="col-lg-auto text-muted">By appointments offered</div>
+                                    </div>
+
+                                    <div class="row g-2 mb-4">
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.therapy_type(class_='form-control', placeholder=filter_form.therapy_type.label.text) }}
+                                                {{ filter_form.therapy_type.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.therapy_mode(class_='form-control', placeholder=filter_form.therapy_mode.label.text) }}
+                                                {{ filter_form.therapy_mode.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.duration(class_='form-control', placeholder=filter_form.duration.label.text) }}
+                                                {{ filter_form.duration.label }}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="row g-2">
+                                        <div class="col-lg-auto">
+                                            {{ submit_button(filter_form.submit_filter) }}
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            {{ submit_button(filter_form.submit_reset_filters, class='btn btn-secondary') }}
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-auto text-muted" id="filter-count">
+                            {{ therapists|length }} therapists found
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="therapist-cards" class="row g-4">
+            {% for therapist in therapists %}
+                {{ therapist_card(therapist) }}
+            {% endfor %}
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -80,8 +80,12 @@ class Therapist(SeedableMixin, db.Model):
                     db.select(Language).filter_by(name="English")
                 ).scalar_one()
             ],
-            specialisations=issues[:3],
-            interventions=interventions[:3],
+            specialisations=random.sample(
+                issues, random.randint(1, min(3, len(issues)))
+            ),
+            interventions=random.sample(
+                interventions, random.randint(1, min(3, len(interventions)))
+            ),
         )
         db.session.add(example_therapist)
 

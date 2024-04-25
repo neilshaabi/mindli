@@ -4,9 +4,6 @@ from flask import render_template_string
 
 
 def format_time_since(dt: datetime) -> str:
-    """
-    Returns a string representing time since `dt` (datetime) in a short format.
-    """
     now = datetime.now()
     diff = now - dt
 
@@ -37,3 +34,7 @@ def get_flashed_message_html(message: str, category: str) -> str:
         message=message,
         category=category,
     )
+
+
+def convert_str_to_date(date_str: str) -> datetime:
+    return datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S GMT").date()

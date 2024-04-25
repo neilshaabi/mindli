@@ -13,7 +13,7 @@ from flask_login import login_required
 from sqlalchemy import func
 
 from app import db
-from app.forms.therapist_directory import FilterTherapistsForm
+from app.forms.therapists import FilterTherapistsForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType
 from app.models.intervention import Intervention
@@ -23,33 +23,50 @@ from app.models.therapist import Therapist
 from app.models.title import Title
 from app.models.user import User
 
-bp = Blueprint("therapist_directory", __name__)
+bp = Blueprint("therapists", __name__, url_prefix="/therapists")
 
 
-@bp.route("/therapists", methods=["GET"])
+@bp.route("/", methods=["GET"])
 @login_required
-def therapists():
+def index():
     # Initialise filter form with fields prepopulated from session
     filter_form = FilterTherapistsForm(
         id="filter-therapists",
-        endpoint=url_for("therapist_directory.filtered_therapists"),
-        data=session.get("filters", {}),
+        endpoint=url_for("therapists.filter"),
+        data=session.get("therapist_filters", {}),
     )
 
     therapists = db.session.execute(db.select(Therapist)).scalars().all()
 
     # Render a template, passing the filter form to it
     return render_template(
-        "therapist_directory.html", filter_form=filter_form, therapists=therapists
+        "therapists.html", filter_form=filter_form, therapists=therapists
     )
 
 
-@bp.route("/therapists/filter", methods=["POST"])
+@bp.route("/<int:therapist_id>", methods=["GET"])
 @login_required
-def filtered_therapists():
+def therapist(therapist_id):
+    # Get therapist with this ID
+    therapist = db.session.execute(
+        db.select(Therapist).filter_by(id=therapist_id)
+    ).scalar_one_or_none()
+
+    # Redirect to therapist directory if therapist not found
+    if not therapist:
+        flash("Therapist not found", "error")
+        return redirect(url_for("therapists.index"))
+
+    # Render template with information for this therapist
+    return render_template("therapist.html", therapist=therapist)
+
+
+@bp.route("/filter", methods=["POST"])
+@login_required
+def filter():
     filter_form = FilterTherapistsForm(
         id="filter-therapists",
-        endpoint=url_for("therapist_directory.filtered_therapists"),
+        endpoint=url_for("therapists.filter"),
     )
 
     # Invalid form submission - return errors
@@ -61,7 +78,7 @@ def filtered_therapists():
 
     if submit_action == "filter":
         # Store filter settings in the session
-        session["filters"] = {
+        session["therapist_filters"] = {
             "name": filter_form.name.data,
             "therapy_type": filter_form.therapy_type.data,
             "therapy_mode": filter_form.therapy_mode.data,
@@ -147,7 +164,7 @@ def filtered_therapists():
         # Execute query to filter therapists
         filtered_therapists = db.session.execute(query).scalars().all()
 
-        # Construct template string to insert updated therapists via AJAX
+        # Construct template strings to insert updated therapists via AJAX
         therapists_html = render_template_string(
             """
             {% from "_macros.html" import therapist_card %}
@@ -158,43 +175,22 @@ def filtered_therapists():
             therapists=filtered_therapists,
         )
 
+        filter_count_html = render_template_string(
+            "{{ therapists|length }} therapists found",
+            therapists=filtered_therapists,
+        )
+
         return jsonify(
             {
                 "success": True,
                 "update_targets": {
                     "therapist-cards": therapists_html,
+                    "filter-count": filter_count_html,
                 },
             }
         )
 
     elif submit_action == "reset_filters":
         # Clear filter settings from the session if they exist
-        session.pop("filters", None)
-        return jsonify(
-            {"success": True, "url": url_for("therapist_directory.therapists")}
-        )
-
-
-@bp.route("/therapists/reset-filters", methods=["POST"])
-@login_required
-def reset_filters():
-    # Remove filter data from session
-    session.pop("filters", None)
-    return redirect(url_for("therapist_directory.therapists"))
-
-
-@bp.route("/therapist/<int:therapist_id>", methods=["GET"])
-@login_required
-def therapist(therapist_id):
-    # Get therapist with this ID
-    therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one_or_none()
-
-    # Redirect to therapist directory if therapist not found
-    if not therapist:
-        flash("Therapist not found", "error")
-        return redirect(url_for("therapist_directory.therapists"))
-
-    # Render template with information for this therapist
-    return render_template("therapist.html", therapist=therapist)
+        session.pop("therapist_filters", None)
+        return jsonify({"success": True, "url": url_for("therapists.index")})

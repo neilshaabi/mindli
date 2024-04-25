@@ -17,7 +17,7 @@ $(document).ready(function() {
 
     
     // Initially disable all submit buttons
-    $('form').find(':submit').prop('disabled', true);
+    $('form').find(':submit.btn-primary').prop('disabled', true);
     
     // Enable submit button after changes in any input, textarea or select element within forms
     $('form').on('change input', 'input, textarea, select', function() {

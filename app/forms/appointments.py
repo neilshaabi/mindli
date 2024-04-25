@@ -2,6 +2,7 @@ from wtforms import (
     BooleanField,
     DateField,
     IntegerField,
+    SelectField,
     StringField,
     SubmitField,
     TextAreaField,
@@ -9,8 +10,15 @@ from wtforms import (
 )
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
+from app.constants import CURRENCIES
 from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
-from app.models.enums import AppointmentStatus, UserRole
+from app.models.enums import (
+    AppointmentStatus,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 
@@ -127,4 +135,81 @@ class TherapyExerciseForm(CustomFlaskForm):
         elif role == UserRole.CLIENT:
             self.title.render_kw = {"disabled": "disabled"}
             self.description.render_kw = {"disabled": "disabled"}
+        return
+
+
+class FilterAppointmentsForm(CustomFlaskForm):
+    name = StringField("Name", validators=[Optional()])
+
+    # Appointment specific filters
+    start_date = DateField("Start Date", validators=[Optional()])
+    end_date = DateField("End Date", validators=[Optional()])
+    appointment_status = CustomSelectField(
+        "Status",
+        choices=[("", "Select status")],
+        validators=[Optional()],
+    )
+    payment_status = CustomSelectField(
+        "Payment",
+        choices=[("", "Select status")],
+        validators=[Optional()],
+    )
+
+    # AppointmentType specific filters
+    therapy_type = CustomSelectMultipleField(
+        "Therapy type",
+        choices=[("", "Any")],
+        validators=[Optional()],
+    )
+    therapy_mode = CustomSelectMultipleField(
+        "Mode",
+        choices=[("", "Any")],
+        validators=[Optional()],
+    )
+    duration = IntegerField("Duration (mins)", validators=[Optional()])
+    fee_currency = SelectField(
+        "Currency",
+        choices=[("", "Select currency")]
+        + [(currency, currency) for currency in CURRENCIES],
+        validators=[Optional()],
+    )
+
+    # AppointmentNotes specific filters
+    notes = StringField("Search notes", validators=[Optional()])
+    issues = CustomSelectMultipleField(
+        "Issues discussed",
+        validators=[Optional()],
+        coerce=int,
+    )
+    interventions = CustomSelectMultipleField(
+        "Interventions applied",
+        validators=[Optional()],
+        coerce=int,
+    )
+
+    # TherapyExercise specific filters
+    exercise_title = StringField("Exercise title", validators=[Optional()])
+    exercise_description = StringField("Description", validators=[Optional()])
+    exercise_completed = SelectField(
+        "Completed",
+        choices=[("", "Any"), ("True", "Completed"), ("False", "Incomplete")],
+        validators=[Optional()],
+    )
+
+    # Submit buttons
+    submit_filter = SubmitField("Filter Appointments", render_kw={"name": "filter"})
+    submit_reset_filters = SubmitField(
+        "Reset Filters", render_kw={"name": "reset_filters"}
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FilterAppointmentsForm, self).__init__(*args, **kwargs)
+        self.appointment_status.populate_choices(AppointmentStatus)
+        self.payment_status.populate_choices(PaymentStatus)
+
+        self.therapy_type.populate_choices(TherapyType)
+        self.therapy_mode.populate_choices(TherapyMode)
+
+        self.interventions.populate_choices(Intervention)
+        self.issues.populate_choices(Issue)
         return

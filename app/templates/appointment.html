@@ -40,12 +40,10 @@
                         <li class="list-group-item list-group-item-action {% if current_user.role != UserRole.THERAPIST %}disabled{% endif %}" data-target="#notes-section">
                             <div class="row align-items-center">
                                 <div class="col-auto">Appointment notes</div>
-                                {% if current_user.role != UserRole.THERAPIST %}
                                     <div class="col-auto ms-auto">
-                                        <i class="fa-solid fa-lock">
-                                        </i>
+                                        <i class="fa-solid fa-lock"
+                                        data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Restricted to therapist"></i>
                                     </div>    
-                                {% endif %}
                             </div>
                         </li>
                         <li class="list-group-item list-group-item-action rounded-bottom" data-target="#exercise-section">
@@ -83,6 +81,13 @@
                                 </div>
 
                                 <ul>
+                                    <li class="mb-3">
+                                        {% if current_user.role == UserRole.THERAPIST %}
+                                            Client:  <a href="#">{{ appointment.other_user.full_name }}</a>
+                                        {% else %}
+                                            Therapist: <a href="{{ url_for('therapists.therapist', therapist_id=appointment.therapist.id) }}">{{ appointment.other_user.full_name }}</a>
+                                        {% endif %}
+                                    </li>
                                     <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }}</li>
                                     <li class="mb-3">Therapy type: {{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</li>
                                     <li class="mb-3">Mode: {{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=True) }}</li>
@@ -107,7 +112,7 @@
                             <div class="row g-2 mb-4 align-items-center">
                                 <div class="col-md-4">
                                     <div class='form-floating'>
-                                        {{ update_form.action(class_='form-control form-select', placeholder=update_form.action.label.text, id='action') }}
+                                        {{ update_form.action(class_='form-control', placeholder=update_form.action.label.text, id='action') }}
                                         {{ update_form.action.label }}
                                     </div>
                                 </div>
@@ -159,7 +164,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <div class='form-floating'>
-                                            {{ notes_form.issues(class_='form-control form-select', multiple='multiple') }}
+                                            {{ notes_form.issues(class_='form-control') }}
                                             {{ notes_form.issues.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
@@ -172,7 +177,7 @@
                                 <div class="row mb-3 g-2">
                                     <div class="col-md-8">
                                         <div class='form-floating'>
-                                            {{ notes_form.interventions(class_='form-control form-select', multiple='multiple') }}
+                                            {{ notes_form.interventions(class_='form-control') }}
                                             {{ notes_form.interventions.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">

@@ -19,7 +19,11 @@
             <div class='col-lg-4'>
                 
                 <div class='my-card'>
-                    <h3>Recent conversations</h3>
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-auto">
+                            <h5 class="mb-0">Recent Conversations</h5>
+                        </div>
+                    </div>
                     {% if conversations %}
                         {% for conversation in conversations %}
                             <div class="row mb-3 {% if conversation.id == opened_conversation.id %}selected-conversation{% endif %}">
