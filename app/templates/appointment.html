@@ -55,28 +55,28 @@
                         <h6 class="mb-3">Update Appointment</h6>
                         
                         <div class="row g-2 mb-4 align-items-center">
-                            <div class="col-lg-4">
+                            <div class="col-md-5">
                                 <div class='form-floating'>
                                     {{ update_form.action(class_='form-control form-select', placeholder=update_form.action.label.text, id='action') }}
                                     {{ update_form.action.label }}
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 datetime-field hidden">
+                            <div class="col-md-3 datetime-field hidden">
                                 <div class='form-floating'>
                                     {{ update_form.new_date(class_='form-control', placeholder=update_form.new_date.label.text) }}
                                     {{ update_form.new_date.label }}
                                 </div>
                             </div>
 
-                            <div class="col-lg-3 datetime-field hidden">
+                            <div class="col-md-2 datetime-field hidden">
                                 <div class='form-floating'>
                                     {{ update_form.new_time(class_='form-control', placeholder=update_form.new_time.label.text) }}
                                     {{ update_form.new_time.label }}
                                 </div>
                             </div>
 
-                            <div class="col-lg-2">
+                            <div class="col-md-2">
                                 {{ submit_button(update_form.submit, id='submit-btn', disabled=True) }}
                             </div>
 
@@ -94,7 +94,7 @@
                             <h6 class="mt-4 mb-3">Appointment Notes</h6>
 
                             <div class="row mb-3">
-                                <div class="col-lg-12">
+                                <div class="col-md-12">
                                     <div class='form-floating'>
                                         {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text) }}
                                         {{ notes_form.text.label }}
@@ -103,35 +103,43 @@
                             </div>
 
                             <div class="row mb-3">
-                                <div class="col-lg-12">
+                                <div class="col-md-12">
                                     <div class='form-floating'>
                                         {{ notes_form.issues(class_='form-control form-select', multiple='multiple') }}
                                         {{ notes_form.issues.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
+                                            <i class="fa-regular fa-lightbulb me-3"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row mb-3 g-2">
-                                <div class="col-lg-8">
+                                <div class="col-md-8">
                                     <div class='form-floating'>
                                         {{ notes_form.interventions(class_='form-control form-select', multiple='multiple') }}
                                         {{ notes_form.interventions.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">
+                                            <i class="fa-regular fa-lightbulb me-3"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 
-                                <div class="col-lg-4">
+                                <div class="col-md-4">
                                     <div class='form-floating'>
                                         {{ notes_form.efficacy(class_='form-control', placeholder=notes_form.efficacy.label.text) }}
                                         {{ notes_form.efficacy.label }}
                                         <button type='button' class='input-btn-icon' id='togglePassword'
-                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Rate the appointment's effectiveness, with 1 being ineffective and 5 being highly effective.">
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Rate the appointment's effectiveness, with 1 being ineffective and 5 being highly effective">
                                             <i class='fa-solid fa-circle-info'></i>
                                         </button>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="col-lg-12">
+                            <div class="col-md-12">
                                 {{ submit_button(notes_form.submit) }}
                             </div>
 
