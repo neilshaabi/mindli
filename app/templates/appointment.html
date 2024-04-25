@@ -156,8 +156,10 @@
                             <div class="col-auto ms-auto" id="completion-tag">
                                 {% if appointment.exercise %}
                                     {% set status = 'Completed' if appointment.exercise.completed else 'Incomplete' %}
+                                    {% set label = status %}
                                 {% else %}
                                     {% set status = 'Not set' %}
+                                    {% set label = 'not_set' %}
                                 {% endif %}
                                 {{ tag(label=status, status=status, with_icon=True) }}
                             </div>
