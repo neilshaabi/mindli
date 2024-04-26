@@ -41,12 +41,14 @@ class EmailMessage:
             self.send_with_token = True
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_CLIENT:
+            appointment: Appointment = self.context["appointment"]
             self.body = f"Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} has been scheduled and is awaiting confirmation by the therapist. You will be notified once it has been confirmed."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST:
+            appointment: Appointment = self.context["appointment"]
             self.body = f"You have a new appointment scheduled with {appointment.client.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"

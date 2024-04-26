@@ -2,7 +2,8 @@ from wtforms import IntegerField, SelectField, StringField, SubmitField
 from wtforms.validators import Optional
 
 from app.constants import COUNTRIES
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
 from app.models.enums import Gender, TherapyMode, TherapyType
 from app.models.intervention import Intervention
 from app.models.issue import Issue
