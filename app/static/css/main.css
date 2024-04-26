@@ -367,7 +367,9 @@ table tr:hover .btn-icon {
     }
 }
 
-
+.col-lg-auto {
+    min-width: 200px;
+}
 
 .list-group-item-action li:hover {
     cursor: pointer;
@@ -378,10 +380,6 @@ table tr:hover .btn-icon {
     color: var(--colour-primary);
     background: var(--light-grey-bg);
     border-color: var(--light-grey-outline);
-}
-
-.col-lg-auto {
-    min-width: 200px;
 }
 
 /* Home page */
