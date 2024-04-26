@@ -1,6 +1,15 @@
 import stripe
-from flask import (Blueprint, current_app, flash, json, jsonify, redirect,
-                   render_template, request, url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    json,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
 
 from app import csrf, db
@@ -8,7 +17,7 @@ from app.forms.stripe import CreateStripeAccountForm
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject, PaymentStatus
 from app.utils.decorators import therapist_required
-from app.utils.mail import EmailMessage
+from app.utils.mail import send_appointment_update_email
 
 bp = Blueprint("stripe", __name__, url_prefix="/stripe")
 
@@ -195,20 +204,18 @@ def handle_payment_succeeded(session: stripe.checkout.Session):
     db.session.commit()
 
     # Send email to client
-    client_email_message = EmailMessage(
+    send_appointment_update_email(
+        appointment=appointment,
         recipient=appointment.client.user,
-        subject=EmailSubject.APPOINTMENT_SCHEDULED_CLIENT,
-        url_params={"appointment_id": appointment.id},
+        subject=EmailSubject.APPOINTMENT_CANCELLED,
     )
-    client_email_message.send()
 
     # Send email to therapist
-    therapist_email_message = EmailMessage(
+    send_appointment_update_email(
+        appointment=appointment,
         recipient=appointment.therapist.user,
-        subject=EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST,
-        url_params={"appointment_id": appointment.id},
+        subject=EmailSubject.APPOINTMENT_CANCELLED,
     )
-    therapist_email_message.send()
     return
 
 
@@ -228,12 +235,11 @@ def handle_payment_failed(session: stripe.checkout.Session):
     db.session.commit()
 
     # Send email to client
-    client_email_message = EmailMessage(
+    send_appointment_update_email(
+        appointment=appointment,
         recipient=appointment.client.user,
         subject=EmailSubject.PAYMENT_FAILED_CLIENT,
-        url_params={"appointment_id": appointment.id},
     )
-    client_email_message.send()
     return
 
 

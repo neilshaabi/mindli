@@ -47,11 +47,11 @@ class AppointmentNotes(SeedableMixin, db.Model):
             db.session.add(note)
             note.issues = random.sample(
                 appointment.client.issues,
-                random.randint(1, min(1, len(appointment.client.issues))),
+                random.randint(1, min(3, len(appointment.client.issues))),
             )
             note.interventions = random.sample(
                 appointment.therapist.interventions,
-                random.randint(1, min(1, len(appointment.therapist.interventions))),
+                random.randint(1, min(3, len(appointment.therapist.interventions))),
             )
         db.session.commit()
         return

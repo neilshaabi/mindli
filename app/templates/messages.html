@@ -10,7 +10,7 @@
         
         <div class='row mb-3 g-4'>
             <div class='col-lg-12'>
-                <h3>Messages</h3>
+                <h4>Messages</h3>
             </div>
         </div>
     
@@ -29,17 +29,17 @@
                             <div class="row mb-3 {% if conversation.id == opened_conversation.id %}selected-conversation{% endif %}">
                                 <a href="{{ url_for('messages.messages', conversation_id=conversation.id) }}">
                                     <div class="col-2">
-                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ conversation.other_user.full_name }}">
+                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
                                     </div>
                                     <div class="col-10 ps-4">
                                         <h6>{{ conversation.other_user.full_name }}</h6>
                                         <div class="row mb-3">
                                             {% if conversation.messages %}
                                                 <div class="col-auto">
-                                                    <span class="text-muted">{{ conversation.latest_message_content | truncate(30, '...') }}</span>
+                                                    <span class="my-muted">{{ conversation.latest_message_content | truncate(30, '...') }}</span>
                                                 </div>
                                                 <div class="col text-end">
-                                                    <span class="text-muted">{{ conversation.time_since_latest_message }}</span>
+                                                    <span class="my-muted">{{ conversation.time_since_latest_message }}</span>
                                                 </div>
                                             {% else %}
                                                 <p>No messages yet</p>
@@ -62,7 +62,7 @@
                     <!-- Message header -->
                     <div class="row mb-3 align-items-center">
                         <div class="col-auto">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + opened_conversation.other_user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ opened_conversation.other_user.full_name }}">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + opened_conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ opened_conversation.other_user.full_name }}">
                         </div>
                         <div class="col-auto">
                             <h5>{{ opened_conversation.other_user.full_name }}</h5>

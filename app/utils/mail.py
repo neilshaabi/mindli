@@ -41,19 +41,20 @@ class EmailMessage:
             self.send_with_token = True
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_CLIENT:
-            self.body = "Your appointment has been successfully scheduled and is now awaiting confirmation by the therapist. You will be notified once confirmed."
+            self.body = f"Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} has been scheduled and is awaiting confirmation by the therapist. You will be notified once it has been confirmed."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST:
-            self.body = "You have a new appointment scheduled and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
+            self.body = f"You have a new appointment scheduled with {appointment.client.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.PAYMENT_FAILED_CLIENT:
-            self.body = "Unfortunately, your recent payment attempt for an appointment was unsuccessful. Please view the appointment to reattempt the payment."
+            appointment: Appointment = self.context["appointment"]
+            self.body = f"Unfortunately, your recent payment attempt for an appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} was unsuccessful. Please view the appointment to reattempt the payment."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
@@ -118,3 +119,16 @@ class EmailMessage:
             print(f"Failed to send email: {e}")
 
         return
+
+
+def send_appointment_update_email(
+    appointment: Appointment, recipient: User, subject: EmailSubject
+) -> None:
+    email = EmailMessage(
+        recipient=recipient,
+        subject=subject,
+        context={"appointment": appointment},
+        url_params={"appointment_id": appointment.id},
+    )
+    email.send()
+    return

@@ -3,19 +3,15 @@ from enum import Enum, unique
 
 @unique
 class EmailSubject(Enum):
-    EMAIL_VERIFICATION = "Email verification"
-    PASSWORD_RESET = "Password reset"
-    APPOINTMENT_SCHEDULED_CLIENT = (
-        "Appointment scheduled and awaiting therapist confirmation"
-    )
-    APPOINTMENT_SCHEDULED_THERAPIST = (
-        "New appointment scheduled and awaiting confirmation"
-    )
-    PAYMENT_FAILED_CLIENT = "Payment failed"
-    APPOINTMENT_CONFIRMED_CLIENT = "Appointment confirmed"
-    APPOINTMENT_RESCHEDULED = "Appointment rescheduled"
-    APPOINTMENT_CANCELLED = "Appointment cancelled"
-    APPOINTMENT_NO_SHOW_CLIENT = "Missed appointment"
+    EMAIL_VERIFICATION = "Email Verification"
+    PASSWORD_RESET = "Password Reset"
+    APPOINTMENT_SCHEDULED_CLIENT = "Appointment Scheduled"
+    APPOINTMENT_SCHEDULED_THERAPIST = "Confirm New Appointment"
+    PAYMENT_FAILED_CLIENT = "Payment Failed"
+    APPOINTMENT_CONFIRMED_CLIENT = "Appointment Confirmed"
+    APPOINTMENT_RESCHEDULED = "Appointment Rescheduled"
+    APPOINTMENT_CANCELLED = "Appointment Cancelled"
+    APPOINTMENT_NO_SHOW_CLIENT = "Missed Appointment"
 
 
 @unique

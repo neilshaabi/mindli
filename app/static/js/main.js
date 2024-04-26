@@ -21,7 +21,6 @@ $(document).ready(function() {
         reader.onload = function(){
             var output = $('#profile-picture-preview');
             output.attr('src', reader.result);
-            output.removeClass('default-profile-picture');
         };
         reader.readAsDataURL(event.target.files[0]);
     });

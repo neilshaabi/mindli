@@ -2,8 +2,7 @@ from wtforms import IntegerField, SelectField, StringField, SubmitField
 from wtforms.validators import Optional
 
 from app.constants import COUNTRIES
-from app.forms import (CustomFlaskForm, CustomSelectField,
-                       CustomSelectMultipleField)
+from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
 from app.models.enums import Gender, TherapyMode, TherapyType
 from app.models.intervention import Intervention
 from app.models.issue import Issue
@@ -29,7 +28,7 @@ class FilterTherapistsForm(CustomFlaskForm):
         coerce=int,
     )
     years_of_experience = IntegerField(
-        "Min. years of experience", validators=[Optional()], default=0
+        "Years of experience", validators=[Optional()], default=0
     )
     gender = CustomSelectField(
         "Gender",
@@ -38,7 +37,7 @@ class FilterTherapistsForm(CustomFlaskForm):
         validators=[Optional()],
     )
     language = CustomSelectField(
-        "Language",
+        "Language spoken",
         choices=[(0, "Select language")],
         validators=[Optional()],
         coerce=int,

@@ -10,14 +10,14 @@
 
         <div class="row">
             <div class="col-lg-9 mx-auto">
-                <div class="my-card therapist-card">
+                <div class="my-card">
                     <div class="row mb-3">
-                        <div class="col-2">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ therapist.user.full_name }}">
+                        <div class="col-auto">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                         </div>
-                        <div class="col-10 ps-4">
-                            <h5>{{ therapist.user.full_name }}</h5>
-                            <span class="text-muted">{{ therapist.qualifications }}</span>
+                        <div class="col-auto">
+                            <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                            <span class="my-muted">{{ therapist.qualifications }}</span>
                         </div>
                     </div>
                     <div>

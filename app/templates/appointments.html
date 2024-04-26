@@ -10,7 +10,7 @@
         
         <div class='row mb-3 g-4'>
             <div class='col-lg-12'>
-                <h3>Appointments</h3>
+                <h4>Appointments</h3>
             </div>
         </div>
         
@@ -34,7 +34,7 @@
                                     {{ filter_form.csrf_token }}
                                     
                                     <div class="row mt-4 mb-2">
-                                        <div class="col-lg-auto text-muted">By appointment details</div>
+                                        <div class="col-lg-auto my-muted">By appointment details</div>
                                     </div>
     
                                     <div class="row g-2 mb-4">
@@ -77,7 +77,7 @@
     
     
                                     <div class="row mb-2">
-                                        <div class="col-lg-auto text-muted">By appointment type</div>
+                                        <div class="col-lg-auto my-muted">By appointment type</div>
                                     </div>
     
                                     <div class="row g-2 mb-4">
@@ -114,7 +114,7 @@
                                     {% if current_user.role == UserRole.THERAPIST %}
                                     
                                         <div class="row mb-2">
-                                            <div class="col-lg-auto text-muted">By appointment notes</div>
+                                            <div class="col-lg-auto my-muted">By appointment notes</div>
                                         </div>
         
                                         <div class="row g-2 mb-4">
@@ -143,7 +143,7 @@
                                     {% endif %}
                                     
                                     <div class="row mb-2">
-                                        <div class="col-lg-auto text-muted">By therapy exercises</div>
+                                        <div class="col-lg-auto my-muted">By therapy exercises</div>
                                     </div>
     
                                     <div class="row g-2 mb-4">
@@ -185,7 +185,7 @@
                     </div>
 
                     <div class="row mt-4">
-                        <div class="col-auto text-muted" id="filter-count">
+                        <div class="col-auto my-muted" id="filter-count">
                             {{ appointments|length }} appointments found
                         </div>
                     </div>
@@ -204,7 +204,7 @@
                     </div>
 
                     {% if not appointments %}
-                        <p class="text-muted">
+                        <p class="my-muted">
                             No appointments found. Please visit the <a href="/therapists">therapist directory</a> to find a professional from our community best suited to your needs.
                         </p>
                     {% else %}

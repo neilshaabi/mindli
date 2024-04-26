@@ -32,6 +32,7 @@
 
 html,
 body {
+    font-size: 1rem;
     max-width: 100%;
     min-height: 100vh;
     min-height: -webkit-fill-available;
@@ -112,12 +113,6 @@ main.sidebar-layout {
 
 /* Text */
 
-h3 {
-    color: var(--dark-grey-text);
-    font-size: 1.4rem;
-    font-weight: 600;
-}
-
 a {
     color: var(--colour-primary);
     text-decoration: none;
@@ -130,6 +125,14 @@ a:hover {
 
 i {
     margin-right: 3px;
+}
+
+.my-muted {
+    color: var(--light-grey-text);
+}
+
+.text-s {
+    font-size: 0.9rem;
 }
 
 
@@ -364,20 +367,16 @@ table tr:hover .btn-icon {
     }
 }
 
-.my-card .description {
-    color: var(--light-grey-text);
-    font-size: 0.8rem;
-    line-height: 1.75;
-}
 
-.list-group li:hover {
+
+.list-group-item-action li:hover {
     cursor: pointer;
 }
 
 .list-group-item.active {
     z-index: 2;
-    color: inherit;
-    background: rgba(var(--colour-primary-rgb), 0.1);
+    color: var(--colour-primary);
+    background: var(--light-grey-bg);
     border-color: var(--light-grey-outline);
 }
 
@@ -440,9 +439,9 @@ table tr:hover .btn-icon {
     z-index: 2;
 }
 
-.profile-pic {
-    width: 56px;
+.profile-picture {
     height: 56px;
+    width: 56px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -542,16 +541,16 @@ table tr:hover .btn-icon {
     -moz-appearance: textfield;
     -webkit-appearance: none;
     margin: 0;
-  }
-  
-  .form-floating .input-btn-icon + input[type="number"]::-webkit-inner-spin-button,
-  .form-floating .input-btn-icon + input[type="number"]::-webkit-outer-spin-button {
+}
+
+.form-floating .input-btn-icon + input[type="number"]::-webkit-inner-spin-button,
+.form-floating .input-btn-icon + input[type="number"]::-webkit-outer-spin-button {
     -webkit-appearance: none;
     margin: 0;
-  }
-  
-  .form-floating .input-btn-icon + input[type="number"]::-moz-focus-inner,
-  .form-floating .input-btn-icon + input[type="number"]::-moz-focus-outer {
+}
+
+.form-floating .input-btn-icon + input[type="number"]::-moz-focus-inner,
+.form-floating .input-btn-icon + input[type="number"]::-moz-focus-outer {
     border: 0;
     -moz-appearance: textfield;
-  }
+}

@@ -72,18 +72,53 @@
 
 {% macro therapist_card(therapist) %}
     <div class="col-lg-6">
-        <div class="my-card therapist-card">
-            <div class="row mb-3">
-                <div class="col-2">
-                    <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-pic" alt="Profile picture of {{ therapist.user.full_name }}">
+        <div class="my-card">
+            
+            <!-- Header -->
+            <div class="row g-3 mb-4 align-items-center">
+                <div class="col-auto">
+                    <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                 </div>
-                <div class="col-10 ps-4">
-                    <h5>{{ therapist.user.full_name }}</h5>
-                    <span class="text-muted">{{ therapist.qualifications }}</span>
+                <div class="col">
+                    <div class="row">
+                        <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                    </div>
+                    <div class="row">
+                        <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                    </div>
                 </div>
             </div>
-            <div>
-                <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
+
+            <!-- Body -->
+            <div class="row mb-4">
+                
+                <div class="col-12 mb-3">
+                    <div class="row mb-1 my-muted">Experience</div>
+                    <div class="row">{{ therapist.years_of_experience }} years</div>
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <div class="row mb-1">
+                        Based in
+                    </div>
+                    <div class="row">
+                        {{ therapist.country }}
+                    </div>
+                </div>
+                
+                
+                
+                
+                <div class="col-12 mb-3">
+                    <div class="row mb-1">
+                        Qualifications
+                    </div>
+                    <div class="row">
+                        {{ therapist.qualifications }}
+                    </div>
+                </div>
+
+
                 <p class="p-0">
                     Types: 
                     {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}

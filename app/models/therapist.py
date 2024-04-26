@@ -103,9 +103,11 @@ class Therapist(SeedableMixin, db.Model):
 
         for user in therapist_users:
             # Randomly select associated data from the fetched lists
-            random_titles = random.sample(
-                titles, random.randint(1, min(3, len(titles)))
-            )
+            num_titles = random.randint(0, min(3, len(titles)))
+            if num_titles == 0:
+                num_titles = 1
+            random_titles = random.sample(titles, num_titles)
+
             random_languages = random.sample(
                 languages, random.randint(1, min(3, len(languages)))
             )

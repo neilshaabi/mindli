@@ -10,7 +10,7 @@
         
         <div class='row mb-3 g-4'>
             <div class='col-lg-12'>
-                <h3>Therapist Directory</h3>
+                <h4>Therapist Directory</h3>
             </div>
         </div>
         
@@ -34,7 +34,7 @@
                                     {{ filter_form.csrf_token }}
                                     
                                     <div class="row mt-4 mb-2">
-                                        <div class="col-lg-auto text-muted">By therapist profile</div>
+                                        <div class="col-lg-auto my-muted">By therapist profile</div>
                                     </div>
 
                                     <div class="row g-2 mb-2">
@@ -69,15 +69,15 @@
                                         
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.language(class_='form-control', placeholder=filter_form.language.label.text) }}
-                                                {{ filter_form.language.label }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
                                                 {{ filter_form.country(class_='form-control', placeholder=filter_form.country.label.text) }}
                                                 {{ filter_form.country.label }}
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.language(class_='form-control', placeholder=filter_form.language.label.text) }}
+                                                {{ filter_form.language.label }}
                                             </div>
                                         </div>
                                         
@@ -98,7 +98,7 @@
                                     </div>
 
                                     <div class="row mt-4 mb-2">
-                                        <div class="col-lg-auto text-muted">By appointments offered</div>
+                                        <div class="col-lg-auto my-muted">By appointments offered</div>
                                     </div>
 
                                     <div class="row g-2 mb-4">
@@ -140,7 +140,7 @@
                     </div>
 
                     <div class="row mt-4">
-                        <div class="col-auto text-muted" id="filter-count">
+                        <div class="col-auto my-muted" id="filter-count">
                             {{ therapists|length }} therapists found
                         </div>
                     </div>

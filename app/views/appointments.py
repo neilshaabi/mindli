@@ -1,20 +1,39 @@
 from datetime import datetime
 
-from flask import (Blueprint, Response, flash, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (
+    Blueprint,
+    Response,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
-                                    FilterAppointmentsForm,
-                                    TherapyExerciseForm, UpdateAppointmentForm)
+from app.forms.appointments import (
+    AppointmentNotesForm,
+    BookAppointmentForm,
+    FilterAppointmentsForm,
+    TherapyExerciseForm,
+    UpdateAppointmentForm,
+)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
-                              TherapyMode, TherapyType, UserRole)
+from app.models.enums import (
+    AppointmentStatus,
+    EmailSubject,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
@@ -22,7 +41,7 @@ from app.models.therapy_exercise import TherapyExercise
 from app.models.user import User
 from app.utils.decorators import client_required, therapist_required
 from app.utils.formatters import convert_str_to_date, get_flashed_message_html
-from app.utils.mail import EmailMessage
+from app.utils.mail import send_appointment_update_email
 from app.views.stripe import create_checkout_session
 
 bp = Blueprint("appointments", __name__, url_prefix="/appointments")
@@ -330,19 +349,6 @@ def update(appointment_id: int) -> Response:
             ),
         }
     )
-
-
-def send_appointment_update_email(
-    appointment: Appointment, recipient: User, subject: EmailSubject
-) -> None:
-    email = EmailMessage(
-        recipient=recipient,
-        subject=subject,
-        context={"appointment": appointment},
-        url_params={"appointment_id": appointment.id},
-    )
-    email.send()
-    return
 
 
 @bp.route("/<int:appointment_id>/notes", methods=["POST"])
