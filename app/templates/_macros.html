@@ -20,6 +20,8 @@
 
     {% set tag_map = {
         
+        'RESTRICTED': (default_class, 'fa-solid fa-lock'),
+        
         'IN_PERSON': (default_class, 'fa-solid fa-user'),
         'AUDIO': (default_class, 'fa-solid fa-phone'),
         'VIDEO': (default_class, 'fa-solid fa-video'),
@@ -45,12 +47,16 @@
         'FAILED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
     } %}
     {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
+    
     <span class="tag {{ class }} {{ additional_class }}">
-        {% if icon_class and with_icon %}
+        
+        {% if with_icon and icon_class %}
             <i class="{{ icon_class }}" {% if not label %}style="margin-right:0;"{% endif %}></i>
         {% endif %}
+        
         {% if label %}{{ label }}{% endif %}
     </span>
+
 {% endmacro %}
 
 
@@ -84,7 +90,7 @@
                         <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
                     </div>
                     <div class="row">
-                        <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                        <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                     </div>
                 </div>
             </div>
@@ -93,7 +99,7 @@
             <div class="row mb-4">
                 
                 <div class="col-12 mb-3">
-                    <div class="row mb-1 my-muted">Experience</div>
+                    <div class="row mb-1 text-muted">Experience</div>
                     <div class="row">{{ therapist.years_of_experience }} years</div>
                 </div>
                 
@@ -107,7 +113,7 @@
                 </div>
                 
                 
-                
+                TODO
                 
                 <div class="col-12 mb-3">
                     <div class="row mb-1">
