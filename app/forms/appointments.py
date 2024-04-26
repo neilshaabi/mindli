@@ -20,7 +20,7 @@ class BookAppointmentForm(CustomFlaskForm):
     )
     date = DateField("Date", format="%Y-%m-%d", validators=[DataRequired()])
     time = TimeField("Time", validators=[DataRequired()])
-    submit = SubmitField("Book Appointment")
+    submit = SubmitField("Proceed to Payment")
 
     def __init__(self, *args, **kwargs):
         super(BookAppointmentForm, self).__init__(*args, **kwargs)

@@ -1,42 +1,371 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Therapist: {{ therapist.user.full_name }}
+    {{ therapist.user.full_name }}
 {% endblock %}
 
 {% block content %}
     
     <div class='container'>
 
-        <div class="row">
-            <div class="col-lg-9 mx-auto">
+        <div class='row mb-4 g-4 align-items-center'>
+            <div class='col-auto'>
+                <h4 class="mb-0">{{ therapist.user.full_name }}<span class="my-muted">&nbsp;&nbsp;/&nbsp;&nbsp;Therapist</span></h4>
+            </div>
+            <div class="col-auto ms-auto">
+                <div class="row">
+                    <div class="col-auto">
+                        <a href="{{ url_for('therapists.index') }} ">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Therapist directory
+                        </a>
+                    </div>
+                    <div class="col-auto">
+                        {% set status = 'Active' if therapist.user.active else 'Inactive' %}
+                        <div>{{ tag(label=status, status=status, with_icon=True, additional_class='tag-lg') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            
+            <div class="col-lg-3">
+                <div class="my-card p-4">
+                    <ul class="list-group list-group-flush" id="section-selector">
+                        <li class="list-group-item list-group-item-action active rounded-top" data-target="#profile-section">
+                            <div class="row align-items-center">
+                                <div class="col-auto">Therapist profile</div>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action {% if current_user.role == UserRole.THERAPIST %}disabled{% endif %}" data-target="#booking-section">
+                            <div class="row align-items-center">
+                                <div class="col-auto">Book Appointment</div>
+                                <div class="col-auto ms-auto">
+                                    <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Client-only access">
+                                        {{ tag(status='restricted', with_icon=True, additional_class='tag-sm') }}
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                        <li class="list-group-item list-group-item-action rounded-bottom" data-target="#history-section">
+                            <div class="row align-items-center">
+                                <div class="col-auto">Appointments</div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
                 <div class="my-card">
-                    <div class="row mb-3">
-                        <div class="col-auto">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
-                        </div>
-                        <div class="col-auto">
-                            <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
-                            <span class="my-muted">{{ therapist.qualifications }}</span>
+                    
+                    <!-- Therapist profile section-->
+                    <div id="profile-section" class="section">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                
+                                <!-- Header -->
+                                <div class="row g-3 mb-4 align-items-center">
+                                    <div class="col-auto">
+                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                                        </div>
+                                        <div class="row">
+                                            <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+
+                                <!-- Body -->
+                                <div class="mt-4">
+                                    <div class="accordion accordion-flush" id="profileAccordion">
+                                        
+                                        <!-- Personal details -->
+                                        <div class="accordion-item row mb-3">
+                                            <div class="col-12">
+                                    
+                                                <div class="row mb-4">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
+                                                            Personal details
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse">
+                                                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Gender</div>
+                                                            <div>{{ therapist.user.gender.value }}</div>
+                                                        </div>
+                                                    </div>
+                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Country of residence</div>
+                                                            <div>{{ therapist.country }}</div>
+                                                        </div>
+                                                    </div>
+                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Languages spoken</div>
+                                                            <div>{{ therapist.languages|join(', ', 'name') }}</div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Professional experience -->
+                                        <div class="accordion-item row mb-3">
+                                            <div class="col-12">
+                                    
+                                                <div class="row mb-4">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
+                                                                Professional experience
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="professionalExperienceCollapse" class="accordion-collapse collapse">
+                                                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Years of experience</div>
+                                                            <div>{{ therapist.years_of_experience }} years</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Qualifications</div>
+                                                            <div>{{ therapist.qualifications }}</div>
+                                                        </div>
+                                                    </div>
+
+                                                    {% if therapist.registrations %}
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Registrations</div>
+                                                                <div>{{ therapist.registrations }}</div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Specialisations</div>
+                                                            </div>
+                                                            <div class="row g-1">
+                                                                {% for specialisation in therapist.specialisations %}
+                                                                    <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Interventions</div>
+                                                            </div>
+                                                            <div class="row g-1">
+                                                                {% for intervention in therapist.interventions %}
+                                                                    <div class="col-auto">{{ tag(label=intervention.name) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {% if therapist.link %}
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Professional website</div>
+                                                                <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="accordion-item row mb-3">
+                                            <div class="col-12">
+                                    
+                                                <div class="row mb-4">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentDetailsCollapse" aria-expanded="false" aria-controls="appointmentDetailsCollapse">
+                                                            Appointment information
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="appointmentDetailsCollapse" class="accordion-collapse collapse">
+                                                    
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Therapy types offered</div>
+                                                            </div>
+                                                            <div class="row g-1">
+                                                                {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
+                                                                    <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Modes supported</div>
+                                                            </div>
+                                                            <div class="row g-1">
+                                                                {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
+                                                                    <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {% if therapist.location %}
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Location (in-person appointments)</div>
+                                                                <div>{{ therapist.location }}</div>
+                                                            </div>
+                                                        </div>
+                                                    {% endif %}
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Durations</div>
+                                                            <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|join(', ') }} minutes</div>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="mb-1 my-muted">Currencies accepted</div>
+                                                            <div>{{ therapist.active_appointment_types|map(attribute='fee_currency')|unique|join(', ') }}</div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="my-muted text-s">Joined mindli: {{ therapist.user.date_joined.strftime('%-d %B %Y') }}</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div>
-                        <p class="p-0">Types: {{ therapist.active_appointment_types|map(attribute='therapy_type.value')|unique|join(', ') }}</p>
-                        <p class="p-0">Modes: {{ therapist.active_appointment_types|map(attribute='therapy_mode.value')|unique|join(', ') }}</p>
-                        <p class="p-0">Titles: {{ therapist.titles|join(', ', 'name') }}</p>
-                        <p class="p-0">Gender: {{ therapist.user.gender.value }}</p>
-                        <p class="p-0">Languages: {{ therapist.languages|join(', ', 'name') }}</p>
-                        <p class="p-0">Based in: {{ therapist.country }}</p>
-                        <p class="p-0">Years of Experience: {{ therapist.years_of_experience }}</p>
-                        <p class="p-0">Specialisations: {{ therapist.specialisations|join(', ', 'name') }}</p>
-                        <p class="p-0">Interventions: {{ therapist.interventions|join(', ', 'name') }}</p>
-                        {% if current_user.role == UserRole.CLIENT %}
-                            <div class="col-auto ms-auto">
-                                <a href="{{ url_for('appointments.view_book_appointment', therapist_id=therapist.id) }}" class="btn btn-primary">
-                                    Book Appointment
-                                </a>
+
+                    <!-- Appointment booking section-->
+                    <div id="booking-section" class="section" style="display:none;">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                
+                                <!-- Header -->
+                                <div class="row g-3 mb-4 align-items-center">
+                                    <div class="col-auto">
+                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                                        </div>
+                                        <div class="row">
+                                            <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+
+                                <!-- Body -->
+                                <div class="mt-4">
+                                    
+                                    <div class="row mb-4">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                Appointment details
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <form id="{{ book_appointment_form.id }}" action="{{ book_appointment_form.endpoint }}" novalidate>
+
+                                        {{ book_appointment_form.csrf_token }}
+
+                                        <div class="row mb-2">
+                                            <div class="col-12">
+                                                <div class='form-floating'>
+                                                    {{ book_appointment_form.appointment_type(class_='form-control', placeholder=book_appointment_form.appointment_type.label.text) }}
+                                                    {{ book_appointment_form.appointment_type.label }}
+                                                </div>
+                                            </div>
+                                        </div>
+                
+                                        <div class="row mb-3 g-2">
+                                            <div class="col-md-4">
+                                                <div class='form-floating'>
+                                                    {{ book_appointment_form.date(class_='form-control', placeholder=book_appointment_form.date.label.text) }}
+                                                    {{ book_appointment_form.date.label }}
+                                                </div>
+                                            </div>
+                
+                                            <div class="col-md-4">
+                                                <div class='form-floating'>
+                                                    {{ book_appointment_form.time(class_='form-control', placeholder=book_appointment_form.time.label.text) }}
+                                                    {{ book_appointment_form.time.label }}
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="col-md-4">
+                                                {{ submit_button(book_appointment_form.submit) }}
+                                            </div>
+                                        </div>
+                                    
+                                    </form>
+                                
+                                    <div class="my-muted text-s">
+                                        <i class="fa-solid fa-circle-info"></i>
+                                        Please message your therapist to confirm these details before proceeding
+                                    </div>
+                                    
+                                </div>
                             </div>
-                        {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Appointment history -->
+                    <div id="history-section" class="section" style="display:none;">
+                        
                     </div>
                 </div>
             </div>

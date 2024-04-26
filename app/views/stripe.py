@@ -262,7 +262,11 @@ def create_checkout_session(appointment: Appointment) -> str:
                 appointment_id=appointment.id,
                 _external=True,
             ),
-            cancel_url=url_for("appointments.index", _external=True),
+            cancel_url=url_for(
+                "appointments.appointment",
+                appointment_id=appointment.id,
+                _external=True,
+            ),
             metadata={"appointment_id": appointment.id},
         )
 

@@ -3,7 +3,7 @@
         'success': ('alert-success', 'fa-solid fa-circle-check'),
         'error': ('alert-danger', 'fa-solid fa-circle-exclamation'),
         'warning': ('alert-warning', 'fa-solid fa-triangle-exclamation'),
-        'info': ('alert-info', 'fa-solid fa-circle-info')
+        'info': ('alert-primary', 'fa-solid fa-circle-info')
     } %}
     {% set alert_class, icon_class = class_map.get(category, ('alert-primary', 'fa-solid fa-circle-info')) %}
     
@@ -17,10 +17,16 @@
 {% macro tag(label='', status='', with_icon=False, additional_class='') %}
     
     {% set default_class = 'bg-light text-dark' %}
+    
+    {% set default_success = ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check') %}
+    {% set default_danger = ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark') %}
 
     {% set tag_map = {
         
         'RESTRICTED': (default_class, 'fa-solid fa-lock'),
+
+        'ACTIVE': default_success,
+        'INACTIVE': default_danger,
         
         'IN_PERSON': (default_class, 'fa-solid fa-user'),
         'AUDIO': (default_class, 'fa-solid fa-phone'),
@@ -33,18 +39,18 @@
         
         'NOT_SET': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-note-sticky'),
         'INCOMPLETE': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-exclamation'),
-        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'COMPLETED': default_success,
         
         'SCHEDULED': ('bg-info-subtle text-info-emphasis', 'fa-regular fa-clock'),
         'CONFIRMED': ('bg-primary-subtle text-primary-emphasis', 'fa-regular fa-calendar-check'),
-        'COMPLETED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
+        'COMPLETED': default_success,
         'RESCHEDULED': ('bg-warning-subtle text-warning-emphasis', 'fa-solid fa-rotate'),
-        'CANCELLED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark'),
+        'CANCELLED': default_danger,
         'NO_SHOW': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-ban'),
 
         'PENDING': ('bg-warning-subtle text-warning-emphasis', 'fa-regular fa-clock'),
-        'SUCCEEDED': ('bg-success-subtle text-success-emphasis', 'fa-solid fa-check'),
-        'FAILED': ('bg-danger-subtle text-danger-emphasis', 'fa-solid fa-xmark')
+        'SUCCEEDED': default_success,
+        'FAILED': default_danger
     } %}
     {% set class, icon_class = tag_map.get(status.upper(), (default_class, None)) %}
     
@@ -112,7 +118,6 @@
                     </div>
                 </div>
                 
-                
                 TODO
                 
                 <div class="col-12 mb-3">
@@ -161,7 +166,7 @@
 
 {% macro appointment_row(appointment) %}
     <tr>
-        <td>{{ appointment.time.strftime('%d %b %Y – %H:%M') }}</td>
+        <td>{{ appointment.time.strftime('%-d %b %Y – %H:%M') }}</td>
         <td>{{ appointment.other_user.full_name }}</td>
         <td>{{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=False) }}</td>
         <td>{{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=False) }}</td>
@@ -172,7 +177,7 @@
             <div class="btn-container">                
                 <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }}" class="btn btn-icon"
                     data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="View details">
-                    <i class="fa-solid fa-ellipsis"></i>
+                    <i class="fa-solid fa-chevron-right"></i>
                 </a>
             </div>
         </td>

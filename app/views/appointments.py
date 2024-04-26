@@ -124,36 +124,10 @@ def appointment(appointment_id: int) -> Response:
     )
 
 
-@bp.route("/create/<int:therapist_id>", methods=["GET"])
-@login_required
-@client_required
-def view_book_appointment(therapist_id: int) -> Response:
-    # Fetch therapist with this ID
-    therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one_or_none()
-
-    # Redirect if therapist not found
-    if not therapist:
-        flash("Therapist not found", "error")
-        return redirect(url_for("main.index"))
-
-    # Initialise form for client to book an appointment with this therapist
-    form = BookAppointmentForm(
-        obj=therapist,
-        id="book_appointment",
-        endpoint=url_for(
-            "appointments.process_book_appointment", therapist_id=therapist_id
-        ),
-    )
-
-    return render_template("book_appointment.html", therapist=therapist, form=form)
-
-
 @bp.route("/create/<int:therapist_id>", methods=["POST"])
 @login_required
 @client_required
-def process_book_appointment(therapist_id: int) -> Response:
+def create(therapist_id: int) -> Response:
     # Fetch therapist with this ID to initialise form correctly
     therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
@@ -180,17 +154,26 @@ def process_book_appointment(therapist_id: int) -> Response:
     # Redirect the client to Stripe Checkout
     checkout_session_url = create_checkout_session(new_appointment)
     if not checkout_session_url:
-        flash("An error occurred while creating the Stripe checkout session", "error")
         return jsonify(
             {
                 "success": False,
-                "errors": {
-                    "appointment_type": ["Failed to create Stripe checkout session"]
-                },
+                "flashed_message_html": get_flashed_message_html(
+                    message="Failed to initiate payment via Stripe, please arrange payment with therapist directly",
+                    category="error",
+                ),
             }
         )
     else:
-        return jsonify({"success": True, "url": checkout_session_url})
+        return jsonify(
+            {
+                "success": True,
+                "url": checkout_session_url,
+                "flashed_message_html": get_flashed_message_html(
+                    message="Please follow the instructions in the new window to complete payment via Stripe",
+                    category="info",
+                ),
+            }
+        )
 
 
 @bp.route("/update/<int:appointment_id>", methods=["POST"])
@@ -474,6 +457,10 @@ def filter():
     submit_action = request.form["submit"]
 
     if submit_action == "filter":
+        print("notes:")
+        print(filter_form.notes.data)
+        print("\n\n")
+
         # Store filter settings in the session
         session["appointment_filters"] = {
             "name": filter_form.name.data,
@@ -492,7 +479,8 @@ def filter():
             "exercise_description": filter_form.exercise_description.data,
             "exercise_completed": filter_form.exercise_completed.data,
         }
-        # # Create a dictionary to store the filters
+
+        # TODO: Create a dictionary to store the filters
         # filters = {}
         # for field_name, field_object in filter_form._fields.items():
         #     filters[field_name] = field_object.data

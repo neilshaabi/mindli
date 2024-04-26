@@ -4,6 +4,7 @@ from flask_login import login_required
 from sqlalchemy import func
 
 from app import db
+from app.forms.appointments import BookAppointmentForm
 from app.forms.therapists import FilterTherapistsForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType
@@ -27,7 +28,11 @@ def index():
         data=session.get("therapist_filters", {}),
     )
 
-    therapists = db.session.execute(db.select(Therapist)).scalars().all()
+    therapists = (
+        db.session.execute(db.select(Therapist).join(User).where(User.active))
+        .scalars()
+        .all()
+    )
 
     # Render a template, passing the filter form to it
     return render_template(
@@ -48,8 +53,22 @@ def therapist(therapist_id):
         flash("Therapist not found", "error")
         return redirect(url_for("therapists.index"))
 
+    # Initialise form for client to book an appointment with this therapist
+    book_appointment_form = BookAppointmentForm(
+        obj=therapist,
+        id="book_appointment",
+        endpoint=url_for(
+            "appointments.create",
+            therapist_id=therapist_id,
+        ),
+    )
+
     # Render template with information for this therapist
-    return render_template("therapist.html", therapist=therapist)
+    return render_template(
+        "therapist.html",
+        therapist=therapist,
+        book_appointment_form=book_appointment_form,
+    )
 
 
 @bp.route("/filter", methods=["POST"])
@@ -84,12 +103,12 @@ def filter():
         }
 
         # Begin building the base query
-        query = db.select(Therapist)
+        query = db.select(Therapist).join(User).where(User.active)
 
         # Apply filters by extending the query with conditions for each filter
         if filter_form.name.data:
             search_term = f"%{filter_form.name.data.lower()}%"
-            query = query.join(User).where(
+            query = query.where(
                 func.lower(User.first_name + " " + User.last_name).like(search_term)
             )
 

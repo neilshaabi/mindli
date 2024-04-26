@@ -42,49 +42,49 @@ class EmailMessage:
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_CLIENT:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} has been scheduled and is awaiting confirmation by the therapist. You will be notified once it has been confirmed."
+            self.body = f"Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')} has been scheduled and is awaiting confirmation by the therapist. You will be notified once it has been confirmed."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_SCHEDULED_THERAPIST:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"You have a new appointment scheduled with {appointment.client.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
+            self.body = f"You have a new appointment scheduled with {appointment.client.user.full_name} on {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')} and awaiting your confirmation. Please confirm the appointment at your earliest convenience."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.PAYMENT_FAILED_CLIENT:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"Unfortunately, your recent payment attempt for an appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} was unsuccessful. Please view the appointment to reattempt the payment."
+            self.body = f"Unfortunately, your recent payment attempt for an appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')} was unsuccessful. Please view the appointment to reattempt the payment."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_CONFIRMED_CLIENT:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"Good news! Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} has been confirmed. Please review any preparation material in advance and reach out to your therapist if you have any questions before the appointment."
+            self.body = f"Good news! Your appointment with {appointment.therapist.user.full_name} on {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')} has been confirmed. Please review any preparation material in advance and reach out to your therapist if you have any questions before the appointment."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_RESCHEDULED:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"Your upcoming appointment with {appointment.other_user.full_name} has been rescheduled. Please note the new date and time are as follows: {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')}."
+            self.body = f"Your upcoming appointment with {appointment.other_user.full_name} has been rescheduled. Please note the new date and time are as follows: {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')}."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_CANCELLED:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"We regret to inform you that your appointment scheduled for {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')} has been cancelled. Please contact your therapist to schedule another appointment at your earliest convenience."
+            self.body = f"We regret to inform you that your appointment scheduled for {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')} has been cancelled. Please contact your therapist to schedule another appointment at your earliest convenience."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False
 
         elif self.subject == EmailSubject.APPOINTMENT_NO_SHOW_CLIENT:
             appointment: Appointment = self.context["appointment"]
-            self.body = f"We noticed that you were unable to attend your appointment with {appointment.other_user.full_name} scheduled for {appointment.time.strftime('%A, %d %B %Y at %I:%M %p')}. Please contact your therapist if this was an oversight or to schedule another appointment."
+            self.body = f"We noticed that you were unable to attend your appointment with {appointment.other_user.full_name} scheduled for {appointment.time.strftime('%A, %-d %B %Y at %I:%M %p')}. Please contact your therapist if this was an oversight or to schedule another appointment."
             self.link_text = "View Appointment"
             endpoint = "appointments.appointment"
             self.send_with_token = False

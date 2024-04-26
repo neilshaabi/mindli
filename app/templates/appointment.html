@@ -10,7 +10,7 @@
 
         <div class='row mb-4 g-4 align-items-center'>
             <div class='col-auto'>
-                <h4 class="mb-0">Appointment with {{ appointment.other_user.full_name }}</h3>
+                <h4 class="mb-0">Appointment with {{ appointment.other_user.full_name }}<span class="my-muted">&nbsp;&nbsp;/&nbsp;&nbsp;{{ appointment.time.strftime('%-d %B %Y') }}</span></h4>
             </div>
             <div class="col-auto ms-auto">
                 <div class="row">
@@ -41,7 +41,7 @@
                             <div class="row align-items-center">
                                 <div class="col-auto">Appointment notes</div>
                                 <div class="col-auto ms-auto">
-                                    <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Restricted to therapist">
+                                    <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Therapist-only access">
                                         {{ tag(status='restricted', with_icon=True, additional_class='tag-sm') }}
                                     </div>
                                 </div>
@@ -84,12 +84,12 @@
                                 <ul>
                                     <li class="mb-3">
                                         {% if current_user.role == UserRole.THERAPIST %}
-                                            Client:  <a href="#">{{ appointment.other_user.full_name }}</a>
+                                            Client: <a href="#TODO">{{ appointment.other_user.full_name }}</a>
                                         {% else %}
                                             Therapist: <a href="{{ url_for('therapists.therapist', therapist_id=appointment.therapist.id) }}">{{ appointment.other_user.full_name }}</a>
                                         {% endif %}
                                     </li>
-                                    <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %d %b %Y at %I:%M %p') }}</li>
+                                    <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %-d/%-m/%Y – %I:%M %p') }}</li>
                                     <li class="mb-3">Therapy type: {{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</li>
                                     <li class="mb-3">Mode: {{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=True) }}</li>
                                     <li class="mb-3">Duration: {{ appointment.appointment_type.duration }} minutes</li>
@@ -141,71 +141,69 @@
                     </div>
 
                     <!-- Notes section -->
-                    {% if current_user.role == UserRole.THERAPIST %}
-                        <div id="notes-section" class="section" style="display:none;">
-                            <form id="{{ notes_form.id }}" action="{{ notes_form.endpoint }}" novalidate>
-                                
-                                {{ notes_form.csrf_token }}
-                                
-                                <div class="row mb-4 align-items-center">
-                                    <div class="col-auto">
-                                        <h5 class="mb-0">Appointment Notes</h5>
-                                    </div>
+                    <div id="notes-section" class="section" style="display:none;">
+                        <form id="{{ notes_form.id }}" action="{{ notes_form.endpoint }}" novalidate>
+                            
+                            {{ notes_form.csrf_token }}
+                            
+                            <div class="row mb-4 align-items-center">
+                                <div class="col-auto">
+                                    <h5 class="mb-0">Appointment Notes</h5>
                                 </div>
+                            </div>
 
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <div class='form-floating'>
-                                            {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text) }}
-                                            {{ notes_form.text.label }}
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3">
-                                    <div class="col-md-12">
-                                        <div class='form-floating'>
-                                            {{ notes_form.issues(class_='form-control') }}
-                                            {{ notes_form.issues.label }}
-                                            <button type='button' class='input-btn-icon' id='togglePassword'
-                                            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
-                                                <i class="fa-regular fa-lightbulb me-3"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="row mb-3 g-2">
-                                    <div class="col-md-8">
-                                        <div class='form-floating'>
-                                            {{ notes_form.interventions(class_='form-control') }}
-                                            {{ notes_form.interventions.label }}
-                                            <button type='button' class='input-btn-icon' id='togglePassword'
-                                            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">
-                                                <i class="fa-regular fa-lightbulb me-3"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    
-                                    <div class="col-md-4">
-                                        <div class='form-floating'>
-                                            {{ notes_form.efficacy(class_='form-control', placeholder=notes_form.efficacy.label.text) }}
-                                            {{ notes_form.efficacy.label }}
-                                            <button type='button' class='input-btn-icon' id='togglePassword'
-                                            data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Rate the appointment's effectiveness, with 1 being ineffective and 5 being highly effective">
-                                                <i class='fa-solid fa-circle-info'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
+                            <div class="row mb-3">
                                 <div class="col-md-12">
-                                    {{ submit_button(notes_form.submit) }}
+                                    <div class='form-floating'>
+                                        {{ notes_form.text(class_='form-control', placeholder=notes_form.text.label.text) }}
+                                        {{ notes_form.text.label }}
+                                    </div>
                                 </div>
+                            </div>
 
-                            </form>
-                        </div>
-                    {% endif %}
+                            <div class="row mb-3">
+                                <div class="col-md-12">
+                                    <div class='form-floating'>
+                                        {{ notes_form.issues(class_='form-control') }}
+                                        {{ notes_form.issues.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
+                                            <i class="fa-regular fa-lightbulb me-3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3 g-2">
+                                <div class="col-md-8">
+                                    <div class='form-floating'>
+                                        {{ notes_form.interventions(class_='form-control') }}
+                                        {{ notes_form.interventions.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">
+                                            <i class="fa-regular fa-lightbulb me-3"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-4">
+                                    <div class='form-floating'>
+                                        {{ notes_form.efficacy(class_='form-control', placeholder=notes_form.efficacy.label.text) }}
+                                        {{ notes_form.efficacy.label }}
+                                        <button type='button' class='input-btn-icon' id='togglePassword'
+                                        data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Rate the appointment's effectiveness, with 1 being ineffective and 5 being highly effective">
+                                            <i class='fa-solid fa-circle-info'></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                {{ submit_button(notes_form.submit) }}
+                            </div>
+
+                        </form>
+                    </div>
 
                     <!-- Therapy Exercise -->
                     <div id="exercise-section" class="section" style="display:none;">

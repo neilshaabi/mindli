@@ -25,14 +25,14 @@ def format_time_since(dt: datetime) -> str:
     return "now"
 
 
-def get_flashed_message_html(message: str, category: str) -> str:
+def get_flashed_message_html(message: str, category: str = None) -> str:
     return render_template_string(
         """
             {% from '_macros.html' import flashed_message %}
             {{ flashed_message(message=message, category=category) }}
         """,
         message=message,
-        category=category,
+        category=category if category else "info",
     )
 
 

@@ -10,7 +10,7 @@
         
         <div class='row mb-3 g-4'>
             <div class='col-lg-12'>
-                <h4>Messages</h3>
+                <h4>Messages</h4>
             </div>
         </div>
     
@@ -69,7 +69,7 @@
                         </div>
                         {% if current_user.role == UserRole.CLIENT %}
                             <div class="col-auto ms-auto">
-                                <a href="{{ url_for('appointments.view_book_appointment', therapist_id=opened_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
+                                <a href="{{ url_for('therapists.therapist', therapist_id=opened_conversation.other_user.therapist.id) }}" class="btn btn-outline-primary">
                                     Book Appointment
                                 </a>
                             </div>
@@ -83,7 +83,7 @@
                         {% if opened_conversation.messages %}
                             {% for message in opened_conversation.messages %}
                             <div class="message p-2 mb-1 {% if message.author_id == current_user.id %}from_current_user{% else %}from_other_user{% endif %}"
-                                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%a %d %B %Y, %H:%M') }}">
+                                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%a %-d %B %Y, %H:%M') }}">
                                 {{ message.content }}
                             </div>
                             {% endfor %}
