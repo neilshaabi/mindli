@@ -267,7 +267,7 @@
                                                                 <div class="row mb-1 my-muted">
                                                                     <div class="col-12">Modes supported</div>
                                                                 </div>
-                                                                <div class="row g-1">
+                                                                <div class="row mt-1 g-1">
                                                                     {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
                                                                         <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
                                                                     {% endfor %}
@@ -317,6 +317,8 @@
                                         </div>
                                     </div>
 
+                                    <hr>
+
                                     <!-- Body -->
                                     <div class="mt-4">
 
@@ -340,9 +342,9 @@
     
                                                         <div class="accordion-body">
 
-                                                            <form id="{{ user_profile_form.id }}" action="{{ user_profile_form.endpoint }}" novalidate>
+                                                            <form id="{{ forms.user_profile_form.id }}" action="{{ forms.user_profile_form.endpoint }}" novalidate>
                                             
-                                                                {{ user_profile_form.csrf_token }}
+                                                                {{ forms.user_profile_form.csrf_token }}
 
                                                                 <div class="row g-5 align-items-center">
                                                                     
@@ -352,36 +354,36 @@
                                                                             <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
                                                                                 <i class="fa fa-camera"></i>
                                                                             </label>
-                                                                            {{ user_profile_form.profile_picture(style='display: none;') }}
+                                                                            {{ forms.user_profile_form.profile_picture(style='display: none;') }}
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col">
                                                                         
-                                                                        <div class="row mb-2 g-2">
+                                                                        <div class="row g-2">
                                                                             <div class="col-md-3">
                                                                                 <div class='form-floating'>
-                                                                                    {{ user_profile_form.first_name(class_='form-control', placeholder=user_profile_form.first_name.label.text) }}
-                                                                                    {{ user_profile_form.first_name.label }}
+                                                                                    {{ forms.user_profile_form.first_name(class_='form-control', placeholder=forms.user_profile_form.first_name.label.text) }}
+                                                                                    {{ forms.user_profile_form.first_name.label }}
                                                                                 </div>
                                                                             </div>
                                             
                                                                             <div class="col-md-3">
                                                                                 <div class='form-floating'>
-                                                                                    {{ user_profile_form.last_name(class_='form-control', placeholder=user_profile_form.last_name.label.text) }}
-                                                                                    {{ user_profile_form.last_name.label }}
+                                                                                    {{ forms.user_profile_form.last_name(class_='form-control', placeholder=forms.user_profile_form.last_name.label.text) }}
+                                                                                    {{ forms.user_profile_form.last_name.label }}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div class="col-md-3">
                                                                                 <div class='form-floating'>
-                                                                                    {{ user_profile_form.gender(class_='form-control', placeholder=user_profile_form.gender.label.text) }}
-                                                                                    {{ user_profile_form.gender.label }}
+                                                                                    {{ forms.user_profile_form.gender(class_='form-control', placeholder=forms.user_profile_form.gender.label.text) }}
+                                                                                    {{ forms.user_profile_form.gender.label }}
                                                                                 </div>
                                                                             </div>
 
                                                                             <div class="col-md-3">
-                                                                                {{ submit_button(therapist_profile_form.submit) }}
+                                                                                {{ submit_button(forms.therapist_profile_form.submit) }}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -410,22 +412,22 @@
     
                                                         <div class="accordion-body">
 
-                                                            <form id="{{ therapist_profile_form.id }}" action="{{ therapist_profile_form.endpoint }}" novalidate>
+                                                            <form id="{{ forms.therapist_profile_form.id }}" action="{{ forms.therapist_profile_form.endpoint }}" novalidate>
 
-                                                                {{ therapist_profile_form.csrf_token }}
+                                                                {{ forms.therapist_profile_form.csrf_token }}
                                                         
                                                                 <div class="row mb-3 g-2">
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.titles(class_='form-control') }}
-                                                                            {{ therapist_profile_form.titles.label }}
+                                                                            {{ forms.therapist_profile_form.titles(class_='form-control') }}
+                                                                            {{ forms.therapist_profile_form.titles.label }}
                                                                         </div>
                                                                     </div>
                                     
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.years_of_experience(class_='form-control', placeholder=therapist_profile_form.years_of_experience.label.text) }}
-                                                                            {{ therapist_profile_form.years_of_experience.label }}
+                                                                            {{ forms.therapist_profile_form.years_of_experience(class_='form-control', placeholder=forms.therapist_profile_form.years_of_experience.label.text) }}
+                                                                            {{ forms.therapist_profile_form.years_of_experience.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -433,8 +435,8 @@
                                                                 <div class="row mb-3">
                                                                     <div class="col-12">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.qualifications(class_='form-control', placeholder=therapist_profile_form.qualifications.label.text) }}
-                                                                            {{ therapist_profile_form.qualifications.label }}
+                                                                            {{ forms.therapist_profile_form.qualifications(class_='form-control', placeholder=forms.therapist_profile_form.qualifications.label.text) }}
+                                                                            {{ forms.therapist_profile_form.qualifications.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -442,8 +444,8 @@
                                                                 <div class="row mb-3">
                                                                     <div class="col-12">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.registrations(class_='form-control', placeholder=therapist_profile_form.registrations.label.text) }}
-                                                                            {{ therapist_profile_form.registrations.label }}
+                                                                            {{ forms.therapist_profile_form.registrations(class_='form-control', placeholder=forms.therapist_profile_form.registrations.label.text) }}
+                                                                            {{ forms.therapist_profile_form.registrations.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -451,15 +453,15 @@
                                                                 <div class="row mb-3 g-2">
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.issues(class_='form-control') }}
-                                                                            {{ therapist_profile_form.issues.label }}
+                                                                            {{ forms.therapist_profile_form.issues(class_='form-control') }}
+                                                                            {{ forms.therapist_profile_form.issues.label }}
                                                                         </div>
                                                                     </div>
                                                                     
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.interventions(class_='form-control') }}
-                                                                            {{ therapist_profile_form.interventions.label }}
+                                                                            {{ forms.therapist_profile_form.interventions(class_='form-control') }}
+                                                                            {{ forms.therapist_profile_form.interventions.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -467,15 +469,15 @@
                                                                 <div class="row mb-3 g-2">
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.country(class_='form-control', placeholder=therapist_profile_form.country.label.text) }}
-                                                                            {{ therapist_profile_form.country.label }}
+                                                                            {{ forms.therapist_profile_form.country(class_='form-control', placeholder=forms.therapist_profile_form.country.label.text) }}
+                                                                            {{ forms.therapist_profile_form.country.label }}
                                                                         </div>
                                                                     </div>
                                     
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.languages(class_='form-control') }}
-                                                                            {{ therapist_profile_form.languages.label }}
+                                                                            {{ forms.therapist_profile_form.languages(class_='form-control') }}
+                                                                            {{ forms.therapist_profile_form.languages.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -483,22 +485,22 @@
                                                                 <div class="row mb-3 g-2">
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.location(class_='form-control', placeholder=therapist_profile_form.location.label.text) }}
-                                                                            {{ therapist_profile_form.location.label }}
+                                                                            {{ forms.therapist_profile_form.location(class_='form-control', placeholder=forms.therapist_profile_form.location.label.text) }}
+                                                                            {{ forms.therapist_profile_form.location.label }}
                                                                         </div>
                                                                     </div>
                                     
                                                                     <div class="col-md-6">
                                                                         <div class='form-floating'>
-                                                                            {{ therapist_profile_form.link(class_='form-control', placeholder=therapist_profile_form.link.label.text) }}
-                                                                            {{ therapist_profile_form.link.label }}
+                                                                            {{ forms.therapist_profile_form.link(class_='form-control', placeholder=forms.therapist_profile_form.link.label.text) }}
+                                                                            {{ forms.therapist_profile_form.link.label }}
                                                                         </div>
                                                                     </div>
                                                                 </div>
 
                                                                 <div class="row mb-3">
                                                                     <div class="col-12">
-                                                                        {{ submit_button(therapist_profile_form.submit) }}
+                                                                        {{ submit_button(forms.therapist_profile_form.submit) }}
                                                                     </div>
                                                                 </div>
                                                             
@@ -527,6 +529,8 @@
                                         </div>
                                     </div>
 
+                                    <hr>
+
                                     <!-- Body -->
                                     <div class="mt-4">
 
@@ -549,44 +553,44 @@
                                                     <div id="newAppointmentTypeCollapse" class="accordion-collapse collapse show text-s" data-bs-parent="#appointmentTypesAccordion">
                                                         <div class="accordion-body">
                                                             
-                                                            <form id="{{ create_appt_type_form.id }}" action="{{ create_appt_type_form.endpoint }}" novalidate>
+                                                            <form id="{{ forms.create_appt_type_form.id }}" action="{{ forms.create_appt_type_form.endpoint }}" novalidate>
                                             
-                                                                {{ create_appt_type_form.csrf_token }}
+                                                                {{ forms.create_appt_type_form.csrf_token }}
                                                             
                                                                 <div class="row g-2 align-items-center">
                                                                     
                                                                     <div class="col-lg-auto">
                                                                         <div class='form-floating'>
-                                                                            {{ create_appt_type_form.therapy_type(class_='form-control', placeholder=create_appt_type_form.therapy_type.label.text, form=create_appt_type_form.id) }}
-                                                                            {{ create_appt_type_form.therapy_type.label }}
+                                                                            {{ forms.create_appt_type_form.therapy_type(class_='form-control', placeholder=forms.create_appt_type_form.therapy_type.label.text, form=forms.create_appt_type_form.id) }}
+                                                                            {{ forms.create_appt_type_form.therapy_type.label }}
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-lg-auto">
                                                                         <div class='form-floating'>
-                                                                            {{ create_appt_type_form.therapy_mode(class_='form-control', placeholder=create_appt_type_form.therapy_mode.label.text, form=create_appt_type_form.id) }}
-                                                                            {{ create_appt_type_form.therapy_mode.label }}
+                                                                            {{ forms.create_appt_type_form.therapy_mode(class_='form-control', placeholder=forms.create_appt_type_form.therapy_mode.label.text, form=forms.create_appt_type_form.id) }}
+                                                                            {{ forms.create_appt_type_form.therapy_mode.label }}
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-lg-auto">
                                                                         <div class='form-floating'>
-                                                                            {{ create_appt_type_form.duration(class_='form-control', placeholder=create_appt_type_form.duration.label.text, form=create_appt_type_form.id) }}
-                                                                            {{ create_appt_type_form.duration.label }}
+                                                                            {{ forms.create_appt_type_form.duration(class_='form-control', placeholder=forms.create_appt_type_form.duration.label.text, form=forms.create_appt_type_form.id) }}
+                                                                            {{ forms.create_appt_type_form.duration.label }}
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-lg-auto">
                                                                         <div class='form-floating'>
-                                                                            {{ create_appt_type_form.fee_currency(class_='form-control', placeholder=create_appt_type_form.fee_currency.label.text, form=create_appt_type_form.id) }}
-                                                                            {{ create_appt_type_form.fee_currency.label }}
+                                                                            {{ forms.create_appt_type_form.fee_currency(class_='form-control', placeholder=forms.create_appt_type_form.fee_currency.label.text, form=forms.create_appt_type_form.id) }}
+                                                                            {{ forms.create_appt_type_form.fee_currency.label }}
                                                                         </div>
                                                                     </div>
 
                                                                     <div class="col-lg-auto">
                                                                         <div class='form-floating'>
-                                                                            {{ create_appt_type_form.fee_amount(class_='form-control', placeholder=create_appt_type_form.fee_amount.label.text, form=create_appt_type_form.id) }}
-                                                                            {{ create_appt_type_form.fee_amount.label }}
+                                                                            {{ forms.create_appt_type_form.fee_amount(class_='form-control', placeholder=forms.create_appt_type_form.fee_amount.label.text, form=forms.create_appt_type_form.id) }}
+                                                                            {{ forms.create_appt_type_form.fee_amount.label }}
                                                                         </div>
                                                                     </div>
 
@@ -596,7 +600,7 @@
 
                                                                             <!-- Add appointment type button -->
                                                                             <div class="col-lg-auto">
-                                                                                {{ submit_button(form=create_appt_type_form.id, label='Add')}}
+                                                                                {{ submit_button(form=forms.create_appt_type_form.id, label='Add')}}
                                                                             </div>
                                                                             
                                                                         </div>
@@ -609,7 +613,7 @@
                                             </div>
     
                                             <!-- Accordion item for each appointment type -->
-                                            {% for form in update_appt_type_forms %}
+                                            {% for form in forms.update_appt_type_forms %}
                                                 <div class="accordion-item row">
                                                     <div class="col-12">
                                             
@@ -709,7 +713,7 @@
                                     <!-- Header -->
                                     <div class="row mb-4 align-items-center">
                                         <div class="col-auto">
-                                            <h5 class="mb-0">Payment Information</h5>
+                                            <h5 class="mb-0">Payments</h5>
                                         </div>
                                     </div>
                                     
@@ -733,7 +737,7 @@
                                                         </div>
                                                     </div>
                         
-                                                    <div id="paymentSetupCollapse" class="accordion-collapse collapse show text-s" data-bs-parent="#paymentsAccordion">
+                                                    <div id="paymentSetupCollapse" class="accordion-collapse collapse show text-s">
 
                                                         <div class="accordion-body">
                                                             
@@ -742,24 +746,24 @@
                                                                 <div class="row mb-3">
                                                                     <div class="col-12">
                                                                         <div class="mb-1 my-muted">Stripe onboarding</div>
-                                                                        <div>{{ tag(status='Completed', label='Completed', with_icon=True) }}</div>
+                                                                        <div class="mt-1">{{ tag(status='Completed', label='Completed', with_icon=True) }}</div>
                                                                     </div>
                                                                 </div>
 
                                                             {% else %}
                                                                 
-                                                                <form id="{{ stripe_onboarding_form.id }}" action="{{ stripe_onboarding_form.endpoint }}" novalidate>
+                                                                <form id="{{ forms.stripe_onboarding_form.id }}" action="{{ forms.stripe_onboarding_form.endpoint }}" novalidate>
                                                                     
-                                                                    {{ stripe_onboarding_form.csrf_token }}
+                                                                    {{ forms.stripe_onboarding_form.csrf_token }}
 
-                                                                    <div class="row mb-3">
+                                                                    <div class="row">
                                                                         <div class="col-12">
                                                                             <div class="mb-3 my-muted">
-                                                                                To begin receiving payments via Stripe, complete your onboarding
+                                                                                To start receiving payments via Stripe, complete your onboarding
                                                                             </div>
                                                                             <div class="row mb-3">
                                                                                 <div class="col-auto">
-                                                                                    {{ submit_button(stripe_onboarding_form.submit) }}
+                                                                                    {{ submit_button(forms.stripe_onboarding_form.submit) }}
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -769,14 +773,55 @@
 
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
 
+                                            <!-- Payment history -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paymentHistoryCollapse" aria-expanded="false" aria-controls="paymentSetupCollapse">
+                                                                Payment history
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="paymentHistoryCollapse" class="accordion-collapse collapse text-s">
 
+                                                        <div class="accordion-body">
+                                                            
+                                                            {% if therapist.stripe_account_id %}
+
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div class="my-muted">Visit the <a href="https://dashboard.stripe.com">Stripe dashboard</a></div>
+                                                                    </div>
+                                                                </div>
+
+                                                            {% else %}
+
+                                                                <div class="row">
+                                                                    <div class="col-12">
+                                                                        <div class="my-muted">This feature is only available for users onboarded with Stripe</div>
+                                                                    </div>
+                                                                </div>
+
+                                                            {% endif %}
+
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
                                             
                                         </div>
 
-                                        <div class="my-muted text-s">
+                                        <div class="my-muted mt-4 text-s">
                                             <i class="fa-solid fa-circle-info"></i>
                                             mindli partners with <a href="stripe.com">Stripe</a> for secure payments
                                         </div>
@@ -823,15 +868,15 @@
                                             </div>
                                         </div>
 
-                                        <form id="{{ book_appointment_form.id }}" action="{{ book_appointment_form.endpoint }}" novalidate>
+                                        <form id="{{ forms.book_appointment_form.id }}" action="{{ forms.book_appointment_form.endpoint }}" novalidate>
 
-                                            {{ book_appointment_form.csrf_token }}
+                                            {{ forms.book_appointment_form.csrf_token }}
 
-                                            <div class="row mb-2">
+                                            <div class="row">
                                                 <div class="col-12">
                                                     <div class='form-floating'>
-                                                        {{ book_appointment_form.appointment_type(class_='form-control', placeholder=book_appointment_form.appointment_type.label.text) }}
-                                                        {{ book_appointment_form.appointment_type.label }}
+                                                        {{ forms.book_appointment_form.appointment_type(class_='form-control', placeholder=forms.book_appointment_form.appointment_type.label.text) }}
+                                                        {{ forms.book_appointment_form.appointment_type.label }}
                                                     </div>
                                                 </div>
                                             </div>
@@ -839,20 +884,20 @@
                                             <div class="row mb-3 g-2">
                                                 <div class="col-md-4">
                                                     <div class='form-floating'>
-                                                        {{ book_appointment_form.date(class_='form-control', placeholder=book_appointment_form.date.label.text) }}
-                                                        {{ book_appointment_form.date.label }}
+                                                        {{ forms.book_appointment_form.date(class_='form-control', placeholder=forms.book_appointment_form.date.label.text) }}
+                                                        {{ forms.book_appointment_form.date.label }}
                                                     </div>
                                                 </div>
                     
                                                 <div class="col-md-4">
                                                     <div class='form-floating'>
-                                                        {{ book_appointment_form.time(class_='form-control', placeholder=book_appointment_form.time.label.text) }}
-                                                        {{ book_appointment_form.time.label }}
+                                                        {{ forms.book_appointment_form.time(class_='form-control', placeholder=forms.book_appointment_form.time.label.text) }}
+                                                        {{ forms.book_appointment_form.time.label }}
                                                     </div>
                                                 </div>
                                                 
                                                 <div class="col-md-4">
-                                                    {{ submit_button(book_appointment_form.submit) }}
+                                                    {{ submit_button(forms.book_appointment_form.submit) }}
                                                 </div>
                                             </div>
                                         
@@ -888,10 +933,10 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <form id="{{ delete_appt_type_form.id }}" action="{{ delete_appt_type_form.endpoint }}" novalidate>
-                        {{ delete_appt_type_form.csrf_token }}
-                        {{ delete_appt_type_form.appointment_type_id }}
-                        {{ submit_button(delete_appt_type_form.submit, class='btn btn-danger') }}
+                    <form id="{{ forms.delete_appt_type_form.id }}" action="{{ forms.delete_appt_type_form.endpoint }}" novalidate>
+                        {{ forms.delete_appt_type_form.csrf_token }}
+                        {{ forms.delete_appt_type_form.appointment_type_id }}
+                        {{ submit_button(forms.delete_appt_type_form.submit, class='btn btn-danger') }}
                     </form>
                 </div>
             </div>

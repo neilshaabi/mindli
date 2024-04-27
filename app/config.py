@@ -33,6 +33,7 @@ class DevConfig(Config):
     RESET_DB: bool = True
     FAKE_DATA: bool = True
     WTF_CSRF_ENABLED: str = True
+    ERROR_HANDLER: bool = True
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
 
 
@@ -41,6 +42,7 @@ class ProdConfig(Config):
     RESET_DB: bool = False
     FAKE_DATA: bool = False
     WTF_CSRF_ENABLED: str = True
+    ERROR_HANDLER: bool = True
     SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
 
 
@@ -49,6 +51,7 @@ class TestConfig(Config):
     RESET_DB: bool = True
     FAKE_DATA: bool = True
     WTF_CSRF_ENABLED: str = False
+    ERROR_HANDLER: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite://"  # Use in-memory database
 
 

@@ -56,7 +56,7 @@ $(document).ready(function() {
         
         // Show first section if default section does not exist
         if ($(defaultSectionID).length == 0) {
-            defaultSectionID = '#' + $('#section-selector .list-group-item:first').data('target');
+            defaultSectionID = $('#section-selector .list-group-item:first').data('target');
         }
         
         // Show default section

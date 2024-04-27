@@ -13,11 +13,7 @@
                 <a class="nav-link" href="/dashboard">Dashboard</a>
             </li>
             <li class="nav-item">    
-                {% if current_user.role == UserRole.THERAPIST %}
-                    <a class="nav-link" href="{{ url_for('therapists.therapist', therapist_id=current_user.therapist.id) }}">Profile</a>
-                {% elif current_user.role == UserRole.CLIENT %}
-                    <a class="nav-link" href="/profile">Profile</a>
-                {% endif %}
+                <a class="nav-link" href="{{ url_for('profile.index') }}">Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/messages">Messages</a>

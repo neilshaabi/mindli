@@ -1,15 +1,11 @@
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import (
-    BooleanField,
-    DateField,
-    SelectField,
-    StringField,
-    SubmitField,
-)
+from wtforms import (BooleanField, DateField, SelectField, StringField,
+                     SubmitField)
 from wtforms.validators import DataRequired, Length
 
 from app.constants import OCCUPATIONS, REFERRAL_SOURCES
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
 from app.models.enums import Gender
 from app.models.issue import Issue
 from app.utils.validators import NotWhitespace, ValidPhoneNumber

@@ -1,39 +1,20 @@
 from datetime import datetime
 
-from flask import (
-    Blueprint,
-    Response,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, flash, jsonify, redirect,
+                   render_template, render_template_string, request, session,
+                   url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (
-    AppointmentNotesForm,
-    BookAppointmentForm,
-    FilterAppointmentsForm,
-    TherapyExerciseForm,
-    UpdateAppointmentForm,
-)
+from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
+                                    FilterAppointmentsForm,
+                                    TherapyExerciseForm, UpdateAppointmentForm)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (
-    AppointmentStatus,
-    EmailSubject,
-    PaymentStatus,
-    TherapyMode,
-    TherapyType,
-    UserRole,
-)
+from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
+                              TherapyMode, TherapyType, UserRole)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
@@ -171,13 +152,28 @@ def create(therapist_id: int) -> Response:
     db.session.commit()
 
     # Redirect the client to Stripe Checkout
+    if not therapist.stripe_account_id:
+        return jsonify(
+            {
+                "success": True,
+                "url": url_for(
+                    "appointments.appointment", appointment_id=appointment.id
+                ),
+                "flashed_message_html": get_flashed_message_html(
+                    message="Appointment scheduled, awaiting payment and confirmation",
+                    category="info",
+                ),
+            }
+        )
+
     checkout_session_url = create_checkout_session(new_appointment)
+
     if not checkout_session_url:
         return jsonify(
             {
                 "success": False,
                 "flashed_message_html": get_flashed_message_html(
-                    message="Failed to initiate payment via Stripe, please arrange payment with therapist directly",
+                    message="Failed to initiate payment via Stripe, please contact therapist",
                     category="error",
                 ),
             }
@@ -185,12 +181,8 @@ def create(therapist_id: int) -> Response:
     else:
         return jsonify(
             {
-                "success": True,
+                "success": False,
                 "url": checkout_session_url,
-                "flashed_message_html": get_flashed_message_html(
-                    message="Please follow the instructions in the new window to complete payment via Stripe",
-                    category="info",
-                ),
             }
         )
 

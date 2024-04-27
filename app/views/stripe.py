@@ -1,19 +1,11 @@
+import secrets
+
 import stripe
-from flask import (
-    Blueprint,
-    current_app,
-    flash,
-    json,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    url_for,
-)
+from flask import (Blueprint, current_app, flash, json, jsonify, redirect,
+                   request, session, url_for)
 from flask_login import current_user, login_required
 
 from app import csrf, db
-from app.forms.stripe import CreateStripeAccountForm
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject, PaymentStatus
 from app.utils.decorators import therapist_required
@@ -39,21 +31,33 @@ def create_account():
             },
         )
 
+        # Store state in session for verification in /return endpoint
+        session["stripe_onboarding_state"] = secrets.token_urlsafe()
+
         account_link = stripe.AccountLink.create(
             account=account.id,
             type="account_onboarding",
             refresh_url=url_for("stripe.stripe_refresh", _external=True),
             return_url=url_for(
-                "stripe.stripe_return", account_id=account.id, _external=True
+                "stripe.stripe_return",
+                account_id=account.id,
+                state=session["stripe_onboarding_state"],
+                _external=True,
             ),
         )
 
     # Error creating Stripe account
     except Exception as e:
+        flash("Failed to initiate Stripe onboarding: " + str(e), "error")
         return jsonify(
             {
                 "success": False,
                 "errors": {"submit": [f"Error creating Stripe account: {str(e)}"]},
+                "url": url_for(
+                    "therapists.therapist",
+                    therapist_id=current_user.therapist.id,
+                    section="payments",
+                ),
             }
         )
 
@@ -61,46 +65,56 @@ def create_account():
     return jsonify({"success": True, "url": account_link.url})
 
 
-@bp.route("/refresh")
+@bp.route("/refresh", methods=["GET"])
 @login_required
 @therapist_required
 def stripe_refresh():
     flash(
-        "Your session has expired, please start the Stripe onboarding process again",
+        "Stripe onboarding unsuccessful",
         "warning",
     )
-    return redirect(url_for("stripe.stripe_entry"))
+    return redirect(
+        url_for(
+            "therapists.therapist",
+            therapist_id=current_user.therapist.id,
+            section="payments",
+            _external=True,
+        )
+    )
 
 
 @bp.route("/return", methods=["GET"])
 @login_required
 @therapist_required
 def stripe_return():
+    # Verify user returned from Stripe onboarding flow
+    if not request.args.get("state") or request.args.get("state") != session.pop(
+        "stripe_onboarding_state", None
+    ):
+        flash(
+            "You do not have permission to perform this action",
+            "warning",
+        )
+        return redirect(url_for("main.index"))
+
     # Retrieve account via Stripe API
     account_id = request.args.get("account_id")
     account = stripe.Account.retrieve(account_id)
 
-    # Handle incomplete Stripe onboarding
+    # Stripe onboarding incomplete - redirect
     if not account.details_submitted or not account.charges_enabled:
-        # Generate a new link for the user to continue their onboarding
-        try:
-            flash(
-                "Your Stripe onboarding is incomplete, please complete the required steps",
-                "warning",
+        flash(
+            "Stripe onboarding incomplete",
+            "warning",
+        )
+        return redirect(
+            url_for(
+                "therapists.therapist",
+                therapist_id=current_user.therapist.id,
+                section="payments",
+                _external=True,
             )
-            account_link = stripe.AccountLink.create(
-                account=account_id,
-                type="account_onboarding",
-                refresh_url=url_for("stripe.stripe_refresh", _external=True),
-                return_url=url_for(
-                    "stripe.stripe_return", account_id=account_id, _external=True
-                ),
-            )
-            return redirect(account_link.url)
-
-        except Exception as e:
-            flash("Failed to generate a new Stripe onboarding link: " + str(e), "error")
-            return redirect(url_for("stripe.stripe_entry"))
+        )
 
     # Update therapist's stripe account ID in database
     current_user.therapist.stripe_account_id = account_id
@@ -108,10 +122,16 @@ def stripe_return():
 
     # Successfully completed onboarding
     flash(
-        "Successfully completed Stripe onboarding",
+        "Stripe onboarding completed",
         "success",
     )
-    return render_template("onboarding_complete.html")
+    return redirect(
+        url_for(
+            "therapists.therapist",
+            therapist_id=current_user.therapist.id,
+            section="payments",
+        )
+    )
 
 
 @bp.route("/webhook", methods=["POST"])
@@ -252,9 +272,8 @@ def create_checkout_session(appointment: Appointment) -> str:
             ),
             metadata={"appointment_id": appointment.id},
         )
+        return checkout_session.url
 
     except Exception as e:
         print(f"Stripe error: {e}")
         return None
-
-    return checkout_session.url

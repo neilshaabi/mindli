@@ -1,20 +1,12 @@
-from flask import (
-    Blueprint,
-    Response,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, flash, jsonify, redirect,
+                   render_template, render_template_string, request, session,
+                   url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from app import db
-from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
+from app.forms.appointment_types import (AppointmentTypeForm,
+                                         DeleteAppointmentTypeForm)
 from app.forms.appointments import BookAppointmentForm
 from app.forms.profile import UserProfileForm
 from app.forms.stripe import CreateStripeAccountForm
@@ -27,6 +19,7 @@ from app.models.language import Language
 from app.models.therapist import Therapist
 from app.models.title import Title
 from app.models.user import User
+from app.utils.decorators import therapist_required
 from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("therapists", __name__, url_prefix="/therapists")
@@ -54,6 +47,94 @@ def index() -> Response:
     )
 
 
+@bp.route("/new", methods=["GET"])
+@login_required
+@therapist_required
+def new_therapist() -> Response:
+    # Redirect user to their profile if it already exists
+    if current_user.therapist:
+        return redirect(
+            url_for("therapists.therapist", therapist_id=current_user.therapist.id)
+        )
+
+    # Set default section to edit profile page
+    default_section = "edit-profile"
+
+    # Initialise dictionary to hold all forms
+    forms = {
+        "user_profile_form": UserProfileForm(
+            obj=current_user,
+            id="user-profile",
+            endpoint=url_for("profile.user_profile"),
+        ),
+        "therapist_profile_form": TherapistProfileForm(
+            id="therapist-profile",
+            endpoint=url_for("therapists.create"),
+        ),
+        "create_appt_type_form": AppointmentTypeForm(
+            prefix="new",
+            id="appointment_type_new",
+            endpoint=url_for("appointment_types.create"),
+        ),
+        "stripe_onboarding_form": CreateStripeAccountForm(
+            id="stripe-onboarding-form",
+            endpoint=url_for("stripe.create_account"),
+        ),
+    }
+
+    # Render template with information for this therapist
+    return render_template(
+        "therapist.html",
+        default_section=default_section,
+        forms=forms,
+    )
+
+
+@bp.route("/create", methods=["POST"])
+@login_required
+@therapist_required
+def create() -> Response:
+    # Initialise submitted form
+    form = TherapistProfileForm()
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Update Therapist with form data
+    therapist = Therapist()
+    therapist.country = form.country.data
+    therapist.link = form.link.data
+    therapist.location = form.location.data
+    therapist.years_of_experience = form.years_of_experience.data
+    therapist.qualifications = form.qualifications.data
+    therapist.registrations = form.registrations.data
+    form.titles.update_association_data(
+        parent=therapist, child=Title, children="titles"
+    )
+    form.languages.update_association_data(
+        parent=therapist, child=Language, children="languages"
+    )
+    form.issues.update_association_data(
+        parent=therapist, child=Issue, children="specialisations"
+    )
+    form.interventions.update_association_data(
+        parent=therapist, child=Intervention, children="interventions"
+    )
+
+    db.session.commit()
+
+    # Flash message using AJAX
+    return jsonify(
+        {
+            "success": True,
+            "flashed_message_html": get_flashed_message_html(
+                "Profile updated successfully", "success"
+            ),
+        }
+    )
+
+
 @bp.route("/<int:therapist_id>", methods=["GET"])
 @login_required
 def therapist(therapist_id: int) -> Response:
@@ -70,40 +151,43 @@ def therapist(therapist_id: int) -> Response:
     # Retrieve section to display as open from query parameter
     default_section = request.args.get("section", "profile")
 
-    user_profile_form = None
-    therapist_profile_form = None
-    create_appt_type_form = None
-    delete_appt_type_form = None
-    update_appt_type_forms = []
-    book_appointment_form = None
-    stripe_onboarding_form = None
+    # Initialise dictionary to hold all forms
+    forms = {
+        "user_profile_form": None,
+        "therapist_profile_form": None,
+        "create_appt_type_form": None,
+        "delete_appt_type_form": None,
+        "update_appt_type_forms": [],
+        "book_appointment_form": None,
+        "stripe_onboarding_form": None,
+    }
 
     # Initialise forms for current user to edit their profile
     if therapist.user.id == current_user.id:
-        user_profile_form = UserProfileForm(
+        forms["user_profile_form"] = UserProfileForm(
             obj=current_user,
             id="user-profile",
             endpoint=url_for("profile.user_profile"),
         )
 
-        therapist_profile_form = TherapistProfileForm(
+        forms["therapist_profile_form"] = TherapistProfileForm(
             obj=current_user.therapist,
             id="therapist-profile",
             endpoint=url_for("therapists.update", therapist_id=therapist_id),
         )
 
-        create_appt_type_form = AppointmentTypeForm(
+        forms["create_appt_type_form"] = AppointmentTypeForm(
             prefix="new",
             id="appointment_type_new",
             endpoint=url_for("appointment_types.create"),
         )
 
-        delete_appt_type_form = DeleteAppointmentTypeForm(
+        forms["delete_appt_type_form"] = DeleteAppointmentTypeForm(
             id="delete_appointment_type",
             endpoint=url_for("appointment_types.delete"),
         )
 
-        update_appt_type_forms = [
+        forms["update_appt_type_forms"] = [
             AppointmentTypeForm(
                 obj=appointment_type,
                 prefix=str(appointment_type.id),
@@ -116,14 +200,14 @@ def therapist(therapist_id: int) -> Response:
             for appointment_type in therapist.active_appointment_types
         ]
 
-        stripe_onboarding_form = CreateStripeAccountForm(
+        forms["stripe_onboarding_form"] = CreateStripeAccountForm(
             id="stripe-onboarding-form",
             endpoint=url_for("stripe.create_account"),
         )
 
     # Initialise form for client to book an appointment with this therapist
     elif current_user.role == UserRole.CLIENT:
-        book_appointment_form = BookAppointmentForm(
+        forms["book_appointment_form"] = BookAppointmentForm(
             obj=therapist,
             id="book_appointment",
             endpoint=url_for(
@@ -139,18 +223,13 @@ def therapist(therapist_id: int) -> Response:
         default_section=default_section,
         TherapyType=TherapyType,
         TherapyMode=TherapyMode,
-        user_profile_form=user_profile_form,
-        therapist_profile_form=therapist_profile_form,
-        create_appt_type_form=create_appt_type_form,
-        delete_appt_type_form=delete_appt_type_form,
-        update_appt_type_forms=update_appt_type_forms,
-        book_appointment_form=book_appointment_form,
-        stripe_onboarding_form=stripe_onboarding_form,
+        forms=forms,
     )
 
 
 @bp.route("/<int:therapist_id>/update", methods=["POST"])
 @login_required
+@therapist_required
 def update(therapist_id: int) -> Response:
     # Initialise submitted form
     form = TherapistProfileForm()

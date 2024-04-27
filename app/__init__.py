@@ -1,7 +1,8 @@
 import os
+from http.client import HTTPException
 
 import stripe
-from flask import Flask
+from flask import Flask, Response, render_template
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_migrate import Migrate
@@ -9,7 +10,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 from itsdangerous import URLSafeTimedSerializer
 
-from app.config import CONFIGS, Config, ProdConfig
+from app.config import CONFIGS, Config
 
 # Declare extensions
 db = SQLAlchemy()
@@ -70,8 +71,21 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
         # Seed database
         seed_db(db=db, use_fake_data=app.config["FAKE_DATA"])
 
+    # Register handler to redirect to custom error page
+    if app.config["ERROR_HANDLER"]:
+
+        @app.errorhandler(Exception)
+        def handle_exception(e: Exception) -> Response:
+            print(f"Error: {e}")
+            return render_template(
+                "error.html",
+                error=e,
+                is_http_exception=isinstance(e, HTTPException),
+            )
+
     # Register blueprints with endpoints
-    from app.views import appointment_types, appointments, auth, main, messages, profile
+    from app.views import (appointment_types, appointments, auth, main,
+                           messages, profile)
     from app.views import stripe as stripe_bp
     from app.views import therapists
 
@@ -83,11 +97,5 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     app.register_blueprint(stripe_bp.bp)
     app.register_blueprint(profile.bp)
     app.register_blueprint(therapists.bp)
-
-    # Register handler to redirect to custom error page
-    from app.views.errors import register_error_handlers
-
-    if config == ProdConfig:
-        register_error_handlers(app)
 
     return app

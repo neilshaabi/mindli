@@ -1,18 +1,43 @@
 import os
 
-from flask import Blueprint, current_app, jsonify, request
+from flask import Blueprint, current_app, jsonify, redirect, request, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app import db
 from app.forms.profile import ClientProfileForm, UserProfileForm
 from app.models.client import Client
+from app.models.enums import UserRole
 from app.models.issue import Issue
 from app.utils.decorators import client_required
 from app.utils.files import get_file_extension
 from app.utils.formatters import get_flashed_message_html
 
-bp = Blueprint("profile", __name__)
+bp = Blueprint("profile", __name__, url_prefix="/profile")
+
+
+@bp.route("/", methods=["GET"])
+@login_required
+def index():
+    if current_user.role == UserRole.THERAPIST:
+        if current_user.therapist:
+            return redirect(
+                url_for("therapists.therapist", therapist_id=current_user.therapist.id)
+            )
+        else:
+            return redirect(url_for("therapists.new_therapist"))
+
+    elif current_user.role == UserRole.CLIENT:
+        if current_user.client:
+            return redirect(
+                url_for("clients.client", therapist_id=current_user.therapist.id)
+            )
+        else:
+            return redirect(url_for("clients.new_client"))
+
+    else:
+        print("Unhandled user role")
+        return redirect(url_for("main.index"))
 
 
 @bp.route("/profile/user", methods=["POST"])
