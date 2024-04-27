@@ -1,13 +1,11 @@
 import os
 
-from flask import (Blueprint, current_app, jsonify, render_template, request,
-                   url_for)
+from flask import Blueprint, current_app, jsonify, render_template, request, url_for
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app import db
-from app.forms.profile import (ClientProfileForm, TherapistProfileForm,
-                               UserProfileForm)
+from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
 from app.models.client import Client
 from app.models.enums import UserRole
 from app.models.intervention import Intervention
@@ -35,7 +33,7 @@ def profile():
         role_form = TherapistProfileForm(
             obj=current_user.therapist,
             id="therapist-profile",
-            endpoint=url_for("profile.therapist_profile"),
+            endpoint=url_for("therapists.therapist", therapist_id=current_user.therapist.id),
         )
 
     elif current_user.role == UserRole.CLIENT:
@@ -86,68 +84,6 @@ def user_profile():
         }
     )
 
-
-@bp.route("/profile/therapist", methods=["POST"])
-@login_required
-@therapist_required
-def therapist_profile():
-    # Generate form for therapist-specific information
-    form = TherapistProfileForm()
-
-    # Invalid form submission - return errors
-    if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors})
-
-    therapist = current_user.therapist
-    # Update therapist's profile if it exists
-    if therapist:
-        therapist.country = form.country.data
-        therapist.link = form.link.data
-        therapist.location = form.location.data
-        therapist.years_of_experience = form.years_of_experience.data
-        therapist.qualifications = form.qualifications.data
-        therapist.registrations = form.registrations.data
-
-    # Insert new data if no profile exists
-    else:
-        therapist = Therapist(
-            user_id=current_user.id,
-            country=form.country.data,
-            link=form.link.data,
-            location=form.location.data,
-            years_of_experience=form.years_of_experience.data,
-            qualifications=form.qualifications.data,
-            registrations=form.registrations.data,
-        )
-        db.session.add(therapist)
-
-    db.session.commit()
-
-    # Update data in association tables
-    form.titles.update_association_data(
-        parent=therapist, child=Title, children="titles"
-    )
-    form.languages.update_association_data(
-        parent=therapist, child=Language, children="languages"
-    )
-    form.issues.update_association_data(
-        parent=therapist, child=Issue, children="specialisations"
-    )
-    form.interventions.update_association_data(
-        parent=therapist, child=Intervention, children="interventions"
-    )
-
-    db.session.commit()
-
-    # Flash message using AJAX
-    return jsonify(
-        {
-            "success": True,
-            "flashed_message_html": get_flashed_message_html(
-                "Professional information updated", "success"
-            ),
-        }
-    )
 
 
 @bp.route("/profile/client", methods=["POST"])

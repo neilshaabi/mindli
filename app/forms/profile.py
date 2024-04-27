@@ -89,11 +89,12 @@ class TherapistProfileForm(CustomFlaskForm):
         coerce=int,
     )
     link = StringField(
-        "Professional website",
+        "Website",
         validators=[Optional(), NotWhitespace(), Length(max=255)],
     )
     submit = SubmitField("Save")
 
+    
     def __init__(self, *args, **kwargs):
         super(TherapistProfileForm, self).__init__(*args, **kwargs)
 

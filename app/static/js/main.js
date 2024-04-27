@@ -183,12 +183,16 @@ function registerFormHandlers() {
                 if (response.flashed_message_html) {
                     $('#flashed-messages-container').html(response.flashed_message_html);
                 }
+
+                // Redirect to url
+                if (response.url) {
+                    window.location = response.url;
+                }
                 
                 // Successful response
                 if (response.success) {
-                    if (response.url) { // Redirect to url
-                        window.location = response.url;
-                    } else if (response.update_targets) { // Replace multiple elements with new HTML
+                    
+                    if (response.update_targets) { // Replace multiple elements with new HTML
                         for (var target in response.update_targets) {
                             $('#' + target).html(response.update_targets[target]);
                         }

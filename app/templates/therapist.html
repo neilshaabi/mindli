@@ -32,27 +32,33 @@
             
             <div class="col-lg-3">
                 <div class="my-card p-4">
+                    
                     <ul class="list-group list-group-flush" id="section-selector">
-                        <li class="list-group-item list-group-item-action active rounded-top" data-target="#profile-section">
+                        
+                        <li class="list-group-item list-group-item-action active" data-target="#profile-section">
                             <div class="row align-items-center">
-                                <div class="col-auto">Therapist profile</div>
+                                <div class="col-auto">Therapist Profile</div>
                             </div>
                         </li>
-                        <li class="list-group-item list-group-item-action {% if current_user.role == UserRole.THERAPIST %}disabled{% endif %}" data-target="#booking-section">
-                            <div class="row align-items-center">
-                                <div class="col-auto">Book Appointment</div>
-                                <div class="col-auto ms-auto">
-                                    <div data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Client-only access">
-                                        {{ tag(status='restricted', with_icon=True, additional_class='tag-sm') }}
-                                    </div>
+                        
+                        {% if therapist.user.id == current_user.id %}
+                            <li class="list-group-item list-group-item-action" data-target="#edit-profile-section">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">Edit Profile</div>
                                 </div>
-                            </div>
-                        </li>
-                        <li class="list-group-item list-group-item-action rounded-bottom" data-target="#history-section">
-                            <div class="row align-items-center">
-                                <div class="col-auto">Appointments</div>
-                            </div>
-                        </li>
+                            </li>
+                            <li class="list-group-item list-group-item-action" data-target="#appointment-types-section">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">Appointment Types</div>
+                                </div>
+                            </li>
+                        {% elif current_user.role == UserRole.CLIENT %}
+                            <li class="list-group-item list-group-item-action" data-target="#booking-section">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">Book Appointment</div>
+                                </div>
+                            </li>
+                        {% endif %}
                     </ul>
                 </div>
             </div>
@@ -78,9 +84,11 @@
                                             <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                                         </div>
                                     </div>
-                                    <div class="col-auto ms-auto">
-                                        <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
-                                    </div>
+                                    {% if current_user.role == UserRole.CLIENT %}
+                                        <div class="col-auto ms-auto">
+                                            <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 
                                 <hr>
@@ -88,12 +96,12 @@
                                 <!-- Body -->
                                 <div class="mt-4">
                                     <div class="accordion accordion-flush" id="profileAccordion">
-                                        
+
                                         <!-- Personal details -->
                                         <div class="accordion-item row mb-3">
                                             <div class="col-12">
                                     
-                                                <div class="row mb-4">
+                                                <div class="accordion-header row">
                                                     <div class="col-12">
                                                         <h6 class="mb-0">
                                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
@@ -103,29 +111,31 @@
                                                     </div>
                                                 </div>
                     
-                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse">
-                                                    
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Gender</div>
-                                                            <div>{{ therapist.user.gender.value }}</div>
-                                                        </div>
-                                                    </div>
-                    
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Country of residence</div>
-                                                            <div>{{ therapist.country }}</div>
-                                                        </div>
-                                                    </div>
-                    
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Languages spoken</div>
-                                                            <div>{{ therapist.languages|join(', ', 'name') }}</div>
-                                                        </div>
-                                                    </div>
+                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
 
+                                                    <div class="accordion-body">
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Gender</div>
+                                                                <div>{{ therapist.user.gender.value }}</div>
+                                                            </div>
+                                                        </div>
+                        
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Based in</div>
+                                                                <div>{{ therapist.country }}</div>
+                                                            </div>
+                                                        </div>
+                        
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Languages spoken</div>
+                                                                <div>{{ therapist.languages|join(', ', 'name') }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -134,239 +144,449 @@
                                         <div class="accordion-item row mb-3">
                                             <div class="col-12">
                                     
-                                                <div class="row mb-4">
+                                                <div class="accordion-header row">
                                                     <div class="col-12">
                                                         <h6 class="mb-0">
-                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse" aria-expanded="false" aria-controls="professionalExperienceCollapse">
                                                                 Professional experience
                                                             </button>
                                                         </h6>
                                                     </div>
                                                 </div>
                     
-                                                <div id="professionalExperienceCollapse" class="accordion-collapse collapse">
+                                                <div id="professionalExperienceCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
                                                     
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Years of experience</div>
-                                                            <div>{{ therapist.years_of_experience }} years</div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Qualifications</div>
-                                                            <div>{{ therapist.qualifications }}</div>
-                                                        </div>
-                                                    </div>
-
-                                                    {% if therapist.registrations %}
                                                         <div class="row mb-3">
                                                             <div class="col-12">
-                                                                <div class="mb-1 my-muted">Registrations</div>
-                                                                <div>{{ therapist.registrations }}</div>
+                                                                <div class="mb-1 my-muted">Years of experience</div>
+                                                                <div>{{ therapist.years_of_experience }} years</div>
                                                             </div>
                                                         </div>
-                                                    {% endif %}
 
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="row mb-1 my-muted">
-                                                                <div class="col-12">Specialisations</div>
-                                                            </div>
-                                                            <div class="row g-1">
-                                                                {% for specialisation in therapist.specialisations %}
-                                                                    <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="row mb-1 my-muted">
-                                                                <div class="col-12">Interventions</div>
-                                                            </div>
-                                                            <div class="row g-1">
-                                                                {% for intervention in therapist.interventions %}
-                                                                    <div class="col-auto">{{ tag(label=intervention.name) }}</div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {% if therapist.link %}
                                                         <div class="row mb-3">
                                                             <div class="col-12">
-                                                                <div class="mb-1 my-muted">Professional website</div>
-                                                                <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
+                                                                <div class="mb-1 my-muted">Qualifications</div>
+                                                                <div>{{ therapist.qualifications }}</div>
                                                             </div>
                                                         </div>
-                                                    {% endif %}
 
+                                                        {% if therapist.registrations %}
+                                                            <div class="row mb-3">
+                                                                <div class="col-12">
+                                                                    <div class="mb-1 my-muted">Registrations</div>
+                                                                    <div>{{ therapist.registrations }}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="row mb-1 my-muted">
+                                                                    <div class="col-12">Specialisations</div>
+                                                                </div>
+                                                                <div class="row g-1">
+                                                                    {% for specialisation in therapist.specialisations %}
+                                                                        <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="row mb-1 my-muted">
+                                                                    <div class="col-12">Interventions</div>
+                                                                </div>
+                                                                <div class="row g-1">
+                                                                    {% for intervention in therapist.interventions %}
+                                                                        <div class="col-auto">{{ tag(label=intervention.name) }}</div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        {% if therapist.link %}
+                                                            <div class="row mb-3">
+                                                                <div class="col-12">
+                                                                    <div class="mb-1 my-muted">Website</div>
+                                                                    <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+                                                    
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <!-- Appointment details -->
                                         <div class="accordion-item row mb-3">
                                             <div class="col-12">
                                     
-                                                <div class="row mb-4">
+                                                <div class="accordion-header row">
                                                     <div class="col-12">
                                                         <h6 class="mb-0">
                                                             <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentDetailsCollapse" aria-expanded="false" aria-controls="appointmentDetailsCollapse">
-                                                            Appointment information
+                                                            Appointment details
                                                             </button>
                                                         </h6>
                                                     </div>
                                                 </div>
                     
-                                                <div id="appointmentDetailsCollapse" class="accordion-collapse collapse">
+                                                <div id="appointmentDetailsCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
                                                     
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="row mb-1 my-muted">
-                                                                <div class="col-12">Therapy types offered</div>
-                                                            </div>
-                                                            <div class="row g-1">
-                                                                {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
-                                                                    <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="row mb-1 my-muted">
-                                                                <div class="col-12">Modes supported</div>
-                                                            </div>
-                                                            <div class="row g-1">
-                                                                {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
-                                                                    <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
-                                                                {% endfor %}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    {% if therapist.location %}
                                                         <div class="row mb-3">
                                                             <div class="col-12">
-                                                                <div class="mb-1 my-muted">Location (in-person appointments)</div>
-                                                                <div>{{ therapist.location }}</div>
+                                                                <div class="row mb-1 my-muted">
+                                                                    <div class="col-12">Therapy types offered</div>
+                                                                </div>
+                                                                <div class="row mt-1 g-1">
+                                                                    {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
+                                                                        <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
+                                                                    {% endfor %}
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    {% endif %}
 
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Durations</div>
-                                                            <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|join(', ') }} minutes</div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="row mb-1 my-muted">
+                                                                    <div class="col-12">Modes supported</div>
+                                                                </div>
+                                                                <div class="row g-1">
+                                                                    {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
+                                                                        <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
-                                                    <div class="row mb-3">
-                                                        <div class="col-12">
-                                                            <div class="mb-1 my-muted">Currencies accepted</div>
-                                                            <div>{{ therapist.active_appointment_types|map(attribute='fee_currency')|unique|join(', ') }}</div>
+                                                        {% if therapist.location %}
+                                                            <div class="row mb-3">
+                                                                <div class="col-12">
+                                                                    <div class="mb-1 my-muted">Location (in-person appointments)</div>
+                                                                    <div>{{ therapist.location }}</div>
+                                                                </div>
+                                                            </div>
+                                                        {% endif %}
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Durations</div>
+                                                                <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|sort|join(' minutes, ') }} minutes</div>
+                                                            </div>
                                                         </div>
-                                                    </div>
 
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
+                                        
                                     </div>
-                                    <div class="my-muted text-s">Joined mindli: {{ therapist.user.date_joined.strftime('%-d %B %Y') }}</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Appointment booking section-->
-                    <div id="booking-section" class="section" style="display:none;">
-                        <div class="row mb-3">
-                            <div class="col-12">
-                                
-                                <!-- Header -->
-                                <div class="row g-3 mb-4 align-items-center">
-                                    <div class="col-auto">
-                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
-                                    </div>
-                                    <div class="col">
-                                        <div class="row">
-                                            <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
-                                        </div>
-                                        <div class="row">
-                                            <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
-                                        </div>
-                                    </div>
-                                    <div class="col-auto ms-auto">
-                                        <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
-                                    </div>
-                                </div>
-                                
-                                <hr>
-
-                                <!-- Body -->
-                                <div class="mt-4">
+                
+                    {% if therapist.user.id == current_user.id %}
+                        
+                        <!-- Edit profile section-->
+                        <div id="edit-profile-section" class="section" style="display:none;">
+                            <div class="row mb-3">
+                                <div class="col-12">
                                     
-                                    <div class="row mb-4">
-                                        <div class="col-12">
-                                            <h6 class="mb-0">
-                                                Appointment details
-                                            </h6>
+                                    <!-- Header -->
+                                    <div class="row mb-4 align-items-center">
+                                        <div class="col-auto">
+                                            <h5 class="mb-0">Edit Profile</h5>
                                         </div>
                                     </div>
 
-                                    <form id="{{ book_appointment_form.id }}" action="{{ book_appointment_form.endpoint }}" novalidate>
+                                    <!-- Body -->
+                                    <div class="mt-4">
 
-                                        {{ book_appointment_form.csrf_token }}
+                                        <div class="accordion accordion-flush" id="editProfileAccordion">
+    
+                                            <div class="accordion-item row mb-3">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editPersonalDetailsCollapse" aria-expanded="false" aria-controls="editPersonalDetailsCollapse">
+                                                                    Personal details
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="editPersonalDetailsCollapse" class="accordion-collapse collapse show text-s">
+    
+                                                        <div class="accordion-body">
 
-                                        <div class="row mb-2">
-                                            <div class="col-12">
-                                                <div class='form-floating'>
-                                                    {{ book_appointment_form.appointment_type(class_='form-control', placeholder=book_appointment_form.appointment_type.label.text) }}
-                                                    {{ book_appointment_form.appointment_type.label }}
-                                                </div>
-                                            </div>
-                                        </div>
-                
-                                        <div class="row mb-3 g-2">
-                                            <div class="col-md-4">
-                                                <div class='form-floating'>
-                                                    {{ book_appointment_form.date(class_='form-control', placeholder=book_appointment_form.date.label.text) }}
-                                                    {{ book_appointment_form.date.label }}
-                                                </div>
-                                            </div>
-                
-                                            <div class="col-md-4">
-                                                <div class='form-floating'>
-                                                    {{ book_appointment_form.time(class_='form-control', placeholder=book_appointment_form.time.label.text) }}
-                                                    {{ book_appointment_form.time.label }}
+                                                            <form id="{{ user_profile_form.id }}" action="{{ user_profile_form.endpoint }}" novalidate>
+                                            
+                                                                {{ user_profile_form.csrf_token }}
+
+                                                                <div class="row g-5 align-items-center">
+                                                                    
+                                                                    <div class="col-auto">
+                                                                        <div id="profile-picture-container">
+                                                                            <img id="profile-picture-preview" src="{{ url_for('static', filename='img/profile_pictures/' + current_user.profile_picture) }}" alt="Profile picture">
+                                                                            <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
+                                                                                <i class="fa fa-camera"></i>
+                                                                            </label>
+                                                                            {{ user_profile_form.profile_picture(style='display: none;') }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col">
+                                                                        
+                                                                        <div class="row mb-2 g-2">
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ user_profile_form.first_name(class_='form-control', placeholder=user_profile_form.first_name.label.text) }}
+                                                                                    {{ user_profile_form.first_name.label }}
+                                                                                </div>
+                                                                            </div>
+                                            
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ user_profile_form.last_name(class_='form-control', placeholder=user_profile_form.last_name.label.text) }}
+                                                                                    {{ user_profile_form.last_name.label }}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ user_profile_form.gender(class_='form-control', placeholder=user_profile_form.gender.label.text) }}
+                                                                                    {{ user_profile_form.gender.label }}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-3">
+                                                                                {{ submit_button(therapist_profile_form.submit) }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                             
-                                            <div class="col-md-4">
-                                                {{ submit_button(book_appointment_form.submit) }}
+                                            <!-- Professional experience -->
+                                            <div class="accordion-item row mb-3">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editProfessionalExperienceCollapse" aria-expanded="false" aria-controls="editProfessionalExperienceCollapse">
+                                                                    Professional experience
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="editProfessionalExperienceCollapse" class="accordion-collapse collapse text-s">
+    
+                                                        <div class="accordion-body">
+
+                                                            <form id="{{ therapist_profile_form.id }}" action="{{ therapist_profile_form.endpoint }}" novalidate>
+
+                                                                {{ therapist_profile_form.csrf_token }}
+                                                        
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.titles(class_='form-control') }}
+                                                                            {{ therapist_profile_form.titles.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.years_of_experience(class_='form-control', placeholder=therapist_profile_form.years_of_experience.label.text) }}
+                                                                            {{ therapist_profile_form.years_of_experience.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                    
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.qualifications(class_='form-control', placeholder=therapist_profile_form.qualifications.label.text) }}
+                                                                            {{ therapist_profile_form.qualifications.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.registrations(class_='form-control', placeholder=therapist_profile_form.registrations.label.text) }}
+                                                                            {{ therapist_profile_form.registrations.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.issues(class_='form-control') }}
+                                                                            {{ therapist_profile_form.issues.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.interventions(class_='form-control') }}
+                                                                            {{ therapist_profile_form.interventions.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.country(class_='form-control', placeholder=therapist_profile_form.country.label.text) }}
+                                                                            {{ therapist_profile_form.country.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.languages(class_='form-control') }}
+                                                                            {{ therapist_profile_form.languages.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.location(class_='form-control', placeholder=therapist_profile_form.location.label.text) }}
+                                                                            {{ therapist_profile_form.location.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ therapist_profile_form.link(class_='form-control', placeholder=therapist_profile_form.link.label.text) }}
+                                                                            {{ therapist_profile_form.link.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        {{ submit_button(therapist_profile_form.submit) }}
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
+
                                         </div>
-                                    
-                                    </form>
-                                
-                                    <div class="my-muted text-s">
-                                        <i class="fa-solid fa-circle-info"></i>
-                                        Please message your therapist to confirm these details before proceeding
                                     </div>
-                                    
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    {% endif %}
 
-                    <!-- Appointment history -->
-                    <div id="history-section" class="section" style="display:none;">
-                        
-                    </div>
+                    <!-- Appointment booking section-->
+                    {% if current_user.role == UserRole.CLIENT %}
+                        <div id="booking-section" class="section" style="display:none;">
+                            <div class="row">
+                                <div class="col-12">
+                                    
+                                    <!-- Header -->
+                                    <div class="row g-3 mb-4 align-items-center">
+                                        <div class="col-auto">
+                                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                                        </div>
+                                        <div class="col">
+                                            <div class="row">
+                                                <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                                            </div>
+                                            <div class="row">
+                                                <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-auto ms-auto">
+                                            <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
+                                        </div>
+                                    </div>
+                                    
+                                    <hr>
+
+                                    <!-- Body -->
+                                    <div class="mt-4">
+                                        
+                                        <div class="row mb-4">
+                                            <div class="col-12">
+                                                <h6 class="mb-0">
+                                                    Schedule appointment
+                                                </h6>
+                                            </div>
+                                        </div>
+
+                                        <form id="{{ book_appointment_form.id }}" action="{{ book_appointment_form.endpoint }}" novalidate>
+
+                                            {{ book_appointment_form.csrf_token }}
+
+                                            <div class="row mb-2">
+                                                <div class="col-12">
+                                                    <div class='form-floating'>
+                                                        {{ book_appointment_form.appointment_type(class_='form-control', placeholder=book_appointment_form.appointment_type.label.text) }}
+                                                        {{ book_appointment_form.appointment_type.label }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                    
+                                            <div class="row mb-3 g-2">
+                                                <div class="col-md-4">
+                                                    <div class='form-floating'>
+                                                        {{ book_appointment_form.date(class_='form-control', placeholder=book_appointment_form.date.label.text) }}
+                                                        {{ book_appointment_form.date.label }}
+                                                    </div>
+                                                </div>
+                    
+                                                <div class="col-md-4">
+                                                    <div class='form-floating'>
+                                                        {{ book_appointment_form.time(class_='form-control', placeholder=book_appointment_form.time.label.text) }}
+                                                        {{ book_appointment_form.time.label }}
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="col-md-4">
+                                                    {{ submit_button(book_appointment_form.submit) }}
+                                                </div>
+                                            </div>
+                                        
+                                        </form>
+                                    
+                                        <div class="my-muted text-s">
+                                            <i class="fa-solid fa-circle-info"></i>
+                                            Please message your therapist to confirm these details before proceeding
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

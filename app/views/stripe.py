@@ -1,6 +1,15 @@
 import stripe
-from flask import (Blueprint, current_app, flash, json, jsonify, redirect,
-                   render_template, request, url_for)
+from flask import (
+    Blueprint,
+    current_app,
+    flash,
+    json,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
 from flask_login import current_user, login_required
 
 from app import csrf, db
@@ -129,13 +138,8 @@ def stripe_return():
 @bp.route("/webhook", methods=["POST"])
 @csrf.exempt
 def webhook():
-    print("Webhook triggered\n\n\n\n")
-
     payload = request.data
     sig_header = request.headers.get("stripe-signature")
-
-    print("Payload:", payload)  # Log the payload
-    print("Signature Header:", sig_header)  # Log the signature header
 
     # Retrieve your Stripe webhook secret from your configuration
     webhook_secret = current_app.config.get("STRIPE_WEBHOOK_SECRET")

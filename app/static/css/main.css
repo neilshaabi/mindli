@@ -243,17 +243,16 @@ textarea {
 .btn-primary:active,
 .btn:focus-visible,
 .btn-primary.active,
-.btn:first-child:active,
 :not(.btn-check)+.btn:active {
     background: var(--colour-dark);
     border-color: var(--colour-dark);
 }
 
-/* .btn-outline-primary {
+.btn-outline-primary-faded {
     color: var(--light-grey-text);
     background: transparent;
     border: solid 1px var(--light-grey-outline);
-} */
+}
 
 .btn-outline-primary {
     color: var(--colour-primary);
@@ -261,22 +260,12 @@ textarea {
     border: solid 1px var(--colour-primary);
 }
 
-.btn-outline-primary:hover {
+.btn-outline-primary-faded:hover,
+.btn-check + .btn:hover,
+.btn-check:checked + .btn {
     color: white;
     background: var(--colour-primary);
     border: solid 1px var(--colour-primary);
-}
-
-.btn-check + .btn:hover {
-    color: var(--light-grey-text);
-    background: rgba(var(--colour-primary-rgb), 0.1);
-    border: solid 1px var(--light-grey-outline);
-}
-
-.btn-check:checked + .btn {
-    color: var(--colour-primary);
-    background: rgba(var(--colour-primary-rgb), 0.1);
-    border: solid 1px var(--colour-primary) !important;
 }
 
 form .btn {
@@ -382,6 +371,16 @@ table tr:hover .btn-icon {
     min-width: 200px;
 }
 
+.list-group-flush > .list-group-item:first-child {
+    border-top-left-radius: var(--my-border-radius);
+    border-top-right-radius: var(--my-border-radius);
+}
+
+.list-group-flush > .list-group-item:last-child {
+    border-bottom-left-radius: var(--my-border-radius);
+    border-bottom-right-radius: var(--my-border-radius);
+}
+
 .list-group-item-action {
     color: var(--dark-grey-text);
     transition: var(--my-transition);
@@ -431,8 +430,8 @@ table tr:hover .btn-icon {
 #profile-picture-container {
     margin: 20px auto;
     position: relative;
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -463,8 +462,8 @@ table tr:hover .btn-icon {
 }
 
 .profile-picture {
-    height: 56px;
-    width: 56px;
+    height: 64px;
+    width: 64px;
     border-radius: 50%;
     object-fit: cover;
 }
@@ -543,8 +542,6 @@ table tr:hover .btn-icon {
     font-size: inherit;
     font-weight: inherit;
     border-radius: var(--my-border-radius);
-    margin: -1rem;
-    padding: 1rem;
 }
 
 .accordion-button:focus {

@@ -103,6 +103,9 @@ def appointment(appointment_id: int) -> Response:
         obj=appointment.exercise,
     )
 
+    # Do not give other users access to appointment notes
+    notes_form = None
+
     # Create appointment notes form for therapist only
     if current_user.role == UserRole.THERAPIST:
         notes_form = AppointmentNotesForm(
@@ -110,9 +113,6 @@ def appointment(appointment_id: int) -> Response:
             endpoint=url_for("appointments.notes", appointment_id=appointment_id),
             obj=appointment.notes,
         )
-    else:
-        # Do not give other users access to appointment notes
-        notes_form = None
 
     # Render the page with the appointment details and forms
     return render_template(
