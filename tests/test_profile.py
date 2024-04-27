@@ -7,7 +7,6 @@ from app import db
 from app.models import User
 from app.models.client import Client
 from app.models.enums import Gender
-from app.models.therapist import Therapist
 
 
 def test_get_user_profile_fails(client: FlaskClient, logged_in_client: User):
@@ -75,50 +74,6 @@ def test_update_user_profile_invalid_file_type(
     assert response.status_code == 200
     assert data["success"] is False
     assert "profile_picture" in data["errors"]
-    return
-
-
-def test_get_therapist_profile_fails(client: FlaskClient):
-    response = client.get("/profile/therapist")
-    assert response.status_code == 405
-    return
-
-
-def test_update_therapist_profile_success(
-    client: FlaskClient, logged_in_therapist: User, fake_therapist_profile_data: dict
-):
-    initial_therapist_count = db.session.execute(
-        db.select(db.func.count()).select_from(Therapist)
-    ).scalar()
-
-    response = client.post("/profile/therapist", data=fake_therapist_profile_data)
-    data = response.get_json()
-
-    assert response.status_code == 200
-    assert data["success"] is True
-    assert (
-        db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
-        == initial_therapist_count + 1
-    )
-    return
-
-
-def test_update_therapist_profile_missing_fields(
-    client: FlaskClient, logged_in_therapist: User
-):
-    initial_therapist_count = db.session.execute(
-        db.select(db.func.count()).select_from(Therapist)
-    ).scalar()
-
-    response = client.post("/profile/therapist", data={})
-    data = response.get_json()
-
-    assert response.status_code == 200
-    assert data["success"] is False and "errors" in data
-    assert (
-        db.session.execute(db.select(db.func.count()).select_from(Therapist)).scalar()
-        == initial_therapist_count
-    )
     return
 
 

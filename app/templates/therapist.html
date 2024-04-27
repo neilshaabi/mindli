@@ -33,27 +33,28 @@
             <div class="col-lg-3">
                 <div class="my-card p-4">
                     
-                    <ul class="list-group list-group-flush" id="section-selector">
+                    <ul class="list-group list-group-flush" id="section-selector" data-default-section="{{ default_section }}">
                         
-                        <li class="list-group-item list-group-item-action active" data-target="#profile-section">
+                        <li class="list-group-item list-group-item-action" data-target="#profile">
                             <div class="row align-items-center">
                                 <div class="col-auto">Therapist Profile</div>
                             </div>
                         </li>
                         
                         {% if therapist.user.id == current_user.id %}
-                            <li class="list-group-item list-group-item-action" data-target="#edit-profile-section">
+                            <li class="list-group-item list-group-item-action" data-target="#edit-profile">
                                 <div class="row align-items-center">
                                     <div class="col-auto">Edit Profile</div>
                                 </div>
                             </li>
-                            <li class="list-group-item list-group-item-action" data-target="#appointment-types-section">
+                            <li class="list-group-item list-group-item-action" data-target="#appointment-types">
                                 <div class="row align-items-center">
                                     <div class="col-auto">Appointment Types</div>
+                                    <div class="col-auto ms-auto">{{ tag(label=therapist.active_appointment_types|length|string, additional_class='tag-sm') }}</div>
                                 </div>
                             </li>
                         {% elif current_user.role == UserRole.CLIENT %}
-                            <li class="list-group-item list-group-item-action" data-target="#booking-section">
+                            <li class="list-group-item list-group-item-action" data-target="#booking">
                                 <div class="row align-items-center">
                                     <div class="col-auto">Book Appointment</div>
                                 </div>
@@ -67,12 +68,12 @@
                 <div class="my-card">
                     
                     <!-- Therapist profile section-->
-                    <div id="profile-section" class="section">
+                    <div id="profile" class="section">
                         <div class="row mb-3">
                             <div class="col-12">
                                 
                                 <!-- Header -->
-                                <div class="row g-3 mb-4 align-items-center">
+                                <div class="row g-2 mb-4 align-items-center">
                                     <div class="col-auto">
                                         <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                                     </div>
@@ -98,7 +99,7 @@
                                     <div class="accordion accordion-flush" id="profileAccordion">
 
                                         <!-- Personal details -->
-                                        <div class="accordion-item row mb-3">
+                                        <div class="accordion-item row">
                                             <div class="col-12">
                                     
                                                 <div class="accordion-header row">
@@ -111,7 +112,7 @@
                                                     </div>
                                                 </div>
                     
-                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse show text-s" data-bs-parent="#profileAccordion">
 
                                                     <div class="accordion-body">
                                                     
@@ -141,7 +142,7 @@
                                         </div>
 
                                         <!-- Professional experience -->
-                                        <div class="accordion-item row mb-3">
+                                        <div class="accordion-item row">
                                             <div class="col-12">
                                     
                                                 <div class="accordion-header row">
@@ -222,7 +223,7 @@
                                         </div>
 
                                         <!-- Appointment details -->
-                                        <div class="accordion-item row mb-3">
+                                        <div class="accordion-item row">
                                             <div class="col-12">
                                     
                                                 <div class="accordion-header row">
@@ -296,7 +297,7 @@
                     {% if therapist.user.id == current_user.id %}
                         
                         <!-- Edit profile section-->
-                        <div id="edit-profile-section" class="section" style="display:none;">
+                        <div id="edit-profile" class="section">
                             <div class="row mb-3">
                                 <div class="col-12">
                                     
@@ -312,13 +313,14 @@
 
                                         <div class="accordion accordion-flush" id="editProfileAccordion">
     
-                                            <div class="accordion-item row mb-3">
+                                            <!-- Personal details -->
+                                            <div class="accordion-item row">
                                                 <div class="col-12">
                                         
                                                     <div class="accordion-header row">
                                                         <div class="col-12">
                                                             <h6 class="mb-0">
-                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editPersonalDetailsCollapse" aria-expanded="false" aria-controls="editPersonalDetailsCollapse">
+                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#editPersonalDetailsCollapse" aria-expanded="false" aria-controls="editPersonalDetailsCollapse">
                                                                     Personal details
                                                                 </button>
                                                             </h6>
@@ -382,7 +384,7 @@
                                             </div>
                                             
                                             <!-- Professional experience -->
-                                            <div class="accordion-item row mb-3">
+                                            <div class="accordion-item row">
                                                 <div class="col-12">
                                         
                                                     <div class="accordion-header row">
@@ -502,16 +504,202 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <!-- Appointment types -->
+                        <div id="appointment-types" class="section">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    
+                                    <!-- Header -->
+                                    <div class="row mb-4 align-items-center">
+                                        <div class="col-auto">
+                                            <h5 class="mb-0">Appointment Types</h5>
+                                        </div>
+                                    </div>
+
+                                    <!-- Body -->
+                                    <div class="mt-4">
+
+                                        <div class="accordion accordion-flush" id="appointmentTypesAccordion">
+
+                                            <!-- New appointment type form -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#newAppointmentTypeCollapse" aria-expanded="false" aria-controls="newAppointmentTypeCollapse">
+                                                                    New appointment type
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="newAppointmentTypeCollapse" class="accordion-collapse collapse show text-s" data-bs-parent="#appointmentTypesAccordion">
+                                                        <div class="accordion-body">
+                                                            
+                                                            <form id="{{ create_appt_type_form.id }}" action="{{ create_appt_type_form.endpoint }}" novalidate>
+                                            
+                                                                {{ create_appt_type_form.csrf_token }}
+                                                            
+                                                                <div class="row g-2 align-items-center">
+                                                                    
+                                                                    <div class="col-lg-auto">
+                                                                        <div class='form-floating'>
+                                                                            {{ create_appt_type_form.therapy_type(class_='form-control', placeholder=create_appt_type_form.therapy_type.label.text, form=create_appt_type_form.id) }}
+                                                                            {{ create_appt_type_form.therapy_type.label }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-auto">
+                                                                        <div class='form-floating'>
+                                                                            {{ create_appt_type_form.therapy_mode(class_='form-control', placeholder=create_appt_type_form.therapy_mode.label.text, form=create_appt_type_form.id) }}
+                                                                            {{ create_appt_type_form.therapy_mode.label }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-auto">
+                                                                        <div class='form-floating'>
+                                                                            {{ create_appt_type_form.duration(class_='form-control', placeholder=create_appt_type_form.duration.label.text, form=create_appt_type_form.id) }}
+                                                                            {{ create_appt_type_form.duration.label }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-auto">
+                                                                        <div class='form-floating'>
+                                                                            {{ create_appt_type_form.fee_currency(class_='form-control', placeholder=create_appt_type_form.fee_currency.label.text, form=create_appt_type_form.id) }}
+                                                                            {{ create_appt_type_form.fee_currency.label }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col-lg-auto">
+                                                                        <div class='form-floating'>
+                                                                            {{ create_appt_type_form.fee_amount(class_='form-control', placeholder=create_appt_type_form.fee_amount.label.text, form=create_appt_type_form.id) }}
+                                                                            {{ create_appt_type_form.fee_amount.label }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <!-- Buttons -->
+                                                                    <div class="col-lg-auto">
+                                                                        <div class="row">
+
+                                                                            <!-- Add appointment type button -->
+                                                                            <div class="col-lg-auto">
+                                                                                {{ submit_button(form=create_appt_type_form.id, label='Add')}}
+                                                                            </div>
+                                                                            
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+    
+                                            <!-- Accordion item for each appointment type -->
+                                            {% for form in update_appt_type_forms %}
+                                                <div class="accordion-item row">
+                                                    <div class="col-12">
+                                            
+                                                        <div class="accordion-header row">
+                                                            <div class="col-12">
+                                                                <h6 class="mb-0">
+                                                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentTypeCollapse{{ loop.index }}" aria-expanded="false" aria-controls="appointmentTypeCollapse{{ loop.index }}">
+                                                                        {{ TherapyType[form.therapy_type.data].value }}, {{ TherapyMode[form.therapy_mode.data].value }} ({{ form.duration.data }} minutes) - {{ form.fee_currency.data }} {{ form.fee_amount.data }}
+                                                                    </button>
+                                                                </h6>
+                                                            </div>
+                                                        </div>
+                            
+                                                        <div id="appointmentTypeCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#appointmentTypesAccordion">
+                                                            <div class="accordion-body">
+                                                                
+                                                                <form id="{{ form.id }}" action="{{ form.endpoint }}" novalidate>
+
+                                                                    {{ form.csrf_token }}
+
+                                                                    <div class="row g-2 align-items-center">
+                                                                        
+                                                                        <div class="col-lg-auto">
+                                                                            <div class='form-floating'>
+                                                                                {{ form.therapy_type(class_='form-control', placeholder=form.therapy_type.label.text, form=form.id, disabled=True) }}
+                                                                                {{ form.therapy_type.label }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-auto">
+                                                                            <div class='form-floating'>
+                                                                                {{ form.therapy_mode(class_='form-control', placeholder=form.therapy_mode.label.text, form=form.id, disabled=True) }}
+                                                                                {{ form.therapy_mode.label }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-auto">
+                                                                            <div class='form-floating'>
+                                                                                {{ form.duration(class_='form-control', placeholder=form.duration.label.text, form=form.id, disabled=True) }}
+                                                                                {{ form.duration.label }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-auto">
+                                                                            <div class='form-floating'>
+                                                                                {{ form.fee_currency(class_='form-control', placeholder=form.fee_currency.label.text, form=form.id, disabled=True) }}
+                                                                                {{ form.fee_currency.label }}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="col-lg-auto">
+                                                                            <div class='form-floating'>
+                                                                                {{ form.fee_amount(class_='form-control', placeholder=form.fee_amount.label.text, form=form.id, disabled=True) }}
+                                                                                {{ form.fee_amount.label }}
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                        <div class="col-lg-auto">
+                                                                            <div class="row g-2">
+                                                                                <!-- Edit appointment type button -->
+                                                                                <div class="col-lg-auto">
+                                                                                    <button type="button" form="{{ form.id }}" class="btn btn-primary enable-form-btn">Edit</button>
+                                                                                </div>
+                                                                                
+                                                                                <!-- Save changes button -->
+                                                                                <div class="col-lg-6 hidden">
+                                                                                    <button type="submit" form="{{ form.id }}" class="btn btn-primary">Save</button>
+                                                                                </div>
+
+                                                                                <!-- Delete appointment type button -->
+                                                                                <div class="col-lg-6 hidden" form="{{ form.id }}" data-bs-toggle="modal" data-bs-target="#deleteAppointmentTypeModal">
+                                                                                    <button type="button" form="{{ form.id }}" class="btn btn-danger">Delete</button>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            {% endfor %}
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     {% endif %}
 
                     <!-- Appointment booking section-->
                     {% if current_user.role == UserRole.CLIENT %}
-                        <div id="booking-section" class="section" style="display:none;">
+                        <div id="booking" class="section">
                             <div class="row">
                                 <div class="col-12">
                                     
                                     <!-- Header -->
-                                    <div class="row g-3 mb-4 align-items-center">
+                                    <div class="row g-2 mb-4 align-items-center">
                                         <div class="col-auto">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                                         </div>
@@ -587,6 +775,30 @@
                         </div>
                     {% endif %}
 
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal to delete an appointment type -->
+    <div class="modal fade" id="deleteAppointmentTypeModal" tabindex="-1" aria-labelledby="deleteAppointmentTypeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="deleteAppointmentTypeModalLabel">Confirm deletion</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to delete this appointment type?
+                    <strong>Warning:</strong> this action cannot be undone.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <form id="{{ delete_appt_type_form.id }}" action="{{ delete_appt_type_form.endpoint }}" novalidate>
+                        {{ delete_appt_type_form.csrf_token }}
+                        {{ delete_appt_type_form.appointment_type_id }}
+                        {{ submit_button(delete_appt_type_form.submit, class='btn btn-danger') }}
+                    </form>
                 </div>
             </div>
         </div>

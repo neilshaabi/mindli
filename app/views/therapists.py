@@ -1,9 +1,6 @@
-import os
-
 from flask import (
     Blueprint,
     Response,
-    current_app,
     flash,
     jsonify,
     redirect,
@@ -15,12 +12,12 @@ from flask import (
 )
 from flask_login import current_user, login_required
 from sqlalchemy import func
-from werkzeug.utils import secure_filename
 
 from app import db
+from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
 from app.forms.appointments import BookAppointmentForm
-from app.forms.profile import TherapistProfileForm, UserProfileForm
-from app.forms.therapists import FilterTherapistsForm
+from app.forms.profile import UserProfileForm
+from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType, UserRole
 from app.models.intervention import Intervention
@@ -29,7 +26,6 @@ from app.models.language import Language
 from app.models.therapist import Therapist
 from app.models.title import Title
 from app.models.user import User
-from app.utils.files import get_file_extension
 from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("therapists", __name__, url_prefix="/therapists")
@@ -61,7 +57,7 @@ def index() -> Response:
 @login_required
 def therapist(therapist_id: int) -> Response:
     # Get therapist with this ID
-    therapist = db.session.execute(
+    therapist: Therapist = db.session.execute(
         db.select(Therapist).filter_by(id=therapist_id)
     ).scalar_one_or_none()
 
@@ -70,8 +66,14 @@ def therapist(therapist_id: int) -> Response:
         flash("Therapist not found", "error")
         return redirect(url_for("therapists.index"))
 
+    # Retrieve section to display as open from query parameter
+    default_section = request.args.get("section", "profile")
+
     user_profile_form = None
     therapist_profile_form = None
+    create_appt_type_form = None
+    delete_appt_type_form = None
+    update_appt_type_forms = []
     book_appointment_form = None
 
     # Initialise forms for current user to edit their profile
@@ -88,6 +90,30 @@ def therapist(therapist_id: int) -> Response:
             endpoint=url_for("therapists.update", therapist_id=therapist_id),
         )
 
+        create_appt_type_form = AppointmentTypeForm(
+            prefix="new",
+            id="appointment_type_new",
+            endpoint=url_for("appointment_types.create"),
+        )
+
+        delete_appt_type_form = DeleteAppointmentTypeForm(
+            id="delete_appointment_type",
+            endpoint=url_for("appointment_types.delete"),
+        )
+
+        update_appt_type_forms = [
+            AppointmentTypeForm(
+                obj=appointment_type,
+                prefix=str(appointment_type.id),
+                id=f"appointment_type_{appointment_type.id}",
+                endpoint=url_for(
+                    "appointment_types.update",
+                    appointment_type_id=appointment_type.id,
+                ),
+            )
+            for appointment_type in therapist.active_appointment_types
+        ]
+
     # Initialise form for client to book an appointment with this therapist
     elif current_user.role == UserRole.CLIENT:
         book_appointment_form = BookAppointmentForm(
@@ -103,8 +129,14 @@ def therapist(therapist_id: int) -> Response:
     return render_template(
         "therapist.html",
         therapist=therapist,
+        default_section=default_section,
+        TherapyType=TherapyType,
+        TherapyMode=TherapyMode,
         user_profile_form=user_profile_form,
         therapist_profile_form=therapist_profile_form,
+        create_appt_type_form=create_appt_type_form,
+        delete_appt_type_form=delete_appt_type_form,
+        update_appt_type_forms=update_appt_type_forms,
         book_appointment_form=book_appointment_form,
     )
 

@@ -51,7 +51,7 @@ class Therapist(SeedableMixin, db.Model):
     )
 
     @property
-    def active_appointment_types(self):
+    def active_appointment_types(self) -> List["AppointmentType"]:
         return [at for at in self.appointment_types if at.active]
 
     @classmethod

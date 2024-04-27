@@ -66,16 +66,23 @@
 {% endmacro %}
 
 
-{% macro submit_button(submit_field, id=None, class=None, disabled=False) %}
+{% macro submit_button(submit_field=None, label=None, id=None, form=None, class=None, disabled=False) %}
     <button type="submit" 
-    id="{% if id %}{{ id }}{% endif %}"
+    {% if id %}id="{{ id }}"{% endif %}
+    {% if form %}form="{{ form }}"{% endif %}
     class="{% if class %}{{ class }}{% else %}btn btn-primary{% endif %}"
     {% if disabled %}disabled{% endif %}
-        {% if submit_field.render_kw %}
-            {% if submit_field.render_kw.name %} name={{ submit_field.render_kw['name'] }} {% endif %}
-            {% if submit_field.render_kw.value %} value={{ submit_field.render_kw['value'] }} {% endif %}
-        {% endif %}>
-        <span class="btn-text">{{ submit_field.label.text }}</span>
+    {% if submit_field and submit_field.render_kw %}
+        {% if submit_field.render_kw.name %} name={{ submit_field.render_kw['name'] }} {% endif %}
+        {% if submit_field.render_kw.value %} value={{ submit_field.render_kw['value'] }} {% endif %}
+    {% endif %}>
+        <span class="btn-text">
+            {% if submit_field %}
+                {{ submit_field.label.text }}
+            {% else %}
+                {{ label }}
+            {% endif %}
+        </span>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
         <span class="visually-hidden">Loading...</span>
     </button>
@@ -87,7 +94,7 @@
         <div class="my-card">
             
             <!-- Header -->
-            <div class="row g-3 mb-4 align-items-center">
+            <div class="row g-2 mb-4 align-items-center">
                 <div class="col-auto">
                     <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                 </div>

@@ -124,7 +124,7 @@ a:hover {
     color: var(--colour-dark);
 }
 
-i {
+i:not(:only-child) {
     margin-right: 3px;
 }
 
@@ -241,6 +241,7 @@ textarea {
 .btn-primary:hover, 
 .btn-primary:focus,
 .btn-primary:active,
+.btn-primary:first-child:active,
 .btn:focus-visible,
 .btn-primary.active,
 :not(.btn-check)+.btn:active {
@@ -268,16 +269,23 @@ textarea {
     border: solid 1px var(--colour-primary);
 }
 
-form .btn {
+form .btn,
+.row .btn {
     width: 100%;
 }
 
 .btn-icon {
     font-size: 1.2rem;
     color: var(--light-grey-text);
-    background: none !important;
-    height: auto !important;
     padding: 0;
+    height: auto !important;
+    background: none !important;
+    border: none !important;
+}
+
+
+.btn-icon i {
+    margin: 0;
 }
 
 .btn-icon i:hover {
@@ -365,10 +373,6 @@ table tr:hover .btn-icon {
     .my-card {
         width: 100%;
     }
-}
-
-.col-lg-auto {
-    min-width: 200px;
 }
 
 .list-group-flush > .list-group-item:first-child {

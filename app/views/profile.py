@@ -1,51 +1,18 @@
 import os
 
-from flask import Blueprint, current_app, jsonify, render_template, request, url_for
+from flask import Blueprint, current_app, jsonify, request
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app import db
-from app.forms.profile import ClientProfileForm, TherapistProfileForm, UserProfileForm
+from app.forms.profile import ClientProfileForm, UserProfileForm
 from app.models.client import Client
-from app.models.enums import UserRole
-from app.models.intervention import Intervention
 from app.models.issue import Issue
-from app.models.language import Language
-from app.models.therapist import Therapist
-from app.models.title import Title
-from app.utils.decorators import client_required, therapist_required
+from app.utils.decorators import client_required
 from app.utils.files import get_file_extension
 from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("profile", __name__)
-
-
-@bp.route("/profile", methods=["GET"])
-@login_required
-def profile():
-    user_form = UserProfileForm(
-        obj=current_user,
-        id="user-profile",
-        endpoint=url_for("profile.user_profile"),
-    )
-
-    if current_user.role == UserRole.THERAPIST:
-        role_form = TherapistProfileForm(
-            obj=current_user.therapist,
-            id="therapist-profile",
-            endpoint=url_for("therapists.therapist", therapist_id=current_user.therapist.id),
-        )
-
-    elif current_user.role == UserRole.CLIENT:
-        role_form = ClientProfileForm(
-            obj=current_user.client,
-            id="client-profile",
-            endpoint=url_for("profile.client_profile"),
-        )
-
-    return render_template(
-        "profile.html", UserRole=UserRole, user_form=user_form, role_form=role_form
-    )
 
 
 @bp.route("/profile/user", methods=["POST"])
@@ -83,7 +50,6 @@ def user_profile():
             ),
         }
     )
-
 
 
 @bp.route("/profile/client", methods=["POST"])

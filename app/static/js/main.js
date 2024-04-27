@@ -35,6 +35,27 @@ $(document).ready(function() {
     });
     
 
+    // Check URL for a 'section' parameter to determine the default section
+    let params = new URLSearchParams(window.location.search);
+    let defaultSection = params.get('section') || $('#section-selector').data('default-section');
+    if (defaultSection) {
+        
+        defaultSectionID = '#' + defaultSection;
+        
+        // Hide all other sections
+        $('.section').hide();
+        
+        // Show first section if default section does not exist
+        if ($(defaultSectionID).length == 0) {
+            defaultSectionID = '#' + $('#section-selector .list-group-item:first').data('target');
+        }
+        
+        // Show default section
+        $(defaultSectionID).show();
+        $('#section-selector .list-group-item[data-target="' + defaultSectionID + '"]').addClass('active');
+    }
+
+    
     // Toggle section when corresponding item in section selector is clicked
     $('#section-selector .list-group-item').click(function() {
     
@@ -48,16 +69,20 @@ $(document).ready(function() {
         // Show the section corresponding to the clicked item
         var target = $(this).data('target');
         $(target).show();
+
+         // Update the URL query string with the new section
+        var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=' + target.substring(1);
+        window.history.pushState({ path: newUrl }, '', newUrl);
     });
     
 
     // Function to toggle disabled attribute on input fields and button visibility
-    $('.edit-disabled-form-button').click(function() {
+    $('.enable-form-btn').click(function() {
         var formId = $(this).attr('form');
         $(':input[form="' + formId + '"]').prop('disabled', false);
-        $(this).addClass('hidden');
         $('span[data-bs-target="#deleteAppointmentTypeModal"][form="' + formId + '"]').removeClass('hidden');
-        $('button[type="submit"][form="' + formId + '"]').removeClass('hidden');
+        $('button[form="' + formId + '"]').parent().removeClass('hidden');
+        $(this).parent().addClass('hidden');
     });
 
 

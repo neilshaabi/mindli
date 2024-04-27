@@ -1,12 +1,24 @@
-from wtforms import (BooleanField, DateField, IntegerField, SelectField,
-                     StringField, SubmitField, TextAreaField, TimeField)
+from wtforms import (
+    BooleanField,
+    DateField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+    TimeField,
+)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.constants import CURRENCIES
-from app.forms import (CustomFlaskForm, CustomSelectField,
-                       CustomSelectMultipleField)
-from app.models.enums import (AppointmentStatus, PaymentStatus, TherapyMode,
-                              TherapyType, UserRole)
+from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.models.enums import (
+    AppointmentStatus,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 
@@ -30,7 +42,7 @@ class BookAppointmentForm(CustomFlaskForm):
                 (
                     at.id,
                     (
-                        f"{at.therapy_type.value}, {at.therapy_mode.value} ({at.duration} minutes) - {at.fee_amount} {at.fee_currency}"
+                        f"{at.therapy_type.value}, {at.therapy_mode.value} ({at.duration} minutes) - {at.fee_currency}{at.fee_amount}"
                     ),
                 )
                 for at in therapist.active_appointment_types

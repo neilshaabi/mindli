@@ -62,11 +62,17 @@ class MinimumFeeAmount:
         amount = form.fee_amount.data
         currency = form.fee_currency.data
 
+        if not currency:
+            return
+
         if currency != "USD":
-            converter = CurrencyConverter()
-            amount = converter.convert(
-                amount=amount, currency=currency, new_currency="USD"
-            )
+            try:
+                converter = CurrencyConverter()
+                amount = converter.convert(
+                    amount=amount, currency=currency, new_currency="USD"
+                )
+            except ValueError:
+                return
 
         # Minimum amount for a Stripe charge
         if amount < 0.5:

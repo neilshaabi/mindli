@@ -158,6 +158,8 @@ def fake_therapist_profile(
         qualifications="Doctor of Psychology in Clinical Psychology, NUS",
         registrations="Singapore Psychological Society (SPS)",
     )
+    db.session.add(fake_therapist_profile)
+    db.session.commit()
 
     yield fake_therapist_profile
 
