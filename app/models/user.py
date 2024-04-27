@@ -54,6 +54,10 @@ class User(UserMixin, SeedableMixin, db.Model):
         back_populates="author", cascade="all, delete-orphan"
     )
 
+    @property
+    def full_name(self) -> str:
+        return f"{self.first_name} {self.last_name}"
+
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
         # Create a fake email that doesn't already exist in the database
@@ -131,7 +135,3 @@ class User(UserMixin, SeedableMixin, db.Model):
 
         db.session.commit()
         return
-
-    @property
-    def full_name(self) -> str:
-        return f"{self.first_name} {self.last_name}"

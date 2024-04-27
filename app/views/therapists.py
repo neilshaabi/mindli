@@ -57,8 +57,8 @@ def new_therapist() -> Response:
             url_for("therapists.therapist", therapist_id=current_user.therapist.id)
         )
 
-    # Set default section to edit profile page
-    default_section = "edit-profile"
+    # Create mock Therapist to pass to template
+    mock_therapist = Therapist(user=current_user)
 
     # Initialise dictionary to hold all forms
     forms = {
@@ -85,7 +85,8 @@ def new_therapist() -> Response:
     # Render template with information for this therapist
     return render_template(
         "therapist.html",
-        default_section=default_section,
+        therapist=mock_therapist,
+        default_section="edit-profile",
         forms=forms,
     )
 
@@ -102,13 +103,19 @@ def create() -> Response:
         return jsonify({"success": False, "errors": form.errors})
 
     # Update Therapist with form data
-    therapist = Therapist()
-    therapist.country = form.country.data
-    therapist.link = form.link.data
-    therapist.location = form.location.data
-    therapist.years_of_experience = form.years_of_experience.data
-    therapist.qualifications = form.qualifications.data
-    therapist.registrations = form.registrations.data
+    therapist = Therapist(
+        user_id=current_user.id,
+        years_of_experience=form.years_of_experience.data,
+        qualifications=form.qualifications.data,
+        registrations=form.registrations.data,
+        country=form.country.data,
+        location=form.location.data,
+        link=form.link.data,
+    )
+    db.session.add(therapist)
+    db.session.commit()
+
+    # Update data in association tables
     form.titles.update_association_data(
         parent=therapist, child=Title, children="titles"
     )
@@ -121,16 +128,14 @@ def create() -> Response:
     form.interventions.update_association_data(
         parent=therapist, child=Intervention, children="interventions"
     )
-
     db.session.commit()
 
-    # Flash message using AJAX
+    # Redirect to therapist profile
+    flash("Profile created", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message_html": get_flashed_message_html(
-                "Profile updated successfully", "success"
-            ),
+            "url": url_for("therapists.therapist", therapist_id=therapist.id),
         }
     )
 
@@ -147,9 +152,6 @@ def therapist(therapist_id: int) -> Response:
     if not therapist:
         flash("Therapist not found", "error")
         return redirect(url_for("therapists.index"))
-
-    # Retrieve section to display as open from query parameter
-    default_section = request.args.get("section", "profile")
 
     # Initialise dictionary to hold all forms
     forms = {
@@ -220,7 +222,7 @@ def therapist(therapist_id: int) -> Response:
     return render_template(
         "therapist.html",
         therapist=therapist,
-        default_section=default_section,
+        default_section=request.args.get("section", "profile"),
         TherapyType=TherapyType,
         TherapyMode=TherapyMode,
         forms=forms,
@@ -280,7 +282,7 @@ def update(therapist_id: int) -> Response:
         {
             "success": True,
             "flashed_message_html": get_flashed_message_html(
-                "Profile updated successfully", "success"
+                "Profile updated", "success"
             ),
         }
     )

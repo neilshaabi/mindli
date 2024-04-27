@@ -30,7 +30,7 @@ def index():
     elif current_user.role == UserRole.CLIENT:
         if current_user.client:
             return redirect(
-                url_for("clients.client", therapist_id=current_user.therapist.id)
+                url_for("clients.client", therapist_id=current_user.client.id)
             )
         else:
             return redirect(url_for("clients.new_client"))
@@ -40,7 +40,7 @@ def index():
         return redirect(url_for("main.index"))
 
 
-@bp.route("/profile/user", methods=["POST"])
+@bp.route("/user", methods=["POST"])
 @login_required
 def user_profile():
     # Generate form for personal information common to all users
@@ -77,7 +77,7 @@ def user_profile():
     )
 
 
-@bp.route("/profile/client", methods=["POST"])
+@bp.route("/client", methods=["POST"])
 @login_required
 @client_required
 def client_profile():
