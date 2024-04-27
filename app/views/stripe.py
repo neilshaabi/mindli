@@ -22,17 +22,6 @@ from app.utils.mail import send_appointment_update_email
 bp = Blueprint("stripe", __name__, url_prefix="/stripe")
 
 
-@bp.route("/", methods=["GET"])
-@login_required
-@therapist_required
-def stripe_entry():
-    form = CreateStripeAccountForm(
-        id="create_stripe_account",
-        endpoint=url_for("stripe.create_account"),
-    )
-    return render_template("stripe.html", form=form)
-
-
 @bp.route("/create-account", methods=["POST"])
 @login_required
 @therapist_required
@@ -47,23 +36,13 @@ def create_account():
                 "name": current_user.full_name,
                 "mcc": "8099",  # Medical Services
                 "product_description": "Mindli provides online psychotherapy services, connecting mental health practioners with clients for support. Services include individual, couples and family therapy sessions.",
-                "url": url_for(
-                    "therapists.therapist",
-                    therapist_id=current_user.therapist.id,
-                    _external=True,
-                ),
-            },
-            settings={
-                "dashboard": {
-                    "display_name": current_user.full_name,
-                }
             },
         )
 
         account_link = stripe.AccountLink.create(
             account=account.id,
             type="account_onboarding",
-            refresh_url=url_for("stripe.refresh", _external=True),
+            refresh_url=url_for("stripe.stripe_refresh", _external=True),
             return_url=url_for(
                 "stripe.stripe_return", account_id=account.id, _external=True
             ),
@@ -129,7 +108,7 @@ def stripe_return():
 
     # Successfully completed onboarding
     flash(
-        "Your Stripe onboarding is complete, and you can now receive payments",
+        "Successfully completed Stripe onboarding",
         "success",
     )
     return render_template("onboarding_complete.html")

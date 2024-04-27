@@ -1,9 +1,8 @@
 /* General */
 
 :root {
-    --colour-primary: #635bff;
-    --colour-dark: #533afd;
-    --colour-primary-rgb: 99, 91, 255;
+    --colour-primary: #33a98f;
+    --colour-dark: #009473;
     
     --light-grey-bg: #f8fafc;
     --light-grey-outline: #e0e1e4;
@@ -144,8 +143,14 @@ i:not(:only-child) {
     text-align: left;
 }
 
+.form-floating > .form-control {
+    height: var(--my-form-height);
+    min-height: var(--my-form-height);
+}
+
 .form-control {
     height: var(--my-form-height);
+    min-height: var(--my-form-height);
     padding: var(--my-form-padding);
     color: var(--dark-grey-text);
     background: white;
@@ -158,7 +163,6 @@ i:not(:only-child) {
     color: var(--dark-grey-text);
     border-color: var(--colour-primary);
     outline: none;
-    box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
 }
 
 .form-control:disabled,
@@ -207,10 +211,6 @@ textarea {
     border-color: var(--colour-primary);
 }
 
-.form-check-input:focus {
-    box-shadow: 0 0 0 .25rem rgba(var(--colour-primary-rgb), .25);
-}
-
 /* Buttons */
 
 .btn {
@@ -221,13 +221,6 @@ textarea {
     display: flex;
     justify-content: center;
     align-items: center;
-}
- 
-.btn:focus,
-.btn:active,
-.btn:focus-visible {
-    outline: none;
-    box-shadow: none;
 }
 
 .btn-primary,
@@ -242,9 +235,9 @@ textarea {
 .btn-primary:focus,
 .btn-primary:active,
 .btn-primary:first-child:active,
-.btn:focus-visible,
+.btn-primary:focus-visible,
 .btn-primary.active,
-:not(.btn-check)+.btn:active {
+:not(.btn-check)+.btn-primary:active {
     background: var(--colour-dark);
     border-color: var(--colour-dark);
 }
@@ -358,6 +351,10 @@ table tr:hover .btn-icon {
 
 
 /* Containers */
+
+.col-lg-auto {
+    min-width: 180px;
+}
 
 .my-card {
     color: var(--dark-grey-text);
@@ -539,6 +536,10 @@ table tr:hover .btn-icon {
 .accordion-item {
     color: var(--dark-grey-text);
     border: none;
+}
+
+.accordion-body {
+    padding: 0.5rem 1.25rem;
 }
 
 .accordion-button {

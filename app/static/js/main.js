@@ -26,13 +26,22 @@ $(document).ready(function() {
     });
 
     
-    // Initially disable all submit buttons
-    $('form').find(':submit.btn-primary').prop('disabled', true);
-    
-    // Enable submit button after changes in any input, textarea or select element within forms
-    $('form').on('change input', 'input, textarea, select', function() {
-        $(this).closest('form').find(':submit').prop('disabled', false);
+    // Disable submit buttons in forms with input elements until changed
+    $('form').each(function() {
+        var form = $(this);
+
+        // Do not disable buttons with no visible input elements
+        if (form.find('input[type!=hidden], textarea, select').length > 0) {
+            form.find(':submit').prop('disabled', true);
+
+            // Attach an event listener to enable the submit button when any visible input, textarea, or select element changes
+            form.on('change input', 'input[type!=hidden], textarea, select', function() {
+                form.find(':submit').prop('disabled', false);
+            });
+        }
     });
+
+
     
 
     // Check URL for a 'section' parameter to determine the default section

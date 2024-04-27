@@ -2,7 +2,7 @@
     <div class='container-fluid'>
 
         <a class='navbar-brand' href='/'>
-            <img src="{{ url_for('static', filename='img/logos/logo-primary.png') }}" alt="mindli-logo">
+            <img src="{{ url_for('static', filename='img/logos/logo.png') }}" alt="mindli-logo">
             mindli
         </a>
 
@@ -12,8 +12,12 @@
             <li class="nav-item">
                 <a class="nav-link" href="/dashboard">Dashboard</a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="/profile">Profile</a>
+            <li class="nav-item">    
+                {% if current_user.role == UserRole.THERAPIST %}
+                    <a class="nav-link" href="{{ url_for('therapists.therapist', therapist_id=current_user.therapist.id) }}">Profile</a>
+                {% elif current_user.role == UserRole.CLIENT %}
+                    <a class="nav-link" href="/profile">Profile</a>
+                {% endif %}
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/messages">Messages</a>
@@ -22,7 +26,7 @@
                 <a class="nav-link" href="{{ url_for('appointments.index') }}">Appointments</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/therapists/">Therapists</a>
+                <a class="nav-link" href="{{ url_for('therapists.index') }}">Therapists</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/settings">Settings</a>

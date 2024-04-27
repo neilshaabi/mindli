@@ -17,6 +17,7 @@ from app import db
 from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
 from app.forms.appointments import BookAppointmentForm
 from app.forms.profile import UserProfileForm
+from app.forms.stripe import CreateStripeAccountForm
 from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType, UserRole
@@ -75,6 +76,7 @@ def therapist(therapist_id: int) -> Response:
     delete_appt_type_form = None
     update_appt_type_forms = []
     book_appointment_form = None
+    stripe_onboarding_form = None
 
     # Initialise forms for current user to edit their profile
     if therapist.user.id == current_user.id:
@@ -114,6 +116,11 @@ def therapist(therapist_id: int) -> Response:
             for appointment_type in therapist.active_appointment_types
         ]
 
+        stripe_onboarding_form = CreateStripeAccountForm(
+            id="stripe-onboarding-form",
+            endpoint=url_for("stripe.create_account"),
+        )
+
     # Initialise form for client to book an appointment with this therapist
     elif current_user.role == UserRole.CLIENT:
         book_appointment_form = BookAppointmentForm(
@@ -138,6 +145,7 @@ def therapist(therapist_id: int) -> Response:
         delete_appt_type_form=delete_appt_type_form,
         update_appt_type_forms=update_appt_type_forms,
         book_appointment_form=book_appointment_form,
+        stripe_onboarding_form=stripe_onboarding_form,
     )
 
 
