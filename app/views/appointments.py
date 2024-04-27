@@ -597,7 +597,7 @@ def filter():
         # Construct template string to insert updated appointments via AJAX
         appointments_html = render_template_string(
             """
-            {% from "_macros.html" import appointment_row %}
+            {% from "_macros.html" import appointment_row with context %}
             {% for appointment in appointments %}
                 {{ appointment_row(appointment) }}
             {% endfor %}

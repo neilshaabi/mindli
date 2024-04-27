@@ -89,85 +89,248 @@
 {% endmacro %}
 
 
-{% macro therapist_card(therapist) %}
-    <div class="col-lg-6">
-        <div class="my-card">
-            
-            <!-- Header -->
-            <div class="row g-2 mb-4 align-items-center">
-                <div class="col-auto">
-                    <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
-                </div>
-                <div class="col">
-                    <div class="row">
-                        <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
-                    </div>
-                    <div class="row">
-                        <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Body -->
-            <div class="row mb-4">
+{% macro therapist_cards(therapists) %}
+    {% for therapist in therapists %}
+        <div class="col-lg-6">
+            <div class="my-card">
                 
-                <div class="col-12 mb-3">
-                    <div class="row mb-1 text-muted">Experience</div>
-                    <div class="row">{{ therapist.years_of_experience }} years</div>
-                </div>
-                
-                <div class="col-12 mb-3">
-                    <div class="row mb-1">
-                        Based in
+                <!-- Header -->
+                <div class="row g-4 mb-4 align-items-center">
+                    <div class="col-auto">
+                        <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                        </a>
                     </div>
-                    <div class="row">
-                        {{ therapist.country }}
-                    </div>
-                </div>
-                
-                TODO
-                
-                <div class="col-12 mb-3">
-                    <div class="row mb-1">
-                        Qualifications
-                    </div>
-                    <div class="row">
-                        {{ therapist.qualifications }}
+                    <div class="col">
+                        <div class="row">
+                            <h5 class="mb-1">
+                                <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}">
+                                    {{ therapist.user.full_name }}
+                                </a>
+                            </h5>
+                        </div>
+                        <div class="row">
+                            <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                        </div>
                     </div>
                 </div>
 
+                <hr>
 
-                <p class="p-0">
-                    Types: 
-                    {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
-                        {{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}
-                    {% endfor %}
-                </p>
-                <p class="p-0">
-                    Modes: 
-                    {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
-                        {{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}
-                    {% endfor %}
-                </p>
-                <p class="p-0">Languages: {{ therapist.languages|join(', ', 'name') }}</p>
-                <p class="p-0">Based in: {{ therapist.country }}</p>
-                <p class="p-0">Years of Experience: {{ therapist.years_of_experience }}</p>
-                <p class="p-0">
-                    Specialisations:
-                    {% for specialisation in therapist.specialisations %}
-                        {{ tag(label=specialisation.name) }}
-                    {% endfor %}
-                </p>
-                <p class="p-0">
-                    Interventions:
-                    {% for intervention in therapist.interventions %}
-                        {{ tag(label=intervention.name) }}
-                    {% endfor %}
-                </p>
-                <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}" class="btn btn-primary">View Profile</a>
+                <!-- Body -->
+                <div class="mt-4">
+                    <div class="accordion accordion-flush" id="profileAccordion">
+
+                        <!-- Personal details -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
+                                            Personal details
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Gender</div>
+                                                <div>{{ therapist.user.gender.value }}</div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Based in</div>
+                                                <div>{{ therapist.country if therapist.country else '' }}</div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Languages spoken</div>
+                                                <div>{{ therapist.languages|join(', ', 'name') }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Professional experience -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse{{ loop.index }}" aria-expanded="false" aria-controls="professionalExperienceCollapse{{ loop.index }}">
+                                                Professional experience
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="professionalExperienceCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Years of experience</div>
+                                                <div>{{ therapist.years_of_experience|string + ' years' if therapist.years_of_experience else '' }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Qualifications</div>
+                                                <div>{{ therapist.qualifications if therapist.qualifications else '' }}</div>
+                                            </div>
+                                        </div>
+
+                                        {% if therapist.registrations %}
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Registrations</div>
+                                                    <div>{{ therapist.registrations }}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="row mb-1 my-muted">
+                                                    <div class="col-12">Specialisations</div>
+                                                </div>
+                                                <div class="row g-1">
+                                                    {% for specialisation in therapist.specialisations %}
+                                                        <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="row mb-1 my-muted">
+                                                    <div class="col-12">Interventions</div>
+                                                </div>
+                                                <div class="row g-1">
+                                                    {% for intervention in therapist.interventions %}
+                                                        <div class="col-auto">{{ tag(label=intervention.name) }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% if therapist.link %}
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Website</div>
+                                                    <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Appointment details -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="appointmentDetailsCollapse{{ loop.index }}">
+                                            Appointment details
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="appointmentDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="row mb-1 my-muted">
+                                                    <div class="col-12">Therapy types offered</div>
+                                                </div>
+                                                <div class="row g-1">
+                                                    {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
+                                                        <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="row mb-1 my-muted">
+                                                    <div class="col-12">Modes supported</div>
+                                                </div>
+                                                <div class="row g-1">
+                                                    {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
+                                                        <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {% if therapist.location %}
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Location (in-person appointments)</div>
+                                                    <div>{{ therapist.location }}</div>
+                                                </div>
+                                            </div>
+                                        {% endif %}
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Durations</div>
+                                                <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|sort|join(' minutes, ') + ' minutes' if therapist.appointment_types else '' }} </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+
+                
+                <div class="row g-2 mt-4">
+                    {% if current_user.role == UserRole.THERAPIST %}    
+                        <div class="col-lg-12">
+                            <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id, section='profile') }}" class="btn btn-outline-primary">View Profile</a>
+                        </div>
+                    {% else %}
+                        <div class="col-lg-6">
+                            <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id, section='profile') }}" class="btn btn-outline-primary">View Profile</a>
+                        </div>
+                        <div class="col-lg-6">
+                            <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id, section='booking') }}" class="btn btn-outline-primary">Book Appointment</a>
+                        </div>
+                    {% endif %}
+                </div>
             </div>
         </div>
-    </div>
+    {% endfor %}
 {% endmacro %}
 
 
@@ -181,12 +344,10 @@
         <td>{{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=False) }}</td>
         <td>{{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=False) }}</td>
         <td>
-            <div class="btn-container">                
-                <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }}" class="btn btn-icon"
-                    data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="View details">
-                    <i class="fa-solid fa-chevron-right"></i>
-                </a>
-            </div>
+            <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }}" class="btn btn-icon"
+                data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="View details">
+                <i class="fa-solid fa-chevron-right"></i>
+            </a>
         </td>
     </tr>
 {% endmacro %}

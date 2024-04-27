@@ -34,7 +34,7 @@
     <body>
 
         <!-- Macros for reusable components across templates -->
-        {% from "_macros.html" import flashed_message, tag, submit_button, therapist_card, appointment_row %}
+        {% from "_macros.html" import flashed_message, tag, submit_button, therapist_cards, appointment_row with context %}
         
         <!-- Show navbar/sidebar depending on error and authentication status -->
         {% set layout_type = 'sidebar' if current_user.is_authenticated else 'navbar' %}

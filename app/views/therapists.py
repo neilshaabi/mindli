@@ -395,10 +395,8 @@ def filter() -> Response:
         # Construct template strings to insert updated therapists via AJAX
         therapists_html = render_template_string(
             """
-            {% from "_macros.html" import therapist_card %}
-            {% for therapist in therapists %}
-                {{ therapist_card(therapist) }}
-            {% endfor %}
+            {% from "_macros.html" import therapist_card with context %}
+            {{ therapist_cards(therapists) }}
         """,
             therapists=filtered_therapists,
         )

@@ -242,24 +242,29 @@ textarea {
     border-color: var(--colour-dark);
 }
 
-.btn-outline-primary-faded {
-    color: var(--light-grey-text);
-    background: transparent;
-    border: solid 1px var(--light-grey-outline);
-}
-
 .btn-outline-primary {
     color: var(--colour-primary);
     background: transparent;
-    border: solid 1px var(--colour-primary);
+    border-color: var(--colour-primary);
 }
 
-.btn-outline-primary-faded:hover,
+.btn-outline-primary:hover,
+.btn-outline-primary:active,
+.btn-outline-primary:first-child:active,
+.btn-outline-primary:focus-visible,
+.btn-outline-primary.active,
+:not(.btn-check)+.btn-outline-primary:active {
+    color: white;
+    background: var(--colour-primary);
+    border-color: var(--colour-primary);
+}
+
+
 .btn-check + .btn:hover,
 .btn-check:checked + .btn {
     color: white;
     background: var(--colour-primary);
-    border: solid 1px var(--colour-primary);
+    border-color: var(--colour-primary);
 }
 
 form .btn,
@@ -274,11 +279,6 @@ form .btn,
     height: auto !important;
     background: none !important;
     border: none !important;
-}
-
-
-.btn-icon i {
-    margin: 0;
 }
 
 .btn-icon i:hover {
@@ -305,26 +305,6 @@ form .btn,
 
 /* Tables */
 
-.my-table {
-    width: 100%;
-    vertical-align: center;
-}
-
-.my-table tr {
-    border-bottom: solid 1px var(--light-grey-outline);
-}
-
-.my-table td {
-    padding: 8px;
-}
-
-.my-table .btn-container {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
 .table>:not(caption)>*>* {
     color: var(--dark-grey-text);
 }
@@ -332,21 +312,6 @@ form .btn,
 
 table th {
     font-weight: 500;
-}
-
-.table tr:hover {
-    background-color: var(--light-grey-bg) !important;
-}
-
-table tr .btn-icon {
-    opacity: 0;
-    pointer-events: none;
-    transition: var(--my-transition);
-}
-
-table tr:hover .btn-icon {
-    opacity: 1;
-    pointer-events: auto;
 }
 
 
