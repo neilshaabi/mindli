@@ -50,13 +50,13 @@ main {
     padding: 3rem;
 }
 
-main.navbar-layout {
+body > .navbar ~ main {
     top: var(--navbar-height);
 }
 
-main.sidebar-layout {
-    width: calc(100% - var(--sidebar-width));
+body > .sidebar ~ main {
     left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
 }
 
 
@@ -341,6 +341,7 @@ table th {
     color: var(--dark-grey-text);
     background: white;
     box-shadow: var(--my-box-shadow);
+    height: 100%;
     width: 100%;
     padding: 3rem;
     border-radius: var(--my-border-radius);

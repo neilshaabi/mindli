@@ -95,7 +95,7 @@
             <div class="my-card">
                 
                 <!-- Header -->
-                <div class="row g-3 mb-4 align-items-center">
+                <div class="row g-2 mb-4 align-items-center">
                     <div class="col-auto">
                         <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}">
                             <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
@@ -110,7 +110,7 @@
                             </h5>
                         </div>
                         <div class="row">
-                            <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                            <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                         </div>
                     </div>
                 </div>
@@ -266,7 +266,7 @@
                                         <div class="row mb-3">
                                             <div class="col-12">
                                                 <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Therapy types offered</div>
+                                                    <div class="col-12">Therapy types</div>
                                                 </div>
                                                 <div class="row g-1">
                                                     {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
@@ -361,7 +361,7 @@
             <div class="my-card">
                 
                 <!-- Header -->
-                <div class="row g-3 mb-4 align-items-center">
+                <div class="row g-2 mb-4 align-items-center">
                     <div class="col-auto">
                         <a href="{{ url_for('clients.client', client_id=client.id) }}">
                             <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
@@ -376,7 +376,7 @@
                             </h5>
                         </div>
                         <div class="row">
-                            <span class="text-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
+                            <span class="my-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
                         </div>
                     </div>
                 </div>

@@ -27,7 +27,7 @@
                             {% for conversation in conversations %}
 
                                 <li class="list-group-item list-group-item-action p-3" data-target="#{{ conversation.id }}">
-                                    <div class="row g-3 align-items-center">
+                                    <div class="row g-2 align-items-center">
                                         <div class="col-auto">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
                                         </div>
@@ -39,7 +39,7 @@
                                             </div>
                                             <div class="row">
                                                 <div class="col">
-                                                    <span class="text-muted text-s">
+                                                    <span class="my-muted text-s">
                                                         {% if conversation.messages %}
                                                             {{ conversation.latest_message_content | truncate(25, '...') }}
                                                         {% else %}
@@ -74,7 +74,7 @@
                             <div id="{{ conversation.id }}" class="section hidden">
                             
                                 <!-- Header -->
-                                <div class="row g-3 mb-4 align-items-center">
+                                <div class="row g-2 mb-4 align-items-center">
                                     <div class="col-auto">
                                         <a href="TODO">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
@@ -89,7 +89,7 @@
                                             </h5>
                                         </div>
                                         <div class="row">
-                                            <span class="text-muted">{{ conversation.other_user.role.value }}</span>
+                                            <span class="my-muted">{{ conversation.other_user.role.value }}</span>
                                         </div>
                                     </div>
                                 </div>

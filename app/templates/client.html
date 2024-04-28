@@ -98,12 +98,12 @@
                 <div class="my-card">
                     
                     <!-- Client profile section-->
-                    <div id="profile" class="section">
+                    <div id="profile" class="section hidden">
                         <div class="row mb-3">
                             <div class="col-12">
                                 
                                 <!-- Header -->
-                                <div class="row g-3 mb-4 align-items-center">
+                                <div class="row g-2 mb-4 align-items-center">
                                     <div class="col-auto">
                                         <a href="{{ url_for('clients.client', client_id=client.id) }}">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
@@ -118,7 +118,7 @@
                                             </h5>
                                         </div>
                                         <div class="row">
-                                            <span class="text-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
+                                            <span class="my-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -276,7 +276,7 @@
                     {% if client.is_current_user %}
                         
                         <!-- Edit profile section-->
-                        <div id="edit-profile" class="section">
+                        <div id="edit-profile" class="section hidden">
                             <div class="row mb-3">
                                 <div class="col-12">
                                     
