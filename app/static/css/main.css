@@ -440,13 +440,13 @@ table th {
     object-fit: cover;
 }
 
+.list-group-item .profile-picture {
+    height: 50px;
+    width: 50px;
+}
+
 
 /* Messages */
-
-.selected-conversation {
-    background: var(--light-grey-bg);
-    border-radius: var(--my-border-radius);
-}
 
 .message {
     display: inline-block;
@@ -463,6 +463,11 @@ table th {
 .message.from_other_user {
     float: left !important;
     background: var(--light-grey-bg);
+}
+
+.messages-container {
+    height: 400px;
+    overflow-y: auto;
 }
 
 

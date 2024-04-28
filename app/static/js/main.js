@@ -84,9 +84,23 @@ $(document).ready(function() {
         var target = $(this).data('target');
         $(target).show();
 
-         // Update the URL query string with the new section
+        var messagesContainer = $(target).find('.messages-container');
+        messagesContainer.scrollTop(messagesContainer.prop('scrollHeight'));
+
+        // Update the URL query string with the new section
         var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=' + target.substring(1);
         window.history.pushState({ path: newUrl }, '', newUrl);
+
+        // Adjust height of messages selector
+        adjustMessagesSelectorHeight();
+        $(window).resize(adjustMessagesSelectorHeight);
+    });
+
+    
+    // Set scroll position to bottom for messages
+    $(window).on('load', function() {
+        var messagesContainer = $('.messages-container');
+        messagesContainer.scrollTop(messagesContainer.prop('scrollHeight'));
     });
     
 
