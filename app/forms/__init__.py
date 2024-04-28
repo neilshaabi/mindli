@@ -1,6 +1,7 @@
 from enum import Enum
 from typing import List, Type, Union
 
+from flask import session
 from flask_sqlalchemy.model import Model
 from flask_wtf import FlaskForm
 from wtforms import SelectField, SelectMultipleField
@@ -9,10 +10,16 @@ from app import db
 
 
 class CustomFlaskForm(FlaskForm):
-    def __init__(self, id=None, endpoint=None, *args, **kwargs):
+    def __init__(self, id=None, endpoint=None, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
         self.id = id
         self.endpoint = endpoint
+
+    def store_data_in_session(self, session_key: str) -> None:
+        session[session_key] = {}
+        for field_name, field in self._fields.items():
+            if field_name != "csrf_token":
+                session[session_key][field_name] = field.data
 
 
 class SelectFieldMixin:

@@ -23,6 +23,7 @@ from app.utils.decorators import therapist_required
 from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("therapists", __name__, url_prefix="/therapists")
+FILTERS_SESSION_KEY = "therapist_filters"
 
 
 @bp.route("/", methods=["GET"])
@@ -32,7 +33,7 @@ def index() -> Response:
     filter_form = FilterTherapistsForm(
         id="filter-therapists",
         endpoint=url_for("therapists.filter"),
-        data=session.get("therapist_filters", {}),
+        data=session.get(FILTERS_SESSION_KEY, {}),
     )
 
     # Fetch all active therapists
@@ -307,21 +308,9 @@ def filter() -> Response:
     # Handle submissions via different submit buttons separately
     submit_action = request.form["submit"]
 
-    # Store filter settings in the session
     if submit_action == "filter":
-        session["therapist_filters"] = {
-            "name": form.name.data,
-            "therapy_type": form.therapy_type.data,
-            "therapy_mode": form.therapy_mode.data,
-            "duration": form.duration.data,
-            "titles": form.titles.data,
-            "years_of_experience": form.years_of_experience.data,
-            "gender": form.gender.data,
-            "language": form.language.data,
-            "country": form.country.data,
-            "specialisations": form.specialisations.data,
-            "interventions": form.interventions.data,
-        }
+        # Store filter settings in the session
+        form.store_data_in_session(FILTERS_SESSION_KEY)
 
         # Begin building the base query
         query = db.select(Therapist).join(User).where(User.active)
@@ -421,5 +410,5 @@ def filter() -> Response:
 
     # Clear filter settings from the session if they exist
     elif submit_action == "reset_filters":
-        session.pop("therapist_filters", None)
+        session.pop(FILTERS_SESSION_KEY, None)
         return jsonify({"success": True, "url": url_for("therapists.index")})

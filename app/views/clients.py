@@ -18,6 +18,7 @@ from app.utils.decorators import client_required, therapist_required
 from app.utils.formatters import age_to_date_of_birth, get_flashed_message_html
 
 bp = Blueprint("clients", __name__, url_prefix="/clients")
+FILTERS_SESSION_KEY = "client_filters"
 
 
 @bp.route("/", methods=["GET"])
@@ -28,7 +29,7 @@ def index() -> Response:
     filter_form = FilterClientsForm(
         id="filter-clients",
         endpoint=url_for("clients.filter"),
-        data=session.get("client_filters", {}),
+        data=session.get(FILTERS_SESSION_KEY, {}),
     )
 
     # Retrieve client IDs through appointments with the current therapist
@@ -246,17 +247,9 @@ def filter() -> Response:
     # Handle submissions via different submit buttons separately
     submit_action = request.form["submit"]
 
-    # Store filter settings in the session
     if submit_action == "filter":
-        session["client_filters"] = {
-            "name": form.name.data,
-            "gender": form.gender.data,
-            "min_age": form.min_age.data,
-            "max_age": form.max_age.data,
-            "occupation": form.occupation.data,
-            "issues": form.issues.data,
-            "referral_source": form.referral_source.data,
-        }
+        # Store filter settings in the session
+        form.store_data_in_session(FILTERS_SESSION_KEY)
 
         # Retrieve client IDs through appointments with the current therapist
         client_ids_query = (
@@ -329,5 +322,5 @@ def filter() -> Response:
 
     # Clear filter settings from the session if they exist
     elif submit_action == "reset_filters":
-        session.pop("client_filters", None)
+        session.pop(FILTERS_SESSION_KEY, None)
         return jsonify({"success": True, "url": url_for("clients.index")})

@@ -26,6 +26,7 @@ from app.utils.mail import send_appointment_update_email
 from app.views.stripe import create_checkout_session
 
 bp = Blueprint("appointments", __name__, url_prefix="/appointments")
+FILTERS_SESSION_KEY = "appointment_filters"
 
 
 @bp.route("/", methods=["GET"])
@@ -49,21 +50,17 @@ def index():
     )
 
     # Convert dates stored as str in session to initialise filter form
-    filters_from_session = session.get("appointment_filters", {})
-    if "start_date" in filters_from_session and filters_from_session["start_date"]:
-        filters_from_session["start_date"] = convert_str_to_date(
-            filters_from_session["start_date"]
-        )
-    if "end_date" in filters_from_session and filters_from_session["end_date"]:
-        filters_from_session["end_date"] = convert_str_to_date(
-            filters_from_session["end_date"]
-        )
+    filters = session.get(FILTERS_SESSION_KEY, {})
+    if "start_date" in filters and filters["start_date"]:
+        filters["start_date"] = convert_str_to_date(filters["start_date"])
+    if "end_date" in filters and filters["end_date"]:
+        filters["end_date"] = convert_str_to_date(filters["end_date"])
 
     # Initialise filter form with fields prepopulated from session
     filter_form = FilterAppointmentsForm(
         id="filter-appointments",
         endpoint=url_for("appointments.filter"),
-        data=filters_from_session,
+        data=filters,
     )
 
     # Render the page with the appointment forms
@@ -460,47 +457,25 @@ def exercise(appointment_id: int) -> Response:
 @bp.route("/filter", methods=["POST"])
 @login_required
 def filter():
-    filter_form = FilterAppointmentsForm()
+    form = FilterAppointmentsForm()
 
     # Invalid form submission - return errors
-    if not filter_form.validate_on_submit():
-        return jsonify({"success": False, "errors": filter_form.errors})
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
 
     # Handle submissions via different submit buttons separately
     submit_action = request.form["submit"]
 
     # Store filter settings in the session
     if submit_action == "filter":
-        session["appointment_filters"] = {
-            "name": filter_form.name.data,
-            "start_date": filter_form.start_date.data,
-            "end_date": filter_form.end_date.data,
-            "appointment_status": filter_form.appointment_status.data,
-            "payment_status": filter_form.payment_status.data,
-            "therapy_type": filter_form.therapy_type.data,
-            "therapy_mode": filter_form.therapy_mode.data,
-            "duration": filter_form.duration.data,
-            "fee_currency": filter_form.fee_currency.data,
-            "notes": filter_form.notes.data,
-            "issues": filter_form.issues.data,
-            "interventions": filter_form.interventions.data,
-            "exercise_title": filter_form.exercise_title.data,
-            "exercise_description": filter_form.exercise_description.data,
-            "exercise_completed": filter_form.exercise_completed.data,
-        }
-
-        # TODO: Create a dictionary to store the filters
-        # filters = {}
-        # for field_name, field_object in filter_form._fields.items():
-        #     filters[field_name] = field_object.data
-        # session["appointment_filters"] = filters
+        form.store_data_in_session(FILTERS_SESSION_KEY)
 
         # Begin building the base query
         query = db.select(Appointment)
 
         # Apply filters by extending the query with conditions for each filter
-        if filter_form.name.data:
-            search_term = f"%{filter_form.name.data.lower()}%"
+        if form.name.data:
+            search_term = f"%{form.name.data.lower()}%"
             query = (
                 query.join(Client)
                 .join(User)
@@ -509,80 +484,78 @@ def filter():
                 )
             )
 
-        if filter_form.start_date.data:
-            query = query.where(Appointment.time >= filter_form.start_date.data)
+        if form.start_date.data:
+            query = query.where(Appointment.time >= form.start_date.data)
 
-        if filter_form.end_date.data:
-            query = query.where(Appointment.time <= filter_form.end_date.data)
+        if form.end_date.data:
+            query = query.where(Appointment.time <= form.end_date.data)
 
-        if filter_form.appointment_status.data:
-            appointment_status = AppointmentStatus[filter_form.appointment_status.data]
+        if form.appointment_status.data:
+            appointment_status = AppointmentStatus[form.appointment_status.data]
             query = query.where(Appointment.appointment_status == appointment_status)
 
-        if filter_form.payment_status.data:
-            payment_status = PaymentStatus[filter_form.payment_status.data]
+        if form.payment_status.data:
+            payment_status = PaymentStatus[form.payment_status.data]
             query = query.where(Appointment.payment_status == payment_status)
 
-        if filter_form.therapy_type.data:
-            types = [TherapyType[t] for t in filter_form.therapy_type.data]
+        if form.therapy_type.data:
+            types = [TherapyType[t] for t in form.therapy_type.data]
             type_conditions = [
                 Appointment.appointment_type.has(therapy_type=t) for t in types
             ]
             query = query.filter(or_(*type_conditions))
 
-        if filter_form.therapy_mode.data:
-            modes = [TherapyMode[mode] for mode in filter_form.therapy_mode.data]
+        if form.therapy_mode.data:
+            modes = [TherapyMode[mode] for mode in form.therapy_mode.data]
             mode_conditions = [
                 Appointment.appointment_type.has(therapy_mode=mode) for mode in modes
             ]
             query = query.filter(or_(*mode_conditions))
 
-        if filter_form.duration.data:
+        if form.duration.data:
             query = query.where(
-                Appointment.appointment_type.has(duration=filter_form.duration.data)
+                Appointment.appointment_type.has(duration=form.duration.data)
             )
 
-        if filter_form.fee_currency.data:
+        if form.fee_currency.data:
             query = query.where(
-                Appointment.appointment_type.has(
-                    fee_currency=filter_form.fee_currency.data
-                )
+                Appointment.appointment_type.has(fee_currency=form.fee_currency.data)
             )
 
-        if filter_form.notes.data:
-            search_term = f"%{filter_form.notes.data.lower()}%"
+        if form.notes.data:
+            search_term = f"%{form.notes.data.lower()}%"
             query = query.join(AppointmentNotes).where(
                 func.lower(AppointmentNotes.text).like(search_term)
             )
 
-        if filter_form.issues.data:
+        if form.issues.data:
             query = (
                 query.join(Appointment.notes)
                 .join(AppointmentNotes.issues)
-                .where(Issue.id.in_(filter_form.issues.data))
+                .where(Issue.id.in_(form.issues.data))
             )
 
-        if filter_form.interventions.data:
+        if form.interventions.data:
             query = (
                 query.join(Appointment.notes)
                 .join(AppointmentNotes.interventions)
-                .where(Intervention.id.in_(filter_form.interventions.data))
+                .where(Intervention.id.in_(form.interventions.data))
             )
 
-        if filter_form.exercise_title.data:
-            search_term = f"%{filter_form.exercise_title.data.lower()}%"
+        if form.exercise_title.data:
+            search_term = f"%{form.exercise_title.data.lower()}%"
             query = query.join(TherapyExercise).where(
                 func.lower(TherapyExercise.title).like(search_term)
             )
 
-        if filter_form.exercise_description.data:
-            search_term = f"%{filter_form.exercise_description.data.lower()}%"
+        if form.exercise_description.data:
+            search_term = f"%{form.exercise_description.data.lower()}%"
             query = query.join(TherapyExercise).where(
                 func.lower(TherapyExercise.description).like(search_term)
             )
 
-        if filter_form.exercise_completed.data:
-            completed_status = filter_form.exercise_completed.data == "True"
+        if form.exercise_completed.data:
+            completed_status = form.exercise_completed.data == "True"
             query = query.join(TherapyExercise).where(
                 TherapyExercise.completed == completed_status
             )
@@ -620,5 +593,5 @@ def filter():
 
     # Clear filter settings from the session if they exist
     elif submit_action == "reset_filters":
-        session.pop("appointment_filters", None)
+        session.pop(FILTERS_SESSION_KEY, None)
         return jsonify({"success": True, "url": url_for("appointments.index")})
