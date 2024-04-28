@@ -97,7 +97,7 @@ class FilterTherapistsForm(CustomFlaskForm):
         coerce=int,
     )
     years_of_experience = IntegerField(
-        "Years of experience", validators=[Optional()], default=0
+        "Years of experience", validators=[Optional()]
     )
     gender = CustomSelectField(
         "Gender",

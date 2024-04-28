@@ -9,7 +9,7 @@
     --light-grey-text: #6c7888;
     --dark-grey-text: #414552;
 
-    --navbar-height: 56px;
+    --navbar-height: 60px;
     --sidebar-width: 200px;
 
     --my-form-height: calc(3.5rem + 2px);
@@ -91,6 +91,10 @@ main.sidebar-layout {
 .nav-link {
     color: var(--light-grey-text);
     transition: var(--my-transition);
+}
+
+.nav-link.btn {
+    height: 40px;
 }
 
 .nav-link:hover {
@@ -223,6 +227,11 @@ textarea {
     align-items: center;
 }
 
+form .btn,
+.row .btn {
+    width: 100%;
+}
+
 .btn-primary,
 .btn-primary.show,
 .btn-primary:disabled {
@@ -245,7 +254,7 @@ textarea {
 .btn-outline-primary {
     color: var(--colour-primary);
     background: transparent;
-    border-color: var(--colour-primary);
+    border: solid 1px var(--colour-primary);
 }
 
 .btn-outline-primary:hover,
@@ -259,17 +268,24 @@ textarea {
     border-color: var(--colour-primary);
 }
 
+.btn-outline-secondary {
+    color: var(--bs-btn-color);
+    background: transparent;
+    border: solid var(--bs-btn-color);
+}
+
+.btn-outline-secondary:hover {
+    color: white;
+    background: var(--bs-btn-color);
+    border: solid var(--bs-btn-color);
+}
+
 
 .btn-check + .btn:hover,
 .btn-check:checked + .btn {
     color: white;
     background: var(--colour-primary);
     border-color: var(--colour-primary);
-}
-
-form .btn,
-.row .btn {
-    width: 100%;
 }
 
 .btn-icon {

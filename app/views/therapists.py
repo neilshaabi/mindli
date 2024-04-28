@@ -27,7 +27,6 @@ FILTERS_SESSION_KEY = "therapist_filters"
 
 
 @bp.route("/", methods=["GET"])
-@login_required
 def index() -> Response:
     # Initialise filter form with fields prepopulated from session
     filter_form = FilterTherapistsForm(
