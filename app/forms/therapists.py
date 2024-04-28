@@ -90,7 +90,7 @@ class FilterTherapistsForm(CustomFlaskForm):
         "Mode",
         validators=[Optional()],
     )
-    duration = IntegerField("Duration (mins)", validators=[Optional()])
+    duration = IntegerField("Duration (minutes)", validators=[Optional()])
     titles = CustomSelectMultipleField(
         "Titles",
         validators=[Optional()],

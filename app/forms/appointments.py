@@ -154,7 +154,7 @@ class FilterAppointmentsForm(CustomFlaskForm):
         choices=[("", "Any")],
         validators=[Optional()],
     )
-    duration = IntegerField("Duration (mins)", validators=[Optional()])
+    duration = IntegerField("Duration (minutes)", validators=[Optional()])
     fee_currency = SelectField(
         "Currency",
         choices=[("", "Select currency")]
