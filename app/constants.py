@@ -337,23 +337,3 @@ CURRENCIES = [
     "ZAR",
     "ZMW",
 ]
-
-OCCUPATIONS = [
-    ("healthcare", "Healthcare"),
-    ("education", "Education"),
-    ("it", "IT/Technology"),
-    ("finance", "Finance"),
-    ("arts", "Arts & entertainment"),
-    ("student", "Student"),
-    ("unemployed", "Unemployed"),
-    ("other", "Other"),
-]
-
-REFERRAL_SOURCES = [
-    ("mindli", "Mindli"),
-    ("internet", "Internet"),
-    ("friend_family", "Friend/family"),
-    ("healthcare_provider", "Healthcare provider"),
-    ("social_media", "Social media"),
-    ("other", "Other"),
-]

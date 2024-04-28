@@ -368,8 +368,18 @@ table th {
     background: var(--light-grey-bg);
     border-color: var(--light-grey-outline);
 }
+
+.list-group-item-action a {
+    color: inherit;
+}
+
 .list-group-item-action.active:hover {
     color: var(--colour-dark);
+}
+
+.list-group-item + .list-group-item.active {
+    margin-top: inherit;
+    border-top-width: inherit;
 }
 
 /* Home page */
@@ -409,10 +419,6 @@ table th {
     border-radius: 50%;
     object-fit: cover;
     z-index: 1;
-}
-
-#profile-picture-container i {
-    margin: 0;
 }
 
 #profile-picture-upload {
@@ -493,6 +499,13 @@ table th {
 .tag-sm {
     font-size: 0.8rem;
     padding: 4px 6px;
+}
+
+.alert i,
+.error-message i,
+.tag i,
+.input-btn-icon i {
+    margin-right: 3px;
 }
 
 

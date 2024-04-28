@@ -1,20 +1,39 @@
 from datetime import datetime
 
-from flask import (Blueprint, Response, flash, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (
+    Blueprint,
+    Response,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
-                                    FilterAppointmentsForm,
-                                    TherapyExerciseForm, UpdateAppointmentForm)
+from app.forms.appointments import (
+    AppointmentNotesForm,
+    BookAppointmentForm,
+    FilterAppointmentsForm,
+    TherapyExerciseForm,
+    UpdateAppointmentForm,
+)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
-                              TherapyMode, TherapyType, UserRole)
+from app.models.enums import (
+    AppointmentStatus,
+    EmailSubject,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
@@ -80,7 +99,7 @@ def appointment(appointment_id: int) -> Response:
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one_or_none()
 
-    # Redirect to appointments page if appointment not found
+    # Redirect if appointment not found or user not authorised
     if not appointment or appointment.this_user.id != current_user.id:
         flash("You do not have permission to view this appointment", "error")
         return redirect(url_for("appointments.index"))
@@ -237,6 +256,7 @@ def update(appointment_id: int) -> Response:
                 recipient=appointment.client.user,
                 subject=EmailSubject.APPOINTMENT_CONFIRMED_CLIENT,
             )
+            flashed_message_text = "Appointment confirmed, client notified"
 
         # RESCHEDULED - notify client and update appointment time
         elif new_status == AppointmentStatus.RESCHEDULED:
@@ -336,7 +356,7 @@ def notes(appointment_id: int) -> Response:
     ).scalar_one()
 
     # Redirect if appointment does not belong to this therapist
-    if not appointment or current_user.id != appointment.therapist.user_id:
+    if not appointment or not appointment.therapist.is_current_user:
         flash("You do not have permission to perform this action", "error")
         return redirect(
             url_for("appointments.appointment", appointment_id=appointment_id)
@@ -357,7 +377,7 @@ def notes(appointment_id: int) -> Response:
     appointment.notes.text = form.text.data
     appointment.notes.efficacy = form.efficacy.data
     appointment.notes.last_updated = datetime.now()
-    db.session.commit()
+    db.session.flush()
 
     # Update data in association tables
     form.issues.update_association_data(
@@ -366,6 +386,7 @@ def notes(appointment_id: int) -> Response:
     form.interventions.update_association_data(
         parent=appointment.notes, child=Intervention, children="interventions"
     )
+    db.session.commit()
 
     # Flash message using AJAX
     return jsonify(
@@ -387,7 +408,7 @@ def exercise(appointment_id: int) -> Response:
     ).scalar_one()
 
     # Redirect if appointment does not belong to this user
-    if not appointment or current_user.id != appointment.this_user.id:
+    if not appointment or appointment.this_user.id != current_user.id:
         flash("You do not have permission to perform this action", "error")
         return redirect(
             url_for("appointments.appointment", appointment_id=appointment_id)

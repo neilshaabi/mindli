@@ -119,7 +119,7 @@
 
                 <!-- Body -->
                 <div class="mt-4">
-                    <div class="accordion accordion-flush" id="profileAccordion">
+                    <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
 
                         <!-- Personal details -->
                         <div class="accordion-item row">
@@ -135,7 +135,7 @@
                                     </div>
                                 </div>
 
-                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
 
                                     <div class="accordion-body">
                                     
@@ -178,7 +178,7 @@
                                     </div>
                                 </div>
 
-                                <div id="professionalExperienceCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+                                <div id="professionalExperienceCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
 
                                     <div class="accordion-body">
                                     
@@ -259,7 +259,7 @@
                                     </div>
                                 </div>
 
-                                <div id="appointmentDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+                                <div id="appointmentDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
 
                                     <div class="accordion-body">
                                     

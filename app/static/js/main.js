@@ -9,7 +9,8 @@ $(document).ready(function() {
     var pathname = window.location.pathname;
     var links = document.getElementsByClassName('nav-link');
     for (var i = 0; i < links.length; i++) {
-        if (pathname == links[i].getAttribute('href')) {
+        var href = links[i].getAttribute('href');
+        if (pathname.startsWith(href)) {
             links[i].classList.add('active');
             break;
         }
@@ -42,8 +43,6 @@ $(document).ready(function() {
     });
 
 
-    
-
     // Check URL for a 'section' parameter to determine the default section
     let params = new URLSearchParams(window.location.search);
     let defaultSection = params.get('section') || $('#section-selector').data('default-section');
@@ -53,13 +52,14 @@ $(document).ready(function() {
         
         // Hide all other sections
         $('.section').hide();
+        $('#section-selector .list-group-item').removeClass('active');
         
-        // Show first section if default section does not exist
+        // Fall back to first section if default section does not exist
         if ($(defaultSectionID).length == 0) {
             defaultSectionID = $('#section-selector .list-group-item:first').data('target');
         }
-        
-        // Show default section
+
+        // Show default section and toggle active styling for menu item
         $(defaultSectionID).show();
         $('#section-selector .list-group-item[data-target="' + defaultSectionID + '"]').addClass('active');
     }

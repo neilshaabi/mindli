@@ -1,0 +1,487 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+    {{ client.user.full_name }}
+{% endblock %}
+
+{% block content %}
+
+    <div class='container'>
+
+        <div class='row mb-4 g-4 align-items-center'>
+            <div class='col-auto'>
+                <h4 class="mb-0">{{ client.user.full_name }}<span class="my-muted">&nbsp;&nbsp;/&nbsp;&nbsp;Client</span></h4>
+            </div>
+            <div class="col-auto ms-auto">
+                <div class="row">
+                    
+                    {% if current_user.role == UserRole.THERAPIST %}
+                    <div class="col-auto">
+                        <a href="{{ url_for('clients.index') }} ">
+                            <i class="fa-solid fa-chevron-left"></i>
+                            Client directory
+                        </a>
+                    </div>
+                    {% endif %}
+
+                    <div class="col-auto">
+                        {% set status = 'Active' if client.user.active else 'Inactive' %}
+                        <div>{{ tag(label=status, status=status, with_icon=True, additional_class='tag-lg') }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row g-4">
+            
+            <div class="col-lg-3">
+                <div class="my-card p-4">
+                    
+                    <ul class="list-group list-group-flush" id="section-selector" data-default-section="{{ default_section }}">
+                        
+                        <li class="list-group-item list-group-item-action" data-target="#profile">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    Client Profile
+                                </div>
+                                <div class="col-auto ms-auto">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
+                            </div>
+                        </li>
+                        
+                        {% if client.is_current_user %}
+                            
+                            <li class="list-group-item list-group-item-action" data-target="#edit-profile">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        Edit Profile
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </div>
+                                </div>
+                            </li>
+
+                            <li class="list-group-item list-group-item-action" data-target="#settings">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        Settings
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </div>
+                                </div>
+                            </li>
+
+                        {% elif current_user.role == UserRole.THERAPIST %}
+
+                            <li class="list-group-item list-group-item-action">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <a href='TODO'>
+                                            View Messages
+                                        </a>
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-message"></i>
+                                    </div>
+                                </div>
+                            </li>
+                            
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="col-lg-9">
+                <div class="my-card">
+                    
+                    <!-- Client profile section-->
+                    <div id="profile" class="section">
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                
+                                <!-- Header -->
+                                <div class="row g-4 mb-4 align-items-center">
+                                    <div class="col-auto">
+                                        <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                                            <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
+                                        </a>
+                                    </div>
+                                    <div class="col">
+                                        <div class="row">
+                                            <h5 class="mb-1">
+                                                <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                                                    {{ client.user.full_name }}
+                                                </a>
+                                            </h5>
+                                        </div>
+                                        <div class="row">
+                                            <span class="text-muted">Client</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <hr>
+
+                                <!-- Body -->
+                                <div class="mt-4">
+                                    <div class="accordion accordion-flush" id="profileAccordion">
+
+                                        <!-- Personal details -->
+                                        <div class="accordion-item row">
+                                            <div class="col-12">
+                                    
+                                                <div class="accordion-header row">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
+                                                            Personal details
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="personalDetailsCollapse" class="accordion-collapse collapse show text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Gender</div>
+                                                                <div>{{ client.user.gender.value }}</div>
+                                                            </div>
+                                                        </div>
+                        
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Age</div>
+                                                                <div>{{ client.age|string + ' years old' if client.age else '' }}</div>
+                                                            </div>
+                                                        </div>
+                        
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Occupation</div>
+                                                                <div>{{ client.occupation.value }}</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact information -->
+                                        <div class="accordion-item row">
+                                            <div class="col-12">
+                                    
+                                                <div class="accordion-header row">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse" aria-expanded="false" aria-controls="contactCollapse">
+                                                                Contact information
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="contactCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Address</div>
+                                                                <div>{{ client.address if client.address else '' }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Phone number</div>
+                                                                <div>{{ client.phone if client.phone else '' }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Emergency contact</div>
+                                                                <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Emergency contact - phone number</div>
+                                                                <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Background -->
+                                        <div class="accordion-item row">
+                                            <div class="col-12">
+                                    
+                                                <div class="accordion-header row">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#backgroundCollapse" aria-expanded="false" aria-controls="backgroundCollapse">
+                                                            Client background
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="backgroundCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="row mb-1 my-muted">
+                                                                    <div class="col-12">Current challenges</div>
+                                                                </div>
+                                                                <div class="row g-1">
+                                                                    {% for issue in client.issues|map(attribute='name')|unique %}
+                                                                        <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
+                                                                    {% endfor %}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Referral source</div>
+                                                                <div>{{ client.referral_source.value }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {% if client.is_current_user %}
+                        
+                        <!-- Edit profile section-->
+                        <div id="edit-profile" class="section">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    
+                                    <!-- Header -->
+                                    <div class="row mb-4 align-items-center">
+                                        <div class="col-auto">
+                                            <h5 class="mb-0">Edit Profile</h5>
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Body -->
+                                    <div class="mt-4">
+
+                                        <div class="accordion accordion-flush" id="editProfileAccordion">
+
+                                            <!-- Edit personal details -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#editPersonalDetailsCollapse" aria-expanded="false" aria-controls="editPersonalDetailsCollapse">
+                                                                    Personal details
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="editPersonalDetailsCollapse" class="accordion-collapse collapse show text-s">
+
+                                                        <div class="accordion-body">
+
+                                                            <form id="{{ forms.user_profile_form.id }}" action="{{ forms.user_profile_form.endpoint }}" novalidate>
+                                            
+                                                                {{ forms.user_profile_form.csrf_token }}
+
+                                                                <div class="row g-5 align-items-center">
+                                                                    
+                                                                    <div class="col-auto">
+                                                                        <div id="profile-picture-container">
+                                                                            <img id="profile-picture-preview" src="{{ url_for('static', filename='img/profile_pictures/' + current_user.profile_picture) }}" alt="Profile picture">
+                                                                            <label for="profile_picture" class="btn btn-primary" id="profile-picture-upload">
+                                                                                <i class="fa fa-camera"></i>
+                                                                            </label>
+                                                                            {{ forms.user_profile_form.profile_picture(style='display: none;') }}
+                                                                        </div>
+                                                                    </div>
+
+                                                                    <div class="col">
+                                                                        
+                                                                        <div class="row g-2">
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ forms.user_profile_form.first_name(class_='form-control', placeholder=forms.user_profile_form.first_name.label.text) }}
+                                                                                    {{ forms.user_profile_form.first_name.label }}
+                                                                                </div>
+                                                                            </div>
+                                            
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ forms.user_profile_form.last_name(class_='form-control', placeholder=forms.user_profile_form.last_name.label.text) }}
+                                                                                    {{ forms.user_profile_form.last_name.label }}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-3">
+                                                                                <div class='form-floating'>
+                                                                                    {{ forms.user_profile_form.gender(class_='form-control', placeholder=forms.user_profile_form.gender.label.text) }}
+                                                                                    {{ forms.user_profile_form.gender.label }}
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <div class="col-md-3">
+                                                                                {{ submit_button(forms.user_profile_form.submit) }}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Edit client background -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#editBackgroundCollapse" aria-expanded="false" aria-controls="editBackgroundCollapse">
+                                                                    Client background
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="editBackgroundCollapse" class="accordion-collapse collapse text-s">
+
+                                                        <div class="accordion-body">
+
+                                                            <form id="{{ forms.client_profile_form.id }}" action="{{ forms.client_profile_form.endpoint }}" novalidate>
+
+                                                                {{ forms.client_profile_form.csrf_token }}
+                                                        
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.date_of_birth(class_='form-control', placeholder=forms.client_profile_form.date_of_birth.label.text) }}
+                                                                            {{ forms.client_profile_form.date_of_birth.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.occupation(class_='form-control', placeholder=forms.client_profile_form.occupation.label.text) }}
+                                                                            {{ forms.client_profile_form.occupation.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.address(class_='form-control', placeholder=forms.client_profile_form.address.label.text) }}
+                                                                            {{ forms.client_profile_form.address.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.phone(class_='form-control', placeholder=forms.client_profile_form.phone.label.text) }}
+                                                                            {{ forms.client_profile_form.phone.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.emergency_contact_name(class_='form-control', placeholder=forms.client_profile_form.emergency_contact_name.label.text) }}
+                                                                            {{ forms.client_profile_form.emergency_contact_name.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.emergency_contact_phone(class_='form-control', placeholder=forms.client_profile_form.emergency_contact_phone.label.text) }}
+                                                                            {{ forms.client_profile_form.emergency_contact_phone.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3 g-2">
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.issues(class_='form-control', placeholder=forms.client_profile_form.issues.label.text) }}
+                                                                            {{ forms.client_profile_form.issues.label }}
+                                                                        </div>
+                                                                    </div>
+                                    
+                                                                    <div class="col-md-6">
+                                                                        <div class='form-floating'>
+                                                                            {{ forms.client_profile_form.referral_source(class_='form-control', placeholder=forms.client_profile_form.referral_source.label.text) }}
+                                                                            {{ forms.client_profile_form.referral_source.label }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        <div class="form-check form-switch">
+                                                                            {{ forms.client_profile_form.consent(class_='form-check-input') }}
+                                                                            {{ forms.client_profile_form.consent.label(class_='form-check-label') }}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                    
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        {{ submit_button(forms.client_profile_form.submit) }}
+                                                                    </div>
+                                                                </div>
+                                                            
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

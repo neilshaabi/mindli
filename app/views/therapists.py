@@ -1,14 +1,22 @@
-from flask import (Blueprint, Response, flash, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (
+    Blueprint,
+    Response,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from app import db
-from app.forms.appointment_types import (AppointmentTypeForm,
-                                         DeleteAppointmentTypeForm)
+from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
 from app.forms.appointments import BookAppointmentForm
-from app.forms.profile import UserProfileForm
+from app.forms.users import UserProfileForm
 from app.forms.stripe import CreateStripeAccountForm
 from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
 from app.models.appointment_type import AppointmentType
@@ -35,13 +43,14 @@ def index() -> Response:
         data=session.get("therapist_filters", {}),
     )
 
+    # Fetch all active therapists
     therapists = (
         db.session.execute(db.select(Therapist).join(User).where(User.active))
         .scalars()
         .all()
     )
 
-    # Render a template, passing the filter form to it
+    # Render template
     return render_template(
         "therapists.html", filter_form=filter_form, therapists=therapists
     )
@@ -65,7 +74,7 @@ def new_therapist() -> Response:
         "user_profile_form": UserProfileForm(
             obj=current_user,
             id="user-profile",
-            endpoint=url_for("profile.user_profile"),
+            endpoint=url_for("user.update", user_id=current_user.id),
         ),
         "therapist_profile_form": TherapistProfileForm(
             id="therapist-profile",
@@ -88,55 +97,6 @@ def new_therapist() -> Response:
         therapist=mock_therapist,
         default_section="edit-profile",
         forms=forms,
-    )
-
-
-@bp.route("/create", methods=["POST"])
-@login_required
-@therapist_required
-def create() -> Response:
-    # Initialise submitted form
-    form = TherapistProfileForm()
-
-    # Invalid form submission - return errors
-    if not form.validate_on_submit():
-        return jsonify({"success": False, "errors": form.errors})
-
-    # Update Therapist with form data
-    therapist = Therapist(
-        user_id=current_user.id,
-        years_of_experience=form.years_of_experience.data,
-        qualifications=form.qualifications.data,
-        registrations=form.registrations.data,
-        country=form.country.data,
-        location=form.location.data,
-        link=form.link.data,
-    )
-    db.session.add(therapist)
-    db.session.commit()
-
-    # Update data in association tables
-    form.titles.update_association_data(
-        parent=therapist, child=Title, children="titles"
-    )
-    form.languages.update_association_data(
-        parent=therapist, child=Language, children="languages"
-    )
-    form.issues.update_association_data(
-        parent=therapist, child=Issue, children="specialisations"
-    )
-    form.interventions.update_association_data(
-        parent=therapist, child=Intervention, children="interventions"
-    )
-    db.session.commit()
-
-    # Redirect to therapist profile
-    flash("Profile created", "success")
-    return jsonify(
-        {
-            "success": True,
-            "url": url_for("therapists.therapist", therapist_id=therapist.id),
-        }
     )
 
 
@@ -165,11 +125,11 @@ def therapist(therapist_id: int) -> Response:
     }
 
     # Initialise forms for current user to edit their profile
-    if therapist.user.id == current_user.id:
+    if therapist.is_current_user:
         forms["user_profile_form"] = UserProfileForm(
             obj=current_user,
             id="user-profile",
-            endpoint=url_for("profile.user_profile"),
+            endpoint=url_for("user.update", user_id=current_user.id),
         )
 
         forms["therapist_profile_form"] = TherapistProfileForm(
@@ -229,39 +189,31 @@ def therapist(therapist_id: int) -> Response:
     )
 
 
-@bp.route("/<int:therapist_id>/update", methods=["POST"])
+@bp.route("/create", methods=["POST"])
 @login_required
 @therapist_required
-def update(therapist_id: int) -> Response:
+def create() -> Response:
     # Initialise submitted form
     form = TherapistProfileForm()
-
-    # Get therapist with this ID
-    therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one_or_none()
-
-    # Redirect to therapist directory if therapist not found
-    if not therapist or therapist.user.id != current_user.id:
-        flash("You do not have permission to perform this action", "error")
-        return jsonify(
-            {
-                "success": False,
-                "url": url_for("therapists.therapist", therapist_id=therapist_id),
-            }
-        )
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Update Therapist with form data
-    therapist.country = form.country.data
-    therapist.link = form.link.data
-    therapist.location = form.location.data
-    therapist.years_of_experience = form.years_of_experience.data
-    therapist.qualifications = form.qualifications.data
-    therapist.registrations = form.registrations.data
+    # Create Therapist with form data
+    therapist = Therapist(
+        user_id=current_user.id,
+        years_of_experience=form.years_of_experience.data,
+        qualifications=form.qualifications.data,
+        registrations=form.registrations.data,
+        country=form.country.data,
+        location=form.location.data,
+        link=form.link.data,
+    )
+    db.session.add(therapist)
+    db.session.flush()
+
+    # Update data in association tables
     form.titles.update_association_data(
         parent=therapist, child=Title, children="titles"
     )
@@ -274,15 +226,74 @@ def update(therapist_id: int) -> Response:
     form.interventions.update_association_data(
         parent=therapist, child=Intervention, children="interventions"
     )
-
     db.session.commit()
 
-    # Flash message using AJAX
+    # Flash message via AJAX
     return jsonify(
         {
             "success": True,
-            "flashed_message_html": get_flashed_message_html(
-                "Profile updated", "success"
+            "flashed_message": get_flashed_message_html(
+                "Therapist profile created", "success"
+            ),
+        }
+    )
+
+
+@bp.route("/<int:therapist_id>/update", methods=["POST"])
+@login_required
+@therapist_required
+def update(therapist_id: int) -> Response:
+    # Get therapist with this ID
+    therapist = db.session.execute(
+        db.select(Therapist).filter_by(id=therapist_id)
+    ).scalar_one_or_none()
+
+    # Redirect to therapist directory if not authorised
+    if not therapist or not therapist.is_current_user:
+        flash("You do not have permission to perform this action", "error")
+        return jsonify(
+            {
+                "success": False,
+                "url": url_for("therapists.therapist", therapist_id=therapist_id),
+            }
+        )
+
+    # Initialise submitted form
+    form = TherapistProfileForm()
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Update Therapist with form data
+    therapist.country = form.country.data
+    therapist.link = form.link.data
+    therapist.location = form.location.data
+    therapist.years_of_experience = form.years_of_experience.data
+    therapist.qualifications = form.qualifications.data
+    therapist.registrations = form.registrations.data
+
+    # Update data in association tables
+    form.titles.update_association_data(
+        parent=therapist, child=Title, children="titles"
+    )
+    form.languages.update_association_data(
+        parent=therapist, child=Language, children="languages"
+    )
+    form.issues.update_association_data(
+        parent=therapist, child=Issue, children="specialisations"
+    )
+    form.interventions.update_association_data(
+        parent=therapist, child=Intervention, children="interventions"
+    )
+    db.session.commit()
+
+    # Flash message via AJAX
+    return jsonify(
+        {
+            "success": True,
+            "flashed_message": get_flashed_message_html(
+                "Therapist profile updated", "success"
             ),
         }
     )

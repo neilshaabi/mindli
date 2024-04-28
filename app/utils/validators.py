@@ -1,3 +1,5 @@
+from datetime import date
+import re
 import phonenumbers
 from currency_converter import CurrencyConverter
 from flask_login import current_user
@@ -7,36 +9,50 @@ from app.models.enums import TherapyMode
 
 
 class NotWhitespace:
-    def __call__(self, form, field):
+    def __call__(self, form, field) -> None:
         if field.data and field.data.isspace():
             raise ValidationError(f"Invalid {field.name.replace('_', ' ').lower()}.")
         return
 
 
-class ValidPassword:
-    def __call__(self, form, field):
-        error = None
+class ValidName:
+    def __call__(self, form, field) -> None:
+        if not re.match(r"^[a-zA-Z]+(?:['-][a-zA-Z]+)*$", field.data):
+            raise ValidationError(
+                "Invalid name (only letters, apostrophes and hyphens are allowed)."
+            )
 
+
+class ValidPassword:
+    def __call__(self, form, field) -> None:
         if len(field.data) < 8:
-            error = "Password must be at least 8 characters long."
+            raise ValidationError("Password must be at least 8 characters long.")
 
         elif not any(char.isdigit() for char in field.data):
-            error = "Password must include at least one digit."
+            raise ValidationError("Password must include at least one digit.")
 
         elif not any(char.isupper() for char in field.data):
-            error = "Password must include at least one uppercase letter."
+            raise ValidationError(
+                "Password must include at least one uppercase letter."
+            )
 
         elif not any(char.islower() for char in field.data):
-            error = "Password must include at least one lowercase letter."
-
-        if error:
-            raise ValidationError(error)
+            raise ValidationError(
+                "Password must include at least one lowercase letter."
+            )
 
         return
 
 
+class DateBeforeToday:
+    def __call__(self, form, field) -> None:
+        if field.data >= date.today():
+            raise ValidationError("Date must be in the past.")
+        return
+
+
 class ValidPhoneNumber:
-    def __call__(self, form, field):
+    def __call__(self, form, field) -> None:
         try:
             input_number = phonenumbers.parse(field.data, None)
         except phonenumbers.NumberParseException:
@@ -49,7 +65,7 @@ class ValidPhoneNumber:
 
 
 class LocationRequired:
-    def __call__(self, form, field):
+    def __call__(self, form, field) -> None:
         if (
             field.data == TherapyMode.IN_PERSON.name
             and current_user.therapist.location is None
@@ -58,7 +74,7 @@ class LocationRequired:
 
 
 class MinimumFeeAmount:
-    def __call__(self, form, field):
+    def __call__(self, form, field) -> None:
         amount = form.fee_amount.data
         currency = form.fee_currency.data
 

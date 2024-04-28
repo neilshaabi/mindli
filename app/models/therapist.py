@@ -1,6 +1,7 @@
 import random
 from typing import List, Optional
 
+from flask_login import current_user
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from faker import Faker
@@ -51,8 +52,38 @@ class Therapist(SeedableMixin, db.Model):
     )
 
     @property
+    def is_current_user(self) -> bool:
+        return current_user.id == self.user.id
+
+    @property
+    def clients(self) -> List["Client"]:
+        from app.models.appointment import Appointment
+        from app.models.client import Client
+
+        client_subquery = (
+            db.session.query(Appointment.client_id)
+            .filter(Appointment.therapist_id == self.id)
+            .subquery()
+        )
+        return db.session.query(Client).filter(Client.id.in_(client_subquery)).all()
+
+    @property
     def active_appointment_types(self) -> List["AppointmentType"]:
         return [at for at in self.appointment_types if at.active]
+
+    @property
+    def appointments_with_client(self, client_id: int) -> List["Appointment"]:
+        from app.models.appointment import Appointment
+
+        return (
+            db.session.execute(
+                db.select(Appointment).filter_by(
+                    therapist_id=self.id, client_id=client_id
+                )
+            )
+            .scalars()
+            .all()
+        )
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:

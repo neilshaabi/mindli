@@ -72,17 +72,13 @@ def messages(conversation_id):
     elif current_user.role == UserRole.CLIENT:
         current_user_id_field = Conversation.client_user_id
 
-    # Ensure the conversation exists and the current user is part of it
+    # Fetch selected conversation
     opened_conversation = db.session.execute(
         db.select(Conversation).filter_by(id=conversation_id)
     ).scalar_one_or_none()
-    if not opened_conversation or (
-        current_user.id
-        not in [
-            opened_conversation.therapist_user_id,
-            opened_conversation.client_user_id,
-        ]
-    ):
+
+    # Redirect if the user is not part of this conversation
+    if not opened_conversation or opened_conversation.this_user.id != current_user.id:
         flash("You do not have permission to view this conversation", "error")
         return redirect(url_for("messages.messages_entry"))
 

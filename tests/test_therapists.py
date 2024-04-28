@@ -3,8 +3,14 @@ from flask.testing import FlaskClient
 from app.models import User
 
 
-def test_get_therapist_profile(logged_in_therapist: User, client: FlaskClient):
+def test_get_therapists(logged_in_therapist: User, client: FlaskClient):
     response = client.get("/therapists/")
+    assert response.status_code == 200
+    return
+
+
+def test_get_therapist(logged_in_therapist: User, client: FlaskClient):
+    response = client.get(f"/therapists/{logged_in_therapist.therapist.id}")
     assert response.status_code == 200
     return
 

@@ -10,7 +10,7 @@ from werkzeug.security import generate_password_hash
 from app import create_app, db
 from app.config import TestConfig
 from app.models import SeedableMixin
-from app.models.enums import Gender, UserRole
+from app.models.enums import Gender, Occupation, ReferralSource, UserRole
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.language import Language
@@ -170,12 +170,12 @@ def fake_therapist_profile(
 def fake_client_profile_data(seeded_data: dict) -> dict:
     return {
         "date_of_birth": "1990-01-01",
-        "occupation": "student",
+        "occupation": Occupation.STUDENT,
         "address": "123 Main St, Anytown, AT 12345",
         "phone": "+6585781481",
         "emergency_contact_name": "Jane Doe",
         "emergency_contact_phone": "+6596697927",
-        "referral_source": "mindli",
+        "referral_source": ReferralSource.OTHER,
         "issues": [issue.id for issue in seeded_data[Issue.__tablename__]][:2],
         "consent": True,
     }

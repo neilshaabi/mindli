@@ -1,12 +1,24 @@
-from wtforms import (BooleanField, DateField, IntegerField, SelectField,
-                     StringField, SubmitField, TextAreaField, TimeField)
+from wtforms import (
+    BooleanField,
+    DateField,
+    IntegerField,
+    SelectField,
+    StringField,
+    SubmitField,
+    TextAreaField,
+    TimeField,
+)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.constants import CURRENCIES
-from app.forms import (CustomFlaskForm, CustomSelectField,
-                       CustomSelectMultipleField)
-from app.models.enums import (AppointmentStatus, PaymentStatus, TherapyMode,
-                              TherapyType, UserRole)
+from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.models.enums import (
+    AppointmentStatus,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 

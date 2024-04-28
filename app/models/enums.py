@@ -32,6 +32,27 @@ class Gender(Enum):
 
 
 @unique
+class Occupation(Enum):
+    ARTS = "Arts and Entertainment"
+    EDUCATION = "Education"
+    FINANCE = "Finance"
+    HEALTHCARE = "Healthcare"
+    IT = "IT/Technology"
+    STUDENT = "Student"
+    UNEMPLOYED = "Unemployed"
+    OTHER = "Other"
+
+
+@unique
+class ReferralSource(Enum):
+    INTERNET = "Internet"
+    FRIEND_FAMILY = "Friend/family"
+    HEALTHCARE_PROVIDER = "Healthcare provider"
+    SOCIAL_MEDIA = "Social media"
+    OTHER = "Other"
+
+
+@unique
 class TherapyMode(Enum):
     IN_PERSON = "In Person"
     AUDIO = "Audio Call"

@@ -37,15 +37,25 @@
                         
                         <li class="list-group-item list-group-item-action" data-target="#profile">
                             <div class="row align-items-center">
-                                <div class="col-auto">Therapist Profile</div>
+                                <div class="col-auto">
+                                    Therapist Profile
+                                </div>
+                                <div class="col-auto ms-auto">
+                                    <i class="fa-solid fa-user"></i>
+                                </div>
                             </div>
                         </li>
                         
-                        {% if therapist.user.id == current_user.id %}
+                        {% if therapist.is_current_user %}
                             
                             <li class="list-group-item list-group-item-action" data-target="#edit-profile">
                                 <div class="row align-items-center">
-                                    <div class="col-auto">Edit Profile</div>
+                                    <div class="col-auto">
+                                        Edit Profile
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </div>
                                 </div>
                             </li>
 
@@ -56,18 +66,30 @@
                                 </div>
                             </li>
 
-                            <li class="list-group-item list-group-item-action" data-target="#payments">
+                            <li class="list-group-item list-group-item-action" data-target="#settings">
                                 <div class="row align-items-center">
-                                    <div class="col-auto">Payments</div>
+                                    <div class="col-auto">
+                                        Settings
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-gear"></i>
+                                    </div>
                                 </div>
                             </li>
 
                         {% elif current_user.role == UserRole.CLIENT %}
+
                             <li class="list-group-item list-group-item-action" data-target="#booking">
                                 <div class="row align-items-center">
-                                    <div class="col-auto">Book Appointment</div>
+                                    <div class="col-auto">
+                                        Book Appointment
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-regular fa-calendar-plus"></i>
+                                    </div>
                                 </div>
                             </li>
+                            
                         {% endif %}
                     </ul>
                 </div>
@@ -100,11 +122,6 @@
                                             <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                                         </div>
                                     </div>
-                                    {% if current_user.role == UserRole.CLIENT %}
-                                        <div class="col-auto ms-auto">
-                                            <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
-                                        </div>
-                                    {% endif %}
                                 </div>
                                 
                                 <hr>
@@ -120,7 +137,7 @@
                                                 <div class="accordion-header row">
                                                     <div class="col-12">
                                                         <h6 class="mb-0">
-                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
+                                                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse" aria-expanded="false" aria-controls="personalDetailsCollapse">
                                                             Personal details
                                                             </button>
                                                         </h6>
@@ -309,7 +326,7 @@
                     </div>
 
 
-                    {% if therapist.user.id == current_user.id %}
+                    {% if therapist.is_current_user %}
                         
                         <!-- Edit profile section-->
                         <div id="edit-profile" class="section">
@@ -389,7 +406,7 @@
                                                                             </div>
 
                                                                             <div class="col-md-3">
-                                                                                {{ submit_button(forms.therapist_profile_form.submit) }}
+                                                                                {{ submit_button(forms.user_profile_form.submit) }}
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -711,15 +728,15 @@
                         </div>
 
 
-                        <!-- Payments section-->
-                        <div id="payments" class="section">
+                        <!-- Settings section-->
+                        <div id="settings" class="section">
                             <div class="row mb-3">
                                 <div class="col-12">
                                     
                                     <!-- Header -->
                                     <div class="row mb-4 align-items-center">
                                         <div class="col-auto">
-                                            <h5 class="mb-0">Payments</h5>
+                                            <h5 class="mb-0">Settings</h5>
                                         </div>
                                     </div>
                                     
@@ -727,7 +744,7 @@
 
                                     <!-- Body -->
                                     <div class="mt-4">
-                                        <div class="accordion accordion-flush" id="paymentsAccordion">
+                                        <div class="accordion accordion-flush" id="settingsAccordion">
 
                                             <!-- Payment setup -->
                                             <div class="accordion-item row">
@@ -736,24 +753,40 @@
                                                     <div class="accordion-header row">
                                                         <div class="col-12">
                                                             <h6 class="mb-0">
-                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paymentSetupCollapse" aria-expanded="false" aria-controls="paymentSetupCollapse">
-                                                                Payment setup
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paymentsCollapse" aria-expanded="false" aria-controls="paymentsCollapse">
+                                                                Payments
                                                                 </button>
                                                             </h6>
                                                         </div>
                                                     </div>
                         
-                                                    <div id="paymentSetupCollapse" class="accordion-collapse collapse show text-s">
+                                                    <div id="paymentsCollapse" class="accordion-collapse collapse text-s">
 
                                                         <div class="accordion-body">
                                                             
+                                                            <div class="row mb-3">
+                                                                <div class="my-muted text-s">
+                                                                    <i class="fa-solid fa-circle-info"></i>
+                                                                    mindli partners with <a href="stripe.com">Stripe</a> for secure payments
+                                                                </div>
+                                                            </div>
+                                                            
                                                             {% if therapist.stripe_account_id %}
-                                                                <div class="row mb-3">
+                                                                
+                                                            <div class="row mb-3">
                                                                     <div class="col-12">
                                                                         <div class="mb-1 my-muted">Stripe onboarding</div>
                                                                         <div>{{ tag(status='Completed', label='Completed', with_icon=True) }}</div>
                                                                     </div>
                                                                 </div>
+
+                                                                <div class="row mb-3">
+                                                                    <div class="col-12">
+                                                                        <div class="mb-1 my-muted">Payment history</div>
+                                                                        <div>Visit the <a href="https://dashboard.stripe.com">Stripe dashboard</div>
+                                                                    </div>
+                                                                </div>
+                                                            
                                                             {% else %}
                                                                 
                                                                 <form id="{{ forms.stripe_onboarding_form.id }}" action="{{ forms.stripe_onboarding_form.endpoint }}" novalidate>
@@ -763,7 +796,7 @@
                                                                     <div class="row">
                                                                         <div class="col-12">
                                                                             <div class="mb-3 my-muted">
-                                                                                To start receiving payments via Stripe, complete your onboarding
+                                                                                Complete onboarding to start receiving payments via Stripe
                                                                             </div>
                                                                             <div class="row mb-3">
                                                                                 <div class="col-auto">
@@ -781,48 +814,32 @@
                                                 </div>
                                             </div>
 
-                                            <!-- Payment history -->
+                                            <!-- TODO -->
                                             <div class="accordion-item row">
                                                 <div class="col-12">
                                         
                                                     <div class="accordion-header row">
                                                         <div class="col-12">
                                                             <h6 class="mb-0">
-                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#paymentHistoryCollapse" aria-expanded="false" aria-controls="paymentSetupCollapse">
-                                                                Payment history
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#TODO" aria-expanded="false" aria-controls="TODO">
+                                                                TODO
                                                                 </button>
                                                             </h6>
                                                         </div>
                                                     </div>
                         
-                                                    <div id="paymentHistoryCollapse" class="accordion-collapse collapse text-s">
+                                                    <div id="TODO" class="accordion-collapse collapse text-s">
 
                                                         <div class="accordion-body">
+
+                                                            TODO
                                                             
-                                                            {% if therapist.stripe_account_id %}
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        <div class="my-muted">Visit the <a href="https://dashboard.stripe.com">Stripe dashboard</a></div>
-                                                                    </div>
-                                                                </div>
-                                                            {% else %}
-                                                                <div class="row">
-                                                                    <div class="col-12">
-                                                                        <div class="my-muted">This feature is only available for users onboarded with Stripe</div>
-                                                                    </div>
-                                                                </div>
-                                                            {% endif %}
                                                         </div>
                                                     </div>
 
                                                 </div>
                                             </div>
                                             
-                                        </div>
-
-                                        <div class="my-muted mt-4 text-s">
-                                            <i class="fa-solid fa-circle-info"></i>
-                                            mindli partners with <a href="stripe.com">Stripe</a> for secure payments
                                         </div>
                                     </div>
                                 </div>
@@ -848,9 +865,6 @@
                                             <div class="row">
                                                 <span class="text-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                                             </div>
-                                        </div>
-                                        <div class="col-auto ms-auto">
-                                            <a href="#TODO" class="btn btn-outline-secondary">View Messages</a>
                                         </div>
                                     </div>
                                     
@@ -904,7 +918,7 @@
                                     
                                         <div class="my-muted text-s">
                                             <i class="fa-solid fa-circle-info"></i>
-                                            Please message your therapist to confirm these details before proceeding
+                                            Please <a href="TODO">message</a> your therapist to confirm these details before proceeding
                                         </div>
                                         
                                     </div>
@@ -918,7 +932,7 @@
         </div>
     </div>
 
-    {% if therapist.user.id == current_user.id and therapist.appointment_types %}
+    {% if therapist.is_current_user and therapist.appointment_types %}
         <!-- Modal to delete an appointment type -->
         <div class="modal fade" id="deleteAppointmentTypeModal" tabindex="-1" aria-labelledby="deleteAppointmentTypeModalLabel" aria-hidden="true">
             <div class="modal-dialog">

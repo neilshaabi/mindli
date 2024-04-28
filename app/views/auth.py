@@ -1,13 +1,28 @@
-from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
-                   render_template, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    session,
+    url_for,
+)
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
-from app.forms.auth import (LoginForm, RegisterForm, RequestPasswordResetForm,
-                            ResetPasswordForm, VerifyEmailForm)
+from app.forms.auth import (
+    LoginForm,
+    RegisterForm,
+    RequestPasswordResetForm,
+    ResetPasswordForm,
+    VerifyEmailForm,
+)
 from app.models.enums import EmailSubject, UserRole
 from app.models.user import User
 from app.utils.mail import EmailMessage
@@ -145,7 +160,7 @@ def verify_email() -> Response:
 
 # Handles email verification using token
 @bp.route("/email-verification/<token>", methods=["GET"])
-def email_verification(token):
+def email_verification(token: str) -> Response:
     # Get email from token
     try:
         email = current_app.serialiser.loads(
@@ -162,7 +177,7 @@ def email_verification(token):
         # Log in user
         login_user(user)
         flash("Success! Your email address has been verified", "success")
-        return redirect(url_for("main.index"))
+        return redirect(url_for("main.profile"))
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
@@ -210,7 +225,7 @@ def request_password_reset() -> Response:
 
 
 @bp.route("/reset-password/<token>", methods=["GET"])
-def reset_password_with_token(token):
+def reset_password_with_token(token: str) -> Response:
     # Get email from token
     try:
         email = current_app.serialiser.loads(
@@ -236,7 +251,7 @@ def reset_password_with_token(token):
 
 
 @bp.route("/reset-password", methods=["POST"])
-def reset_password():
+def reset_password() -> Response:
     form = ResetPasswordForm(
         id="reset-password",
         endpoint=url_for("auth.reset_password"),
