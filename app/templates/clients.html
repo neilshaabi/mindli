@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 
 {% block title %}
-    Therapists
+    Clients
 {% endblock %}
 
 {% block content %}
@@ -23,7 +23,7 @@
                     
                             <h5 class="mb-0">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filterFormCollapse" aria-expanded="false" aria-controls="filterFormCollapse">
-                                    Therapist Finder
+                                    Client Finder
                                 </button>
                             </h5>
 
@@ -48,20 +48,6 @@
                                         
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.titles(class_='form-control', placeholder=filter_form.titles.label.text) }}
-                                                {{ filter_form.titles.label }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
-                                                {{ filter_form.years_of_experience(class_='form-control', placeholder=filter_form.years_of_experience.label.text) }}
-                                                {{ filter_form.years_of_experience.label }}
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
                                                 {{ filter_form.gender(class_='form-control', placeholder=filter_form.gender.label.text) }}
                                                 {{ filter_form.gender.label }}
                                             </div>
@@ -69,60 +55,39 @@
                                         
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.country(class_='form-control', placeholder=filter_form.country.label.text) }}
-                                                {{ filter_form.country.label }}
+                                                {{ filter_form.min_age(class_='form-control', placeholder=filter_form.min_age.label.text) }}
+                                                {{ filter_form.min_age.label }}
                                             </div>
                                         </div>
                                         
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.language(class_='form-control', placeholder=filter_form.language.label.text) }}
-                                                {{ filter_form.language.label }}
+                                                {{ filter_form.max_age(class_='form-control', placeholder=filter_form.max_age.label.text) }}
+                                                {{ filter_form.max_age.label }}
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-auto">
+                                            <div class='form-floating'>
+                                                {{ filter_form.occupation(class_='form-control', placeholder=filter_form.occupation.label.text) }}
+                                                {{ filter_form.occupation.label }}
                                             </div>
                                         </div>
                                         
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.specialisations(class_='form-control', placeholder=filter_form.specialisations.label.text) }}
-                                                {{ filter_form.specialisations.label }}
+                                                {{ filter_form.issues(class_='form-control', placeholder=filter_form.issues.label.text) }}
+                                                {{ filter_form.issues.label }}
                                             </div>
                                         </div>
 
                                         <div class="col-lg-auto">
                                             <div class='form-floating'>
-                                                {{ filter_form.interventions(class_='form-control', placeholder=filter_form.interventions.label.text) }}
-                                                {{ filter_form.interventions.label }}
+                                                {{ filter_form.referral_source(class_='form-control', placeholder=filter_form.referral_source.label.text) }}
+                                                {{ filter_form.referral_source.label }}
                                             </div>
                                         </div>
 
-                                    </div>
-
-                                    <div class="row mt-4 mb-2">
-                                        <div class="col-lg-auto my-muted">By appointments offered</div>
-                                    </div>
-
-                                    <div class="row g-2 mb-4">
-
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
-                                                {{ filter_form.therapy_type(class_='form-control', placeholder=filter_form.therapy_type.label.text) }}
-                                                {{ filter_form.therapy_type.label }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
-                                                {{ filter_form.therapy_mode(class_='form-control', placeholder=filter_form.therapy_mode.label.text) }}
-                                                {{ filter_form.therapy_mode.label }}
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-auto">
-                                            <div class='form-floating'>
-                                                {{ filter_form.duration(class_='form-control', placeholder=filter_form.duration.label.text) }}
-                                                {{ filter_form.duration.label }}
-                                            </div>
-                                        </div>
                                     </div>
                                     
                                     <div class="row g-2">
@@ -141,15 +106,15 @@
 
                     <div class="row mt-4">
                         <div class="col-auto my-muted" id="filter-count">
-                            {{ therapists|length }} therapists found
+                            {{ clients|length }} clients found
                         </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div id="therapist-cards" class="row g-4">
-            {{ therapist_cards(therapists) }}
+        <div id="client-cards" class="row g-4">
+            {{ client_cards(clients) }}
         </div>
 
     </div>

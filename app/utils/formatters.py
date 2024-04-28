@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from flask import render_template_string
 
@@ -38,3 +38,8 @@ def get_flashed_message_html(message: str, category: str = None) -> str:
 
 def convert_str_to_date(date_str: str) -> datetime:
     return datetime.strptime(date_str, "%a, %d %b %Y %H:%M:%S GMT").date()
+
+
+def age_to_date_of_birth(age: int) -> date:
+    today = date.today()
+    return today.replace(year=today.year - age)

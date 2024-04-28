@@ -86,17 +86,10 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
             )
 
     # Register blueprints with endpoints
-    from app.views import (
-        appointment_types,
-        appointments,
-        auth,
-        clients,
-        main,
-        messages,
-        therapists,
-        users,
-    )
+    from app.views import (appointment_types, appointments, auth, clients,
+                           main, messages)
     from app.views import stripe as stripe_bp
+    from app.views import therapists, users
 
     app.register_blueprint(appointment_types.bp)
     app.register_blueprint(appointments.bp)

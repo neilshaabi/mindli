@@ -1,5 +1,6 @@
-from datetime import date
 import re
+from datetime import date
+
 import phonenumbers
 from currency_converter import CurrencyConverter
 from flask_login import current_user
@@ -17,9 +18,9 @@ class NotWhitespace:
 
 class ValidName:
     def __call__(self, form, field) -> None:
-        if not re.match(r"^[a-zA-Z]+(?:['-][a-zA-Z]+)*$", field.data):
+        if not re.match(r"^[a-zA-Z]+(?:[ '-][a-zA-Z]+)*$", field.data):
             raise ValidationError(
-                "Invalid name (only letters, apostrophes and hyphens are allowed)."
+                "Invalid name (only letters, spaces, apostrophes, hyphens allowed)."
             )
 
 

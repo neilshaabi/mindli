@@ -1,15 +1,13 @@
-from wtforms import BooleanField, DateField, StringField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import (BooleanField, DateField, IntegerField, StringField,
+                     SubmitField)
+from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
-from app.models.enums import Occupation, ReferralSource
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
+from app.models.enums import Gender, Occupation, ReferralSource
 from app.models.issue import Issue
-from app.utils.validators import (
-    DateBeforeToday,
-    NotWhitespace,
-    ValidName,
-    ValidPhoneNumber,
-)
+from app.utils.validators import (DateBeforeToday, NotWhitespace, ValidName,
+                                  ValidPhoneNumber)
 
 
 class ClientProfileForm(CustomFlaskForm):
@@ -26,7 +24,7 @@ class ClientProfileForm(CustomFlaskForm):
     address = StringField(
         "Address", validators=[DataRequired(), NotWhitespace(), Length(min=1, max=255)]
     )
-    phone = StringField("Phone Number", validators=[DataRequired(), ValidPhoneNumber()])
+    phone = StringField("Phone number", validators=[DataRequired(), ValidPhoneNumber()])
     emergency_contact_name = StringField(
         "Emergency contact name",
         validators=[
@@ -41,7 +39,7 @@ class ClientProfileForm(CustomFlaskForm):
     )
     referral_source = CustomSelectField(
         "Referral source",
-        choices=[("", "Select referral source")],
+        choices=[("", "Select referral")],
         default="",
         validators=[DataRequired()],
     )
@@ -68,4 +66,45 @@ class ClientProfileForm(CustomFlaskForm):
             self.occupation.preselect_choices(client.occupation)
             self.issues.preselect_choices(client.issues)
             self.referral_source.preselect_choices(client.referral_source)
+        return
+
+
+class FilterClientsForm(CustomFlaskForm):
+    name = StringField("Search by name", validators=[Optional()])
+    gender = CustomSelectField(
+        "Gender",
+        choices=[("", "Select gender")],
+        default="",
+        validators=[Optional()],
+    )
+    min_age = IntegerField("Minimum age", validators=[Optional(), NumberRange(min=0)])
+    max_age = IntegerField("Maximum age", validators=[Optional(), NumberRange(min=0)])
+    occupation = CustomSelectField(
+        "Occupation",
+        choices=[("", "Select occupation")],
+        default="",
+        validators=[Optional()],
+    )
+    issues = CustomSelectMultipleField(
+        "Issues",
+        validators=[Optional()],
+        coerce=int,
+    )
+    referral_source = CustomSelectField(
+        "Referral source",
+        choices=[("", "Select referral")],
+        default="",
+        validators=[Optional()],
+    )
+    submit_filter = SubmitField("Filter Clients", render_kw={"name": "filter"})
+    submit_reset_filters = SubmitField(
+        "Reset Filters", render_kw={"name": "reset_filters"}
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(FilterClientsForm, self).__init__(*args, **kwargs)
+        self.gender.populate_choices(Gender)
+        self.occupation.populate_choices(Occupation)
+        self.issues.populate_choices(Issue)
+        self.referral_source.populate_choices(ReferralSource)
         return

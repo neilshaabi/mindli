@@ -1,10 +1,10 @@
 import random
 from typing import List, Optional
 
-from flask_login import current_user
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from faker import Faker
+from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
@@ -54,18 +54,6 @@ class Therapist(SeedableMixin, db.Model):
     @property
     def is_current_user(self) -> bool:
         return current_user.id == self.user.id
-
-    @property
-    def clients(self) -> List["Client"]:
-        from app.models.appointment import Appointment
-        from app.models.client import Client
-
-        client_subquery = (
-            db.session.query(Appointment.client_id)
-            .filter(Appointment.therapist_id == self.id)
-            .subquery()
-        )
-        return db.session.query(Client).filter(Client.id.in_(client_subquery)).all()
 
     @property
     def active_appointment_types(self) -> List["AppointmentType"]:

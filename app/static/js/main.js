@@ -31,6 +31,11 @@ $(document).ready(function() {
     $('form').each(function() {
         var form = $(this);
 
+        // Do not disable submit buttons for filter forms
+        if (form.attr('id') && form.attr('id').indexOf('filter') !== -1) {
+            return;
+        }
+
         // Do not disable buttons with no visible input elements
         if (form.find('input[type!=hidden], textarea, select').length > 0) {
             form.find(':submit').prop('disabled', true);

@@ -23,7 +23,7 @@
                             
                             <h5 class="mb-0">
                                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#filterFormCollapse" aria-expanded="false" aria-controls="filterFormCollapse">
-                                    Find an Appointment
+                                    Appointment Finder
                                 </button>
                             </h5>
                             
@@ -128,14 +128,14 @@
         
                                             <div class="col-lg-auto">
                                                 <div class='form-floating'>
-                                                    {{ filter_form.issues(class_='form-control') }}
+                                                    {{ filter_form.issues(class_='form-control', placeholder=filter_form.issues.label.text) }}
                                                     {{ filter_form.issues.label }}
                                                 </div>
                                             </div>
         
                                             <div class="col-lg-auto">
                                                 <div class='form-floating'>
-                                                    {{ filter_form.interventions(class_='form-control') }}
+                                                    {{ filter_form.interventions(class_='form-control', placeholder=filter_form.interventions.label.text) }}
                                                     {{ filter_form.interventions.label }}
                                                 </div>
                                             </div>

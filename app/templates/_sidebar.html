@@ -21,6 +21,11 @@
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('appointments.index') }}">Appointments</a>
             </li>
+            {% if current_user.role == UserRole.THERAPIST %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('clients.index') }}">Clients</a>
+                </li>
+            {% endif %}
             <li class="nav-item">
                 <a class="nav-link" href="{{ url_for('therapists.index') }}">Therapists</a>
             </li>

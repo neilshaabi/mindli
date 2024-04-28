@@ -118,7 +118,7 @@
                                             </h5>
                                         </div>
                                         <div class="row">
-                                            <span class="text-muted">Client</span>
+                                            <span class="text-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -172,57 +172,6 @@
                                             </div>
                                         </div>
 
-                                        <!-- Contact information -->
-                                        <div class="accordion-item row">
-                                            <div class="col-12">
-                                    
-                                                <div class="accordion-header row">
-                                                    <div class="col-12">
-                                                        <h6 class="mb-0">
-                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse" aria-expanded="false" aria-controls="contactCollapse">
-                                                                Contact information
-                                                            </button>
-                                                        </h6>
-                                                    </div>
-                                                </div>
-                    
-                                                <div id="contactCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
-
-                                                    <div class="accordion-body">
-                                                    
-                                                        <div class="row mb-3">
-                                                            <div class="col-12">
-                                                                <div class="mb-1 my-muted">Address</div>
-                                                                <div>{{ client.address if client.address else '' }}</div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row mb-3">
-                                                            <div class="col-12">
-                                                                <div class="mb-1 my-muted">Phone number</div>
-                                                                <div>{{ client.phone if client.phone else '' }}</div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div class="row mb-3">
-                                                            <div class="col-12">
-                                                                <div class="mb-1 my-muted">Emergency contact</div>
-                                                                <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
-                                                            </div>
-                                                        </div>
-                                                    
-                                                        <div class="row mb-3">
-                                                            <div class="col-12">
-                                                                <div class="mb-1 my-muted">Emergency contact - phone number</div>
-                                                                <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
-                                                            </div>
-                                                        </div>
-                                                    
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
                                         <!-- Background -->
                                         <div class="accordion-item row">
                                             <div class="col-12">
@@ -261,6 +210,57 @@
                                                             </div>
                                                         </div>
 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Contact information -->
+                                        <div class="accordion-item row">
+                                            <div class="col-12">
+                                    
+                                                <div class="accordion-header row">
+                                                    <div class="col-12">
+                                                        <h6 class="mb-0">
+                                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse" aria-expanded="false" aria-controls="contactCollapse">
+                                                                Contact information
+                                                            </button>
+                                                        </h6>
+                                                    </div>
+                                                </div>
+                    
+                                                <div id="contactCollapse" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion">
+
+                                                    <div class="accordion-body">
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Address</div>
+                                                                <div>{{ client.address if client.address else '' }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Phone</div>
+                                                                <div>{{ client.phone if client.phone else '' }}</div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Emergency contact</div>
+                                                                <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    
+                                                        <div class="row mb-3">
+                                                            <div class="col-12">
+                                                                <div class="mb-1 my-muted">Emergency contact phone</div>
+                                                                <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
+                                                            </div>
+                                                        </div>
+                                                    
                                                     </div>
                                                 </div>
                                             </div>

@@ -352,3 +352,190 @@
     </tr>
 {% endmacro %}
 
+
+
+
+{% macro client_cards(client_cards) %}
+    {% for client in clients %}
+        <div class="col-lg-6">
+            <div class="my-card">
+                
+                <!-- Header -->
+                <div class="row g-4 mb-4 align-items-center">
+                    <div class="col-auto">
+                        <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                            <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
+                        </a>
+                    </div>
+                    <div class="col">
+                        <div class="row">
+                            <h5 class="mb-1">
+                                <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                                    {{ client.user.full_name }}
+                                </a>
+                            </h5>
+                        </div>
+                        <div class="row">
+                            <span class="text-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- Body -->
+                <div class="mt-4">
+                    <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
+
+                        <!-- Personal details -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
+                                            Personal details
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Gender</div>
+                                                <div>{{ client.user.gender.value }}</div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Age</div>
+                                                <div>{{ client.age|string + ' years old' if client.age else '' }}</div>
+                                            </div>
+                                        </div>
+        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Occupation</div>
+                                                <div>{{ client.occupation.value }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Background -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#backgroundCollapse{{ loop.index }}" aria-expanded="false" aria-controls="backgroundCollapse{{ loop.index }}">
+                                            Client background
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="backgroundCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="row mb-1 my-muted">
+                                                    <div class="col-12">Current challenges</div>
+                                                </div>
+                                                <div class="row g-1">
+                                                    {% for issue in client.issues|map(attribute='name')|unique %}
+                                                        <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Referral source</div>
+                                                <div>{{ client.referral_source.value }}</div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Contact information -->
+                        <div class="accordion-item row">
+                            <div class="col-12">
+                    
+                                <div class="accordion-header row">
+                                    <div class="col-12">
+                                        <h6 class="mb-0">
+                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse{{ loop.index }}" aria-expanded="false" aria-controls="contactCollapse{{ loop.index }}">
+                                                Contact information
+                                            </button>
+                                        </h6>
+                                    </div>
+                                </div>
+
+                                <div id="contactCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                    <div class="accordion-body">
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Address</div>
+                                                <div>{{ client.address if client.address else '' }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Phone</div>
+                                                <div>{{ client.phone if client.phone else '' }}</div>
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Emergency contact</div>
+                                                <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Emergency contact phone</div>
+                                                <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
+                                            </div>
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                
+                <div class="row g-2 mt-4">
+                    <div class="col-lg-6">
+                        <a href="{{ url_for('clients.client', client_id=client.id, section='profile') }}" class="btn btn-outline-primary">View Profile</a>
+                    </div>
+                    <div class="col-lg-6">
+                        <a href="TODO" class="btn btn-outline-primary">Send Message</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}

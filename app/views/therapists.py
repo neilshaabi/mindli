@@ -1,24 +1,16 @@
-from flask import (
-    Blueprint,
-    Response,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, flash, jsonify, redirect,
+                   render_template, render_template_string, request, session,
+                   url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from app import db
-from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
+from app.forms.appointment_types import (AppointmentTypeForm,
+                                         DeleteAppointmentTypeForm)
 from app.forms.appointments import BookAppointmentForm
-from app.forms.users import UserProfileForm
 from app.forms.stripe import CreateStripeAccountForm
 from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
+from app.forms.users import UserProfileForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType, UserRole
 from app.models.intervention import Intervention
@@ -315,8 +307,8 @@ def filter() -> Response:
     # Handle submissions via different submit buttons separately
     submit_action = request.form["submit"]
 
+    # Store filter settings in the session
     if submit_action == "filter":
-        # Store filter settings in the session
         session["therapist_filters"] = {
             "name": form.name.data,
             "therapy_type": form.therapy_type.data,
@@ -406,7 +398,7 @@ def filter() -> Response:
         # Construct template strings to insert updated therapists via AJAX
         therapists_html = render_template_string(
             """
-            {% from "_macros.html" import therapist_card with context %}
+            {% from "_macros.html" import therapist_cards with context %}
             {{ therapist_cards(therapists) }}
         """,
             therapists=filtered_therapists,
@@ -427,7 +419,7 @@ def filter() -> Response:
             }
         )
 
+    # Clear filter settings from the session if they exist
     elif submit_action == "reset_filters":
-        # Clear filter settings from the session if they exist
         session.pop("therapist_filters", None)
         return jsonify({"success": True, "url": url_for("therapists.index")})

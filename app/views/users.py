@@ -1,15 +1,7 @@
 import os
 
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    request,
-    url_for,
-)
+from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
+                   request, url_for)
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 

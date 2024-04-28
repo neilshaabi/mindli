@@ -1,26 +1,21 @@
-from flask import (
-    Blueprint,
-    Response,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from datetime import timedelta
+
+from flask import (Blueprint, Response, flash, jsonify, redirect,
+                   render_template, render_template_string, request, session,
+                   url_for)
 from flask_login import current_user, login_required
+from sqlalchemy import func
 
 from app import db
-
+from app.forms.clients import ClientProfileForm, FilterClientsForm
 from app.forms.users import UserProfileForm
-from app.forms.clients import ClientProfileForm
+from app.models.appointment import Appointment
 from app.models.client import Client
 from app.models.enums import UserRole
 from app.models.issue import Issue
+from app.models.user import User
 from app.utils.decorators import client_required, therapist_required
-from app.utils.formatters import get_flashed_message_html
+from app.utils.formatters import age_to_date_of_birth, get_flashed_message_html
 
 bp = Blueprint("clients", __name__, url_prefix="/clients")
 
@@ -30,19 +25,34 @@ bp = Blueprint("clients", __name__, url_prefix="/clients")
 @therapist_required
 def index() -> Response:
     # Initialise filter form with fields prepopulated from session
-    # filter_form = FilterClientsForm(
-    #     id="filter-clients",
-    #     endpoint=url_for("clients.filter"),
-    #     data=session.get("client_filters", {}),
-    # )
+    filter_form = FilterClientsForm(
+        id="filter-clients",
+        endpoint=url_for("clients.filter"),
+        data=session.get("client_filters", {}),
+    )
 
-    # Fetch all clients which the current therapist has appointments with
-    clients = current_user.therapist.clients
+    # Retrieve client IDs through appointments with the current therapist
+    client_ids_query = (
+        db.select(Appointment.client_id)
+        .where(Appointment.therapist_id == current_user.therapist.id)
+        .distinct()
+    ).subquery()
+
+    # Fetch clients the therapist has seen
+    clients = (
+        db.session.execute(
+            db.select(Client).where(
+                Client.id.in_(db.select(client_ids_query.c.client_id))
+            )
+        )
+        .scalars()
+        .all()
+    )
 
     # Render template
     return render_template(
         "clients.html",
-        # filter_form=filter_form,
+        filter_form=filter_form,
         clients=clients,
     )
 
@@ -120,7 +130,7 @@ def client(client_id: int) -> Response:
             endpoint=url_for("clients.update", client_id=client_id),
         )
 
-    # Render template with information for this therapist
+    # Render template with information for this client
     return render_template(
         "client.html",
         client=client,
@@ -217,3 +227,107 @@ def update(client_id: int) -> Response:
             ),
         }
     )
+
+
+@bp.route("/filter", methods=["POST"])
+@login_required
+@therapist_required
+def filter() -> Response:
+    # Initialise submitted form
+    form = FilterClientsForm(
+        id="filter-clients",
+        endpoint=url_for("clients.filter"),
+    )
+
+    # Invalid form submission - return errors
+    if not form.validate_on_submit():
+        return jsonify({"success": False, "errors": form.errors})
+
+    # Handle submissions via different submit buttons separately
+    submit_action = request.form["submit"]
+
+    # Store filter settings in the session
+    if submit_action == "filter":
+        session["client_filters"] = {
+            "name": form.name.data,
+            "gender": form.gender.data,
+            "min_age": form.min_age.data,
+            "max_age": form.max_age.data,
+            "occupation": form.occupation.data,
+            "issues": form.issues.data,
+            "referral_source": form.referral_source.data,
+        }
+
+        # Retrieve client IDs through appointments with the current therapist
+        client_ids_query = (
+            db.select(Appointment.client_id)
+            .where(Appointment.therapist_id == current_user.therapist.id)
+            .distinct()
+        ).subquery()
+
+        # Begin building the base query, including only clients the therapist has seen
+        query = db.select(Client).where(
+            Client.id.in_(db.select(client_ids_query.c.client_id))
+        )
+
+        # Apply filters by extending the query with conditions for each filter
+        if form.name.data:
+            search_term = f"%{form.name.data.lower()}%"
+            query = query.join(User).where(
+                func.lower(User.first_name + " " + User.last_name).like(search_term)
+            )
+
+        if form.gender.data:
+            query = query.where(Client.user.has(gender=form.gender.data))
+
+        if form.min_age.data:
+            min_age_dob = age_to_date_of_birth(form.min_age.data + 1) - timedelta(
+                days=1
+            )
+            query = query.filter(Client.date_of_birth <= min_age_dob)
+
+        if form.max_age.data:
+            max_age_dob = age_to_date_of_birth(form.max_age.data)
+            query = query.filter(Client.date_of_birth >= max_age_dob)
+
+        if form.occupation.data:
+            query = query.where(Client.occupation == form.occupation.data)
+
+        if form.issues.data:
+            for issue_id in form.issues.data:
+                query = query.where(Client.issues.any(Issue.id == issue_id))
+
+        if form.referral_source.data:
+            query = query.where(Client.referral_source == form.referral_source.data)
+
+        # Execute query to filter clients
+        filtered_clients = db.session.execute(query).scalars().all()
+
+        # Construct template strings to insert updated clients via AJAX
+        clients_html = render_template_string(
+            """
+            {% from "_macros.html" import client_cards with context %}
+            {{ client_cards(clients) }}
+        """,
+            clients=filtered_clients,
+        )
+
+        filter_count_html = render_template_string(
+            "{{ clients|length }} clients found",
+            clients=filtered_clients,
+        )
+
+        return jsonify(
+            {
+                "success": True,
+                "update_targets": {
+                    "client-cards": clients_html,
+                    "filter-count": filter_count_html,
+                },
+            }
+        )
+
+    # Clear filter settings from the session if they exist
+    elif submit_action == "reset_filters":
+        session.pop("client_filters", None)
+        return jsonify({"success": True, "url": url_for("clients.index")})

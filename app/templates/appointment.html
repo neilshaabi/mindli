@@ -172,7 +172,7 @@
                                 <div class="row mb-3">
                                     <div class="col-md-12">
                                         <div class='form-floating'>
-                                            {{ notes_form.issues(class_='form-control') }}
+                                            {{ notes_form.issues(class_='form-control', placeholder=notes_form.issues.label.text) }}
                                             {{ notes_form.issues.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
@@ -185,7 +185,7 @@
                                 <div class="row mb-3 g-2">
                                     <div class="col-md-8">
                                         <div class='form-floating'>
-                                            {{ notes_form.interventions(class_='form-control') }}
+                                            {{ notes_form.interventions(class_='form-control', placeholder=notes_form.interventions.label.text) }}
                                             {{ notes_form.interventions.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">

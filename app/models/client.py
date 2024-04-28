@@ -2,11 +2,11 @@ import random
 from datetime import date
 from typing import List
 
-from flask_login import current_user
 import phonenumbers
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from faker import Faker
+from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
