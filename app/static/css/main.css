@@ -6,8 +6,8 @@
     
     --light-grey-bg: #f8fafc;
     --light-grey-outline: #e0e1e4;
-    --light-grey-text: #6c7888;
-    --dark-grey-text: #414552;
+    --light-grey-text: #7d8999;
+    --dark-grey-text: #525663;
 
     --navbar-height: 56px;
     --sidebar-expanded-width: 220px;
@@ -74,8 +74,8 @@ main {
 
 .navbar-nav,
 .sidebar .nav-link {
-    --bs-nav-link-color: var(--light-grey-text) !important;
-    --bs-nav-link-hover-color: var(--dark-grey-text) !important;
+    --bs-nav-link-color: var(--dark-grey-text) !important;
+    --bs-nav-link-hover-color: black !important;
     --bs-navbar-active-color: var(--colour-primary) !important;
 }
 
@@ -93,12 +93,12 @@ main {
 }
 
 .navbar-toggler {
-    color: var(--light-grey-text);
+    color: var(--dark-grey-text);
     padding: 0.5rem 1rem !important;
 }
 
 .navbar-toggler:hover {
-    color: var(--dark-grey-text);
+    color: black;
     background: var(--light-grey-bg);
 }
 
