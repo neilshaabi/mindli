@@ -1,7 +1,6 @@
 import os
 
-from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
-                   request, url_for)
+from flask import Blueprint, Response, abort, current_app, jsonify, request
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
@@ -13,13 +12,12 @@ from app.utils.formatters import get_flashed_message_html
 bp = Blueprint("user", __name__, url_prefix="/user")
 
 
-@bp.route("/user/<int:user_id>", methods=["POST"])
+@bp.route("/<int:user_id>", methods=["POST"])
 @login_required
 def update(user_id: int) -> Response:
-    # Redirect if not current user
+    # Current user is not authorised
     if user_id != current_user.id:
-        flash("You do not have permission to perform this action", "error")
-        return redirect(url_for("main.profile"))
+        abort(403)
 
     # Generate form for personal information common to all users
     form = UserProfileForm()

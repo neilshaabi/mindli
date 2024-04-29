@@ -104,16 +104,16 @@
                             <div class="col-12">
                                 
                                 <!-- Header -->
-                                <div class="row g-2 mb-4 align-items-center">
+                                <div class="row g-3 mb-4 align-items-center">
                                     <div class="col-auto">
-                                        <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}">
+                                        <a href="{{ url_for('profile.profile', role=therapist.user.role.value, role_specific_id=therapist.id) }}">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                                         </a>
                                     </div>
                                     <div class="col">
                                         <div class="row">
                                             <h5 class="mb-1">
-                                                <a href="{{ url_for('therapists.therapist', therapist_id=therapist.id) }}">
+                                                <a href="{{ url_for('profile.profile', role=therapist.user.role.value, role_specific_id=therapist.id) }}">
                                                     {{ therapist.user.full_name }}
                                                 </a>
                                             </h5>
@@ -122,6 +122,14 @@
                                             <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                                         </div>
                                     </div>
+                                    {% if current_user.role == UserRole.CLIENT %}
+                                        <div class="col-auto ms-auto">
+                                            <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
+                                                <i class="fa-regular fa-paper-plane"></i>
+                                                Send Message
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 
                                 <hr>
@@ -854,7 +862,7 @@
                                 <div class="col-12">
                                     
                                     <!-- Header -->
-                                    <div class="row g-2 mb-4 align-items-center">
+                                    <div class="row g-3 mb-4 align-items-center">
                                         <div class="col-auto">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                                         </div>
@@ -866,6 +874,14 @@
                                                 <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
                                             </div>
                                         </div>
+                                        {% if current_user.role == UserRole.CLIENT %}
+                                            <div class="col-auto ms-auto">
+                                                <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
+                                                    <i class="fa-regular fa-paper-plane"></i>
+                                                    Send Message
+                                                </a>
+                                            </div>
+                                        {% endif %}
                                     </div>
                                     
                                     <hr>
@@ -918,7 +934,7 @@
                                     
                                         <div class="my-muted text-s">
                                             <i class="fa-solid fa-circle-info"></i>
-                                            Please <a href="TODO">message</a> your therapist to confirm these details before proceeding
+                                            Please <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.user.id, client_user_id=current_user.id) }}">message</a> your therapist to confirm these details before proceeding
                                         </div>
                                         
                                     </div>

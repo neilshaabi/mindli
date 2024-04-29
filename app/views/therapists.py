@@ -1,4 +1,4 @@
-from flask import (Blueprint, Response, flash, jsonify, redirect,
+from flask import (Blueprint, Response, abort, jsonify, redirect,
                    render_template, render_template_string, request, session,
                    url_for)
 from flask_login import current_user, login_required
@@ -87,7 +87,7 @@ def new_therapist() -> Response:
     return render_template(
         "therapist.html",
         therapist=mock_therapist,
-        default_section="edit-profile",
+        default_section="profile",
         forms=forms,
     )
 
@@ -100,10 +100,9 @@ def therapist(therapist_id: int) -> Response:
         db.select(Therapist).filter_by(id=therapist_id)
     ).scalar_one_or_none()
 
-    # Redirect to therapist directory if therapist not found
+    # Therapist not found
     if not therapist:
-        flash("Therapist not found", "error")
-        return redirect(url_for("therapists.index"))
+        abort(400)
 
     # Initialise dictionary to hold all forms
     forms = {
@@ -240,15 +239,13 @@ def update(therapist_id: int) -> Response:
         db.select(Therapist).filter_by(id=therapist_id)
     ).scalar_one_or_none()
 
-    # Redirect to therapist directory if not authorised
-    if not therapist or not therapist.is_current_user:
-        flash("You do not have permission to perform this action", "error")
-        return jsonify(
-            {
-                "success": False,
-                "url": url_for("therapists.therapist", therapist_id=therapist_id),
-            }
-        )
+    # Appointment not found
+    if not therapist:
+        abort(400)
+
+    # Current user is not authorised
+    if not therapist.is_current_user:
+        abort(403)
 
     # Initialise submitted form
     form = TherapistProfileForm()

@@ -74,7 +74,7 @@ body > .sidebar ~ main {
 }
 
 .navbar {
-    min-height: var(--navbar-height);
+    height: var(--navbar-height);
     width: 100%;
 }
 
@@ -105,13 +105,15 @@ body > .sidebar ~ main {
     color: var(--colour-primary);
 }
 
+
 /* Sidebar */
 
 .sidebar {
-    position: fixed;
     height: 100%;
     width: var(--sidebar-width);
     max-width: var(--sidebar-width);
+    position: fixed;
+    top: var(--navbar-height);
 }
 
 
@@ -230,6 +232,10 @@ textarea {
 form .btn,
 .row .btn {
     width: 100%;
+}
+
+.btn-default-height {
+    height: auto;
 }
 
 .btn-primary,
@@ -386,9 +392,6 @@ table th {
     border-color: var(--light-grey-outline);
 }
 
-.list-group-item-action a {
-    color: inherit;
-}
 
 .list-group-item-action.active:hover {
     color: var(--colour-dark);
@@ -397,6 +400,10 @@ table th {
 .list-group-item + .list-group-item.active {
     margin-top: inherit;
     border-top-width: inherit;
+}
+
+.list-group-item-action a {
+    color: inherit;
 }
 
 /* Home page */
@@ -465,6 +472,20 @@ table th {
 
 /* Messages */
 
+.my-card#conversation-selector {
+    height: 75vh;
+    overflow-y: auto;
+}
+
+.my-card#conversation-container {
+    height: 75vh;
+}
+
+.messages-container {
+    height: 40vh;
+    overflow-y: auto;
+}
+
 .message {
     display: inline-block;
     border-radius: 10px;
@@ -480,11 +501,6 @@ table th {
 .message.from_other_user {
     float: left !important;
     background: var(--light-grey-bg);
-}
-
-.messages-container {
-    height: 400px;
-    overflow-y: auto;
 }
 
 
@@ -528,6 +544,10 @@ table th {
 .tag i,
 .input-btn-icon i {
     margin-right: 3px;
+}
+
+.btn i {
+    margin-right: 8px;
 }
 
 

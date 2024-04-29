@@ -2,18 +2,15 @@
     <div class='container-fluid'>
 
         <a class='navbar-brand' href='/'>
-            <img src="{{ url_for('static', filename='img/logos/logo.png') }}" alt="mindli-logo">
-            mindli
+            {{ current_user.role.value }}
         </a>
-
-        <p>TODO: {{ current_user.role.value }}</p>
 
         <ul class="nav flex-column">
             <li class="nav-item">
                 <a class="nav-link" href="/dashboard">Dashboard</a>
             </li>
             <li class="nav-item">    
-                <a class="nav-link" href="{{ url_for('main.profile') }}">Profile</a>
+                <a class="nav-link" href="{{ url_for('profile.index') }}">Profile</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/messages">Messages</a>

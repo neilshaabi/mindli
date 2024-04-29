@@ -1,8 +1,8 @@
 import secrets
 
 import stripe
-from flask import (Blueprint, current_app, flash, json, jsonify, redirect,
-                   request, session, url_for)
+from flask import (Blueprint, abort, current_app, flash, json, jsonify,
+                   redirect, request, session, url_for)
 from flask_login import current_user, login_required
 
 from app import csrf, db
@@ -91,11 +91,7 @@ def stripe_return():
     if not request.args.get("state") or request.args.get("state") != session.pop(
         "stripe_onboarding_state", None
     ):
-        flash(
-            "You do not have permission to perform this action",
-            "warning",
-        )
-        return redirect(url_for("main.index"))
+        abort(403)
 
     # Retrieve account via Stripe API
     account_id = request.args.get("account_id")

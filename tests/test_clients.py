@@ -13,12 +13,6 @@ def test_get_clients(
     return
 
 
-# def test_get_client(client: FlaskClient, logged_in_therapist: User, fake_client_profile: Client):
-#     response = client.get(f"clients/{logged_in_client.client.id}")
-#     assert response.status_code == 200
-#     return
-
-
 def test_update_client_profile_success(
     client: FlaskClient,
     logged_in_client: User,

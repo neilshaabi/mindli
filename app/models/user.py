@@ -58,6 +58,14 @@ class User(UserMixin, SeedableMixin, db.Model):
     def full_name(self) -> str:
         return f"{self.first_name} {self.last_name}"
 
+    @property
+    def role_specific_id(self):
+        if self.role == UserRole.THERAPIST and self.therapist:
+            return self.therapist.id
+        elif self.role == UserRole.CLIENT and self.client:
+            return self.client.id
+        return None
+
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
         # Create a fake email that doesn't already exist in the database

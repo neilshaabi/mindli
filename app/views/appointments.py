@@ -1,8 +1,7 @@
 from datetime import datetime
 
-from flask import (Blueprint, Response, flash, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (Blueprint, Response, abort, jsonify, render_template,
+                   render_template_string, request, session, url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
@@ -77,10 +76,13 @@ def appointment(appointment_id: int) -> Response:
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one_or_none()
 
-    # Redirect if appointment not found or user not authorised
-    if not appointment or appointment.this_user.id != current_user.id:
-        flash("You do not have permission to view this appointment", "error")
-        return redirect(url_for("appointments.index"))
+    # Appointment not found
+    if not appointment:
+        abort(400)
+
+    # Current user is not in this appointment
+    if appointment.this_user.id != current_user.id:
+        abort(403)
 
     # Initialise form to update appointment, passing role to distinguish allowed actions
     update_form = UpdateAppointmentForm(
@@ -192,12 +194,13 @@ def update(appointment_id: int) -> Response:
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one()
 
-    # Redirect if appointment does not belong to this user
-    if not appointment or appointment.this_user.id != current_user.id:
-        flash("You do not have permission to perform this action", "error")
-        return redirect(
-            url_for("appointments.appointment", appointment_id=appointment_id)
-        )
+    # Appointment not found
+    if not appointment:
+        abort(400)
+
+    # Current user is not in this appointment
+    if appointment.this_user.id != current_user.id:
+        abort(403)
 
     form = UpdateAppointmentForm(role=current_user.role)
 
@@ -333,12 +336,13 @@ def notes(appointment_id: int) -> Response:
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one()
 
-    # Redirect if appointment does not belong to this therapist
-    if not appointment or not appointment.therapist.is_current_user:
-        flash("You do not have permission to perform this action", "error")
-        return redirect(
-            url_for("appointments.appointment", appointment_id=appointment_id)
-        )
+    # Appointment not found
+    if not appointment:
+        abort(400)
+
+    # Current user is not the therapist for the appointment
+    if not appointment.therapist.is_current_user:
+        abort(403)
 
     form = AppointmentNotesForm()
 
@@ -385,12 +389,13 @@ def exercise(appointment_id: int) -> Response:
         db.select(Appointment).filter_by(id=appointment_id)
     ).scalar_one()
 
-    # Redirect if appointment does not belong to this user
-    if not appointment or appointment.this_user.id != current_user.id:
-        flash("You do not have permission to perform this action", "error")
-        return redirect(
-            url_for("appointments.appointment", appointment_id=appointment_id)
-        )
+    # Appointment not found
+    if not appointment:
+        abort(400)
+
+    # Current user is not in this appointment
+    if appointment.this_user.id != current_user.id:
+        abort(403)
 
     form = TherapyExerciseForm(role=current_user.role)
 

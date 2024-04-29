@@ -1,6 +1,6 @@
 from datetime import timedelta
 
-from flask import (Blueprint, Response, flash, jsonify, redirect,
+from flask import (Blueprint, Response, abort, jsonify, redirect,
                    render_template, render_template_string, request, session,
                    url_for)
 from flask_login import current_user, login_required
@@ -32,23 +32,27 @@ def index() -> Response:
         data=session.get(FILTERS_SESSION_KEY, {}),
     )
 
-    # Retrieve client IDs through appointments with the current therapist
-    client_ids_query = (
-        db.select(Appointment.client_id)
-        .where(Appointment.therapist_id == current_user.therapist.id)
-        .distinct()
-    ).subquery()
+    if current_user.therapist:
+        # Retrieve client IDs through appointments with the current therapist
+        client_ids_query = (
+            db.select(Appointment.client_id)
+            .where(Appointment.therapist_id == current_user.therapist.id)
+            .distinct()
+        ).subquery()
 
-    # Fetch clients the therapist has seen
-    clients = (
-        db.session.execute(
-            db.select(Client).where(
-                Client.id.in_(db.select(client_ids_query.c.client_id))
+        # Fetch clients the therapist has seen
+        clients = (
+            db.session.execute(
+                db.select(Client).where(
+                    Client.id.in_(db.select(client_ids_query.c.client_id))
+                )
             )
+            .scalars()
+            .all()
         )
-        .scalars()
-        .all()
-    )
+
+    else:
+        clients = None
 
     # Render template
     return render_template(
@@ -64,7 +68,13 @@ def index() -> Response:
 def new_client() -> Response:
     # Redirect user to their profile if it already exists
     if current_user.client:
-        return redirect(url_for("clients.client", client_id=current_user.client.id))
+        return redirect(
+            url_for(
+                "profile.profile",
+                role=current_user.role.value,
+                role_specific_id=current_user.role_specific_id,
+            )
+        )
 
     # Create mock Client to pass to template
     mock_client = Client(user=current_user)
@@ -86,7 +96,7 @@ def new_client() -> Response:
     return render_template(
         "client.html",
         client=mock_client,
-        default_section="edit-profile",
+        default_section="profile",
         forms=forms,
     )
 
@@ -99,17 +109,20 @@ def client(client_id: int) -> Response:
         db.select(Client).filter_by(id=client_id)
     ).scalar_one_or_none()
 
-    # Redirect to clients if client not found or not authorised
-    if (
-        not client
-        or (current_user.role == UserRole.CLIENT and not client.is_current_user)
-        or (
-            current_user.role == UserRole.THERAPIST
-            and client.get_appointments_with_therapist(current_user.therapist) is None
-        )
+    # Client not found
+    if not client:
+        abort(400)
+
+    # Current user is a client who is not the current user
+    if current_user.role == UserRole.CLIENT and not client.is_current_user:
+        abort(403)
+
+    # Current user is a therapist with no appointments with this client
+    elif (
+        current_user.role == UserRole.THERAPIST
+        and client.get_appointments_with_therapist(current_user.therapist) is None
     ):
-        flash("You do not have permission to view this page", "error")
-        return redirect(url_for("clients.index"))
+        abort(403)
 
     # Initialise dictionary to hold all forms
     forms = {
@@ -189,15 +202,13 @@ def update(client_id: int) -> Response:
         db.select(Client).filter_by(id=client_id)
     ).scalar_one_or_none()
 
-    # Redirect to client directory if not authorised
-    if not client or not client.is_current_user:
-        flash("You do not have permission to perform this action", "error")
-        return jsonify(
-            {
-                "success": False,
-                "url": url_for("clients.client", client_id=client_id),
-            }
-        )
+    # Client not found
+    if not client:
+        abort(400)
+
+    # Current user is not authorised
+    if not client.is_current_user:
+        abort(403)
 
     # Initialise submitted form
     form = ClientProfileForm()

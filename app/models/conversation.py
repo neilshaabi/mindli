@@ -1,3 +1,4 @@
+import random
 from typing import List
 
 import sqlalchemy as sa
@@ -47,7 +48,7 @@ class Conversation(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
-        # Create conversations between example therapist and clients
+        # Fetch example therapist and client to create conversations between
         example_therapist_user = db.session.execute(
             db.select(User).filter_by(email=EXAMPLE_THERAPIST_EMAIL)
         ).scalar_one()
@@ -58,12 +59,14 @@ class Conversation(SeedableMixin, db.Model):
             .all()
         )
 
+        # Randomly create a conversation with a 50% chance
         conversations = [
             Conversation(
                 therapist_user_id=example_therapist_user.id,
                 client_user_id=client_user.id,
             )
             for client_user in client_users
+            if random.random() < 0.5
         ]
 
         db.session.add_all(conversations)

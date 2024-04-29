@@ -90,11 +90,8 @@
 
                                 <ul>
                                     <li class="mb-3">
-                                        {% if current_user.role == UserRole.THERAPIST %}
-                                            Client: <a href="#TODO">{{ appointment.other_user.full_name }}</a>
-                                        {% else %}
-                                            Therapist: <a href="{{ url_for('therapists.therapist', therapist_id=appointment.therapist.id) }}">{{ appointment.other_user.full_name }}</a>
-                                        {% endif %}
+                                        {{ current_user.role.value }}: <a href="{{ url_for('profile.profile', role=appointment.other_user.role.value, role_specific_id=appointment.other_user.id) }}">{{ appointment.other_user.full_name }}</a>
+
                                     </li>
                                     <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %-d/%-m/%Y – %I:%M %p') }}</li>
                                     <li class="mb-3">Therapy type: {{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</li>
@@ -117,7 +114,7 @@
                                 </div>
                             </div>
                             
-                            <div class="row g-2 mb-4 align-items-center">
+                            <div class="row g-3 mb-4 align-items-center">
                                 <div class="col-md-4">
                                     <div class='form-floating'>
                                         {{ update_form.action(class_='form-control', placeholder=update_form.action.label.text, id='action') }}

@@ -18,16 +18,24 @@
 
             <div class='col-lg-4'>
                 
-                <div class='my-card p-4'>
+                <div id='conversation-selector' class='my-card p-4'>
 
-                    {% if conversations %}
+                    {% if not conversations %}
+
+                        <div class="d-flex h-100 justify-content-center align-items-center">
+                            <div class="my-muted">
+                                No conversations yet
+                            </div>
+                        </div>
+                    
+                    {% else %}
                         
                         <ul class="list-group list-group-flush" id="section-selector" data-default-section="{{ default_section }}">
                             
                             {% for conversation in conversations %}
 
                                 <li class="list-group-item list-group-item-action p-3" data-target="#{{ conversation.id }}">
-                                    <div class="row g-2 align-items-center">
+                                    <div class="row g-3 align-items-center">
                                         <div class="col-auto">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
                                         </div>
@@ -40,11 +48,7 @@
                                             <div class="row">
                                                 <div class="col">
                                                     <span class="my-muted text-s">
-                                                        {% if conversation.messages %}
-                                                            {{ conversation.latest_message_content | truncate(25, '...') }}
-                                                        {% else %}
-                                                            No messages
-                                                        {% endif %}
+                                                        {{ conversation.latest_message_content | truncate(25, '...') }}
                                                     </span>
                                                 </div>
                                             </div>
@@ -58,86 +62,81 @@
                                 </li>
                             {% endfor %}
                         </ul>
-                    
-                    {% else %}
-                        NO CONVERSATIONS FOUND
                     {% endif %}
+                    
                 </div>
             </div>
             
             <div class='col-lg-8'>
-                <div class='my-card d-flex flex-column clearfix'>
+                <div id="conversation-container" class='my-card d-flex flex-column clearfix'>
 
-                    {% if conversations %}
-                    
-                        {% for conversation in conversations %}
-                            <div id="{{ conversation.id }}" class="section hidden">
-                            
-                                <!-- Header -->
-                                <div class="row g-2 mb-4 align-items-center">
-                                    <div class="col-auto">
-                                        <a href="TODO">
-                                            <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
-                                        </a>
+                    {% for conversation in conversations %}
+                        <div id="{{ conversation.id }}" class="section hidden">
+                        
+                            <!-- Header -->
+                            <div class="row g-3 mb-4 align-items-center">
+                                <div class="col-auto">
+                                    <a href="{{ url_for('profile.profile', role=conversation.other_user.role.value, role_specific_id=conversation.other_user.role_specific_id) }}">
+                                        <img src="{{ url_for('static', filename='img/profile_pictures/' + conversation.other_user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ conversation.other_user.full_name }}">
+                                    </a>
+                                </div>
+                                <div class="col">
+                                    <div class="row">
+                                        <h5 class="mb-1">
+                                            <a href="{{ url_for('profile.profile', role=conversation.other_user.role.value, role_specific_id=conversation.other_user.role_specific_id) }}">
+                                                {{ conversation.other_user.full_name }}
+                                            </a>
+                                        </h5>
                                     </div>
-                                    <div class="col">
-                                        <div class="row">
-                                            <h5 class="mb-1">
-                                                <a href="TODO">
-                                                    {{ conversation.other_user.full_name }}
-                                                </a>
-                                            </h5>
-                                        </div>
-                                        <div class="row">
-                                            <span class="my-muted">{{ conversation.other_user.role.value }}</span>
-                                        </div>
+                                    <div class="row">
+                                        <span class="my-muted">{{ conversation.other_user.role.value }}</span>
                                     </div>
                                 </div>
-                                
-                                <hr>
-                                
-                                <!-- Messages container -->
-                                <div class="row mb-3 text-s messages-container">
-                                    <div class="col-12">
-                                        {% if conversation.messages %}
-                                            {% for message in conversation.messages %}
-                                            <div class="message p-2 mb-1 
-                                                {% if message.author_id == current_user.id %}
-                                                    from_current_user
-                                                {% else %}
-                                                    from_other_user
-                                                {% endif %}"
-                                                data-bs-toggle="tooltip" data-bs-placement="left" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%a %-d %b %Y, %H:%M') }}">
-                                                {{ message.content }}
-                                            </div>
-                                            {% endfor %}
-                                        {% else %}
-                                            TODO
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Message input field -->
-                                <div class="row mt-auto">
-                                    <div class="col-12">
-                                        <form id="{{ conversation.form.id }}" action="{{ conversation.form.endpoint }}" novalidate>
-                                            {{ conversation.form.csrf_token }}
-                                            {{ conversation.form.conversation_id() }}
-                                            <div class='form-floating'>
-                                                {{ conversation.form.message(class_='form-control', placeholder=conversation.form.message.label.text, autocomplete="off") }}
-                                                {{ conversation.form.message.label }}
-                                                <button type='submit' class='input-btn-icon'>
-                                                    <i class="fa-regular fa-paper-plane"></i>
-                                                </button>
-                                            </div>
-                                        </form>
-                                    </div>
+                                <div class="col-auto ms-auto">
+                                    <a href="{{ url_for('profile.profile', role=conversation.other_user.role.value, role_specific_id=conversation.other_user.role_specific_id, section='profile') }}" class="btn btn-outline-primary btn-default-height text-s">
+                                        <i class="fa-regular fa-user"></i>
+                                        View Profile
+                                    </a>
                                 </div>
                             </div>
-                        {% endfor %}
-                    {% else %}
-                        TODO
-                    {% endif %}
+                            
+                            <hr>
+                            
+                            <!-- Messages container -->
+                            <div class="row mb-3 text-s messages-container">
+                                <div class="col-12">
+                                    {% for message in conversation.messages %}
+                                        <div class="message p-2 mb-1 
+                                            {% if message.author_id == current_user.id %}
+                                                from_current_user
+                                            {% else %}
+                                                from_other_user
+                                            {% endif %}"
+                                            data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-custom-class="my-tooltip" data-bs-title="{{ message.timestamp.strftime('%a %-d %b %Y, %I:%M %p') }}">
+                                            {{ message.content }}
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                            <!-- Message input field -->
+                            <div class="row mt-auto">
+                                <div class="col-12">
+                                    <form id="{{ conversation.form.id }}" action="{{ conversation.form.endpoint }}" novalidate>
+                                        {{ conversation.form.csrf_token }}
+                                        {{ conversation.form.conversation_id() }}
+                                        <div class='form-floating'>
+                                            {{ conversation.form.message(class_='form-control', placeholder=conversation.form.message.label.text, autocomplete="off") }}
+                                            {{ conversation.form.message.label }}
+                                            <button type='submit' class='input-btn-icon'>
+                                                <i class="fa-regular fa-paper-plane"></i>
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         

@@ -76,15 +76,13 @@
 
                         {% elif current_user.role == UserRole.THERAPIST %}
 
-                            <li class="list-group-item list-group-item-action">
+                            <li class="list-group-item list-group-item-action" data-target="#TODO">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
-                                        <a href='TODO'>
-                                            View Messages
-                                        </a>
+                                        TODO
                                     </div>
                                     <div class="col-auto ms-auto">
-                                        <i class="fa-solid fa-message"></i>
+                                        <i class="fa-regular fa-paper-plane"></i>
                                     </div>
                                 </div>
                             </li>
@@ -103,16 +101,16 @@
                             <div class="col-12">
                                 
                                 <!-- Header -->
-                                <div class="row g-2 mb-4 align-items-center">
+                                <div class="row g-3 mb-4 align-items-center">
                                     <div class="col-auto">
-                                        <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                                        <a href="{{ url_for('profile.profile', role=client.user.role.value, role_specific_id=client.id) }}">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
                                         </a>
                                     </div>
                                     <div class="col">
                                         <div class="row">
                                             <h5 class="mb-1">
-                                                <a href="{{ url_for('clients.client', client_id=client.id) }}">
+                                                <a href="{{ url_for('profile.profile', role=client.user.role.value, role_specific_id=client.id) }}">
                                                     {{ client.user.full_name }}
                                                 </a>
                                             </h5>
@@ -121,6 +119,15 @@
                                             <span class="my-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
                                         </div>
                                     </div>
+                                    
+                                    {% if current_user.role == UserRole.THERAPIST %}
+                                        <div class="col-auto ms-auto">
+                                            <a href="{{ url_for('messages.conversation', therapist_user_id=current_user.id, client_user_id=client.user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
+                                                <i class="fa-regular fa-paper-plane"></i>
+                                                Send Message
+                                            </a>
+                                        </div>
+                                    {% endif %}
                                 </div>
                                 
                                 <hr>

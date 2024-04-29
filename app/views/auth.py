@@ -162,7 +162,7 @@ def email_verification(token: str) -> Response:
         # Log in user
         login_user(user)
         flash("Success! Your email address has been verified", "success")
-        return redirect(url_for("main.profile"))
+        return redirect(url_for("profile.index"))
 
     # Invalid/expired token
     except (BadSignature, SignatureExpired):
