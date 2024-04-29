@@ -1,41 +1,45 @@
-<nav class="navbar navbar-expand mb-5">
+<nav class="navbar navbar-expand-md">
     <div class="container-fluid">
-                
-        <!-- Navbar brand -->
+        
+        <!-- Brand -->
         <a class="navbar-brand" href="/">
             <img src="{{ url_for('static', filename='img/logos/logo.png') }}" alt="Logo" height="24" class="d-inline-block align-text-top me-1">
             mindli
         </a>
+      
+        <!-- Toggler -->
+        <button class="navbar-toggler nav-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarBody" aria-controls="navbarBody" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="fa-solid fa-bars"></i>
+        </button>
+    
+        <!-- Body -->
+        <div class="collapse navbar-collapse" id="navbarBody">
+            
+            {% if not current_user.is_authenticated %}
+                <!-- Links -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class='nav-item'>
+                        <a class='nav-link' href='/'>About</a>
+                    </li>
+                    <li class='nav-item'>
+                        <a class='nav-link' href='/therapists'>Therapists</a>
+                    </li>
+                    <li class='nav-item'>
+                        <a class='nav-link' href='/contact'>Contact Us</a>
+                    </li>
+                </ul>
+            {% endif %}
 
-        <!-- Navbar body -->
-        <div class='collapse navbar-collapse' id='navbarText'>
-            
-            <ul class='navbar-nav me-auto'>
-                <li class='nav-item'>
-                    <a class='nav-link' href='/'>About</a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href='/therapists'>Therapists</a>
-                </li>
-                <li class='nav-item'>
-                    <a class='nav-link' href='/contact'>Contact Us</a>
-                </li>
-            </ul>
-            
-            <ul class='navbar-nav me-2'>
+            <!-- Buttons -->
+            <div class="d-flex ms-auto">
                 {% if not current_user.is_authenticated %}
-                    <li class='nav-item me-2'>
-                        <a class='nav-link btn btn-outline-primary btn-default-height' href='/login'>Sign In</a>
-                    </li>
-                    <li class='nav-item'>
-                        <a class='nav-link btn btn-outline-secondary btn-default-height' href='/register'>Get Started</a>
-                    </li>
+                    <a class='btn btn-outline-primary h-auto me-2' href='/login'>Sign In</a>
+                    <a class='btn btn-outline-secondary h-auto' href='/register'>Get Started</a>
                 {% else %}
-                    <li class='nav-item'>
-                        <a class='nav-link btn btn-outline-secondary btn-default-height' href='/logout'>Sign Out</a>
-                    </li>
+                    <a class='btn btn-outline-secondary h-auto' href='/logout'>Sign Out</a>
                 {% endif %}
-            </ul>
+            </div>
+
         </div>
     </div>
 </nav>

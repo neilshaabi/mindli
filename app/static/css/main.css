@@ -9,9 +9,9 @@
     --light-grey-text: #6c7888;
     --dark-grey-text: #414552;
 
-    --navbar-height: 60px;
-    --sidebar-width: 200px;
-    --sidebar-collapsed-width: 60px;
+    --navbar-height: 56px;
+    --sidebar-expanded-width: 220px;
+    --sidebar-collapsed-width: 5rem;
 
     --my-form-height: calc(3.5rem + 2px);
     --my-form-padding: 1rem 0.75rem;
@@ -36,7 +36,9 @@ body {
     max-width: 100%;
     min-height: 100vh;
     min-height: -webkit-fill-available;
-    width: 100vw;
+    width: 100%;
+    min-width: 100vw;
+    min-width: -webkit-fill-available;
     height: 100%;
     background: var(--light-grey-bg);
 }
@@ -48,19 +50,22 @@ main {
     width: 100%;
     min-height: calc(100% - var(--navbar-height));
     padding: 2.5rem;
+    z-index: 1;
 }
 
 
 /* Navbar */
 
-.navbar {
-    height: var(--navbar-height);
-    background: white;
-    box-shadow: var(--my-box-shadow);
+.navbar, 
+.sidebar {
+    font-weight: 300;
 }
 
-.navbar-expand .navbar-toggler {
-    display: block;
+.navbar {
+    width: 100%;
+    background: white;
+    box-shadow: var(--my-box-shadow);
+    z-index: 99;
 }
 
 .navbar-nav,
@@ -70,54 +75,97 @@ main {
     --bs-navbar-active-color: var(--colour-primary) !important;
 }
 
+.nav-link.active {
+    color: var(--colour-primary);
+}
+
 .navbar-brand {
     --bs-navbar-brand-color: var(--dark-grey-text) !important;
     --bs-navbar-brand-hover-color: black !important;
 }
 
+.navbar-toggler {
+    color: var(--light-grey-text);
+    padding: 0.5rem 1rem;
+}
+
+.navbar-toggler:hover {
+    color: var(--dark-grey-text);
+}
+
+.navbar-toggler:focus {
+    box-shadow: none;
+}
 
 /* Sidebar */
 
+.navbar:has(+ .sidebar) {
+    padding-left: var(--sidebar-expanded-width) !important;
+    transition: padding-left 0.3s ease;
+}
+
+.navbar:has(+ .sidebar.collapsed) {
+    padding-left: var(--sidebar-collapsed-width) !important;
+}
+
 .sidebar ~ main {
-    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-expanded-width)) !important;
+    margin-left: var(--sidebar-expanded-width) !important;
     transition: margin-left 0.3s ease;
 }
   
 .sidebar.collapsed ~ main {
-    margin-left: var(--sidebar-collapsed-width);
+    width: calc(100% - var(--sidebar-collapsed-width)) !important;
+    margin-left: var(--sidebar-collapsed-width) !important;
 }
 
 .sidebar {
     position: absolute;
     top: 0;
     left: 0;
-    width: var(--sidebar-width);
+    width: var(--sidebar-expanded-width);
     height: 100vh;
     padding: 1rem;
     background-color: white;
     transition: width 0.3s ease;
+    z-index: 100;
 }
 
 .sidebar.collapsed {
     width: var(--sidebar-collapsed-width);
 }
 
-.sidebar-toggler {
-    color: var(--dark-grey-text);
-    background: none;
-    border: none;
+.sidebar .navbar-brand {
+    color: var(--light-grey-text);
+    padding: 0 1rem;
 }
 
-.sidebar-toggler i {
-    margin-right: 0 !important;
+.sidebar .navbar-brand:hover {
+    color: var(--light-grey-text);
+}
+
+.sidebar-header {
+    font-size: 1.25rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .sidebar .nav-link {
+    margin-bottom: 0.5rem;
     border-radius: var(--my-border-radius);
 }
 
 .sidebar .nav-link:hover {
     background: var(--light-grey-bg);
+}
+
+.sidebar .nav-link i {
+    margin-right: 0.5rem;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
 }
 
 
@@ -142,11 +190,11 @@ a:hover {
 }
 
 i:has(+ span) {
-    margin-right: 3px;
+    margin-right: 0.2rem;
 }
 
 .btn i:has(+ span) {
-    margin-right: 8px;
+    margin-right: 0.5rem;
 }
 
 
@@ -241,10 +289,6 @@ textarea {
 form .btn,
 .row .btn {
     width: 100%;
-}
-
-.btn-default-height {
-    height: auto;
 }
 
 .btn-primary,
@@ -486,6 +530,7 @@ table th {
 .my-card#conversation-selector {
     height: 75vh;
     overflow-y: auto;
+    white-space: nowrap;
 }
 
 .my-card#conversation-container {
@@ -529,13 +574,13 @@ table th {
 }
 
 .my-tooltip {
-    --bs-tooltip-bg: var(--light-grey-bg);
-    --bs-tooltip-color: var(--dark-grey-text);
+    --bs-tooltip-bg: var(--dark-grey-text);
+    --bs-tooltip-color: white;
 }
 
 .tag {
     font-size: 0.9rem;
-    padding: 4px 8px;
+    padding: 0.25rem 0.5rem;
     border-radius: var(--my-border-radius);
     background-color: var(--light-grey-bg);
 }
@@ -547,7 +592,7 @@ table th {
 
 .tag-sm {
     font-size: 0.8rem;
-    padding: 4px 6px;
+    padding: 0.25rem 0.4rem;
 }
 
 

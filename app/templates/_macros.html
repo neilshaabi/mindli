@@ -65,11 +65,13 @@
 {% endmacro %}
 
 
-{% macro submit_button(submit_field=None, label=None, id=None, form=None, class=None, disabled=False) %}
+{% macro submit_button(submit_field=None, label=None, id=None, form=None, class=None, extra_class=None, disabled=False) %}
     <button type="submit" 
     {% if id %}id="{{ id }}"{% endif %}
     {% if form %}form="{{ form }}"{% endif %}
-    class="{% if class %}{{ class }}{% else %}btn btn-primary{% endif %}"
+    class="
+        {% if class %}{{ class }}{% else %}btn btn-primary{% endif %}
+        {% if extra_class %}{{ extra_class }}{% endif %}"
     {% if disabled %}disabled{% endif %}
     {% if submit_field and submit_field.render_kw %}
         {% if submit_field.render_kw.name %} name={{ submit_field.render_kw['name'] }} {% endif %}

@@ -131,12 +131,11 @@
                         </div>
                                     
                         <div class="row mt-2 g-2">
-                            <div class="col-lg-auto">
-                                {{ submit_button(filter_form.submit_filter) }}
+                            <div class="col-auto">
+                                {{ submit_button(filter_form.submit_filter, extra_class='w-auto') }}
                             </div>
-
-                            <div class="col-lg-auto">
-                                {{ submit_button(filter_form.submit_reset_filters, class='btn btn-secondary') }}
+                            <div class="col-auto">
+                                {{ submit_button(filter_form.submit_reset_filters, class='btn btn-secondary', extra_class='w-auto') }}
                             </div>
                         </div>
                     </form>

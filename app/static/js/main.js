@@ -3,22 +3,44 @@ $(document).ready(function() {
     // Enable Bootstrap tooltips
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+
+    // Hide/show tooltips depending on sidebar
+    toggleSidebarTooltips();
     
     // Toggle active state for navbar link when selected
     var pathname = window.location.pathname;
     var links = document.getElementsByClassName('nav-link');
     for (var i = 0; i < links.length; i++) {
-        var href = links[i].getAttribute('href');
-        if (pathname.startsWith(href)) {
+        var link = links[i]
+        var href = link.getAttribute('href');
+        if (pathname == href) {
             links[i].classList.add('active');
             break;
         }
     }
 
     // Expands/collapses sidebar when toggler clicked
-    $('.sidebar-toggler').click(function() {
+    $('.sidebar .navbar-toggler').click(function() {
+        
+        // Hide sidebar text first
+        $('.sidebar .navbar-brand').hide();
+        $('.sidebar .nav-link span').hide();
+    
+        // Toggle collapsed class for the sidebar
         $('.sidebar').toggleClass('collapsed');
-      });
+
+        // Update tooltips
+        toggleSidebarTooltips();
+        
+        // Show sidebar text with delay to account for transition
+        if (!$('.sidebar').hasClass('collapsed')) {
+            setTimeout(function() {
+                $('.sidebar .navbar-brand').show();
+                $('.sidebar .nav-link span').show();
+                }, 
+            150);
+        }
+    });
 
     // Updates preview of profile picture when uploaded
     $('#profile_picture').change(function(event) {
@@ -72,7 +94,6 @@ $(document).ready(function() {
         $(defaultSectionID).show();
         $('#section-selector .list-group-item[data-target="' + defaultSectionID + '"]').addClass('active');
     }
-
     
     // Toggle section when corresponding item in section selector is clicked
     $('#section-selector .list-group-item').click(function() {
@@ -181,6 +202,24 @@ $(document).ready(function() {
         $(this).find('input[name="appointment_type_id"]').val(appointment_type_id);
     });
 });
+
+// 
+function toggleSidebarTooltips() {
+
+    const sidebarTooltips = $('.sidebar [data-bs-toggle="tooltip"]');
+
+    if ($('.sidebar').hasClass('collapsed')) {
+        sidebarTooltips.each(function() {
+            const tooltip = bootstrap.Tooltip.getInstance(this);
+            tooltip.enable();
+        });
+    } else {
+        sidebarTooltips.each(function() {
+            const tooltip = bootstrap.Tooltip.getInstance(this);
+            tooltip.disable();
+        });
+    }
+}
 
 
 function registerFormHandlers() {

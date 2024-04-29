@@ -36,14 +36,11 @@
         <!-- Macros for reusable components across templates -->
         {% from "_macros.html" import flashed_message, tag, submit_button, therapist_cards, client_cards, appointment_row with context %}
         
-        <!-- Navbar for all users with collapsible sidebar for authenticated users -->
-        <!-- {% include '_navbar.html' %} -->
-
+        {% include '_navbar.html' %}
+        
         <!-- Sidebar for authenticated users, navbar otherwise -->
         {% if current_user.is_authenticated %}
             {% include '_sidebar.html' %}
-        {% else %}
-            {% include '_navbar.html' %}
         {% endif %}
         
         <main>
