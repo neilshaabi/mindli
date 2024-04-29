@@ -230,7 +230,7 @@ def update(appointment_id: int) -> Response:
             return jsonify({"success": False, "errors": datetime_errors})
 
     flashed_message_text = None
-    flashed_message_category = "success"
+    flashed_message_category = None
 
     # Handle actions differently depending on role of current user
     if current_user.role == UserRole.THERAPIST:
@@ -242,6 +242,7 @@ def update(appointment_id: int) -> Response:
                 subject=EmailSubject.APPOINTMENT_CONFIRMED_CLIENT,
             )
             flashed_message_text = "Appointment confirmed, client notified"
+            flashed_message_category = "success"
 
         # RESCHEDULED - notify client and update appointment time
         elif new_status == AppointmentStatus.RESCHEDULED:
@@ -252,10 +253,12 @@ def update(appointment_id: int) -> Response:
             )
             appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
             flashed_message_text = "Appointment rescheduled, client notified"
+            flashed_message_category = "success"
 
         # COMPLETED - do nothing
         elif new_status == AppointmentStatus.COMPLETED:
-            flashed_message_text = "Appointment marked as completed"
+            flashed_message_text = "Appointment recorded as completed"
+            flashed_message_category = "success"
 
         # CANCELLED - notify client
         elif new_status == AppointmentStatus.CANCELLED:
@@ -265,6 +268,7 @@ def update(appointment_id: int) -> Response:
                 subject=EmailSubject.APPOINTMENT_CANCELLED,
             )
             flashed_message_text = "Appointment cancelled, client notified"
+            flashed_message_category = "warning"
 
         # NO SHOW - notify client
         elif new_status == AppointmentStatus.NO_SHOW:
@@ -273,7 +277,8 @@ def update(appointment_id: int) -> Response:
                 recipient=appointment.client.user,
                 subject=EmailSubject.APPOINTMENT_NO_SHOW_CLIENT,
             )
-            flashed_message_text = "Appointment marked as a No Show, client notified"
+            flashed_message_text = "Appointment recorded as a No Show, client notified"
+            flashed_message_category = "warning"
 
         else:
             return jsonify(
@@ -290,6 +295,7 @@ def update(appointment_id: int) -> Response:
             )
             appointment.time = datetime.combine(form.new_date.data, form.new_time.data)
             flashed_message_text = "Appointment rescheduled, therapist notified"
+            flashed_message_category = "success"
 
         # CANCELLED - notify therapist
         elif new_status == AppointmentStatus.CANCELLED:
@@ -299,6 +305,7 @@ def update(appointment_id: int) -> Response:
                 subject=EmailSubject.APPOINTMENT_CANCELLED,
             )
             flashed_message_text = "Appointment cancelled, therapist notified"
+            flashed_message_category = "warning"
 
         else:
             return jsonify(

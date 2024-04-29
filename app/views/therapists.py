@@ -1,6 +1,5 @@
-from flask import (Blueprint, Response, abort, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (Blueprint, Response, abort, jsonify, render_template,
+                   render_template_string, request, session, url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -55,11 +54,9 @@ def index() -> Response:
 @login_required
 @therapist_required
 def new_therapist() -> Response:
-    # Redirect user to their profile if it already exists
+    # Current user's therapist profile already exists
     if current_user.therapist:
-        return redirect(
-            url_for("therapists.therapist", therapist_id=current_user.therapist.id)
-        )
+        abort(400)
 
     # Create mock Therapist to pass to template
     mock_therapist = Therapist(user=current_user)

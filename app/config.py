@@ -27,12 +27,8 @@ class Config(object):
     STRIPE_PUBLISHABLE_KEY: str = os.environ["STRIPE_PUBLISHABLE_KEY"]
     STRIPE_WEBHOOK_SECRET: str = os.environ["STRIPE_WEBHOOK_SECRET"]
 
-    # Celery configuration
-    CELERY: dict = {
-        "broker_url": os.getenv("CELERY_BROKER_URL", "redis://localhost"),
-        "result_backend": os.getenv("CELERY_RESULT_BACKEND", "redis://localhost"),
-        "task_ignore_result": True,
-    }
+    # Celery enabled by default
+    CELERY_ENABLED: bool = True
 
 
 class DevConfig(Config):
@@ -42,6 +38,11 @@ class DevConfig(Config):
     WTF_CSRF_ENABLED: str = True
     ERROR_HANDLER: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
+    CELERY: dict = {
+        "broker_url": "redis://localhost",
+        "result_backend": "redis://localhost",
+        "task_ignore_result": True,
+    }
 
 
 class ProdConfig(Config):
@@ -60,6 +61,15 @@ class TestConfig(Config):
     WTF_CSRF_ENABLED: str = False
     ERROR_HANDLER: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite://"  # Use in-memory database
+
+    CELERY_ENABLED: bool = False
+    CELERY: dict = {
+        "broker_url": "memory://",
+        "result_backend": "db+sqlite:///test.sqlite",
+        "task_ignore_result": True,
+        "task_always_eager": True,
+        "task_eager_propagates": True,
+    }
 
 
 CONFIGS: "dict[str, Config]" = {

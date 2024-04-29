@@ -19,25 +19,28 @@ $(document).ready(function() {
     // Expands/collapses sidebar when toggler clicked
     $('.sidebar .navbar-toggler').click(function() {
         
-        // Hide sidebar text first
-        $('.sidebar .navbar-brand').hide();
-        $('.sidebar .nav-link span').hide();
+        collapseSidebar();
     
         // Toggle collapsed class for the sidebar
         $('.sidebar').toggleClass('collapsed');
-
-        // Update tooltips
+        
         toggleSidebarTooltips();
         
         // Show sidebar text with delay to account for transition
         if (!$('.sidebar').hasClass('collapsed')) {
-            setTimeout(function() {
-                $('.sidebar .navbar-brand').show();
-                $('.sidebar .nav-link span').show();
-                }, 
-            150);
+            expandSidebar();
         }
     });
+
+
+    // Initial call to set the class based on window width on page load
+    resizeSidebar();
+
+    // Event listener for window resize to update class accordingly
+    $(window).resize(function() {
+        resizeSidebar();
+    });
+    
 
     // Updates preview of profile picture when uploaded
     $('#profile_picture').change(function(event) {
@@ -91,6 +94,7 @@ $(document).ready(function() {
         $(defaultSectionID).show();
         $('#section-selector .list-group-item[data-target="' + defaultSectionID + '"]').addClass('active');
     }
+
     
     // Toggle section when corresponding item in section selector is clicked
     $('#section-selector .list-group-item').click(function() {
@@ -200,7 +204,37 @@ $(document).ready(function() {
     });
 });
 
-// 
+
+// Collapse the sidebar automatically on small screens
+function resizeSidebar() {
+    var screenWidth = $(window).width();
+    var sidebar = $('.sidebar');
+    if (screenWidth < 768) {
+        collapseSidebar();
+        sidebar.addClass('collapsed');
+    } else {
+        sidebar.removeClass('collapsed');
+        expandSidebar();
+    }
+    toggleSidebarTooltips();
+}
+
+
+function collapseSidebar() {
+    $('.sidebar .navbar-brand').hide();
+    $('.sidebar .nav-link span').hide();
+}
+
+function expandSidebar() {
+    setTimeout(function() {
+        $('.sidebar .navbar-brand').show();
+        $('.sidebar .nav-link span').show();
+        }, 
+    150);
+}
+
+
+// Enable sidebar tooltips only when collapsed, otherwise disable
 function toggleSidebarTooltips() {
 
     const sidebarTooltips = $('.sidebar [data-bs-toggle="tooltip"]');
@@ -219,6 +253,7 @@ function toggleSidebarTooltips() {
 }
 
 
+// Handles form submissions via AJAX
 function registerFormHandlers() {
 
     // Store last clicked submit button to send with request

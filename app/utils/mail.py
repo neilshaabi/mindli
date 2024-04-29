@@ -115,13 +115,22 @@ class EmailMessage:
 
         try:
             with current_app.app_context():
-                if asynchronous:
-                    send_async_email.delay(subject, recipients, html)
-                else:
-                    message = prepare_message(subject, recipients, html)
-                    self.mail.send(message)
+                # Send email synchronously
+                if asynchronous and current_app.config["CELERY_ENABLED"]:
+                    try:
+                        send_async_email.delay(subject, recipients, html)
+                        return
+                    except Exception as e:
+                        print(f"Failed to send email asynchronously: {e}")
+                        pass
+
+                # Try sending email synchronously if failed
+                message = prepare_message(subject, recipients, html)
+                self.mail.send(message)
+
+        # Failed to send email
         except Exception as e:
-            print(f"Failed to send email: {e}")
+            print(f"Failed to send email synchronously: {e}")
         return
 
 

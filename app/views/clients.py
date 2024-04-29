@@ -1,8 +1,7 @@
 from datetime import timedelta
 
-from flask import (Blueprint, Response, abort, jsonify, redirect,
-                   render_template, render_template_string, request, session,
-                   url_for)
+from flask import (Blueprint, Response, abort, jsonify, render_template,
+                   render_template_string, request, session, url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -67,15 +66,9 @@ def index() -> Response:
 @login_required
 @client_required
 def new_client() -> Response:
-    # Redirect user to their profile if it already exists
+    # Current user's client profile already exists
     if current_user.client:
-        return redirect(
-            url_for(
-                "profile.profile",
-                role=current_user.role.value,
-                role_specific_id=current_user.role_specific_id,
-            )
-        )
+        abort(400)
 
     # Create mock Client to pass to template
     mock_client = Client(user=current_user)

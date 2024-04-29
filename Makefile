@@ -1,5 +1,5 @@
 help:
-	@echo "Available commands: make [help, tree, venv, dependencies, requirements, app, migrate-db, reset-db, lint, test, clean]"
+	@echo "Available commands: make [help, tree, venv, dependencies, requirements, app, celery, redis, migrate-db, reset-db, lint, test, clean]"
 
 tree:
 	tree -I 'node_modules|__pycache__|.venv'
@@ -25,6 +25,16 @@ app:
 	npx webpack --mode development
 	@echo "Running Flask app locally..."
 	flask run
+
+celery:
+	@echo "Starting celery worker..."
+	@echo "Note: requires connection with redis via redis-server"
+	celery -A app.utils.celery worker --loglevel INFO
+
+redis:
+	@echo "Starting redis server..."
+	redis-server
+
 
 migrate-db:
 	@echo "Generating database migrations..."
@@ -58,4 +68,4 @@ clean:
 	rm -rf node_modules
 	@echo "Removed Python and JavaScript build files."
 
-.PHONY: help venv dependencies requirements app migrate-db reset-db lint test clean
+.PHONY: help venv dependencies requirements app celery redis migrate-db reset-db lint test clean

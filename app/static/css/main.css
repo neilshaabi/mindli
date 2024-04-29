@@ -10,7 +10,7 @@
     --dark-grey-text: #525663;
 
     --navbar-height: 56px;
-    --sidebar-expanded-width: 220px;
+    --sidebar-expanded-width: 230px;
     --sidebar-collapsed-width: 5rem;
 
     --my-form-height: calc(3.5rem + 2px);
@@ -158,14 +158,6 @@ main {
     background: var(--light-grey-bg);
 }
 
-.sidebar .nav-link i {
-    margin-right: 0.5rem;
-}
-
-.sidebar.collapsed .nav-link i {
-    margin-right: 0;
-}
-
 
 /* Text */
 
@@ -187,12 +179,21 @@ a:hover {
     font-size: 0.9rem;
 }
 
-i:has(+ span) {
-    margin-right: 0.25rem;
-}
 
+/* Icons */
+
+.sidebar .nav-link i,
 .btn i:has(+ span) {
     margin-right: 0.5rem;
+}
+
+.sidebar.collapsed .nav-link i {
+    margin-right: 0;
+}
+
+i:has(+ span),
+.input-btn-icon {
+    margin-right: 0.25rem;
 }
 
 #flashed-messages-container i {
@@ -370,8 +371,6 @@ form .btn,
     position: absolute;
     top: 0;
     right: 0;
-    margin-right: 3px; 
-    /* TODO: verify above */
     border: none;
     background: none;
     cursor: pointer;
@@ -568,6 +567,7 @@ table th {
 #flashed-messages-container {
     position: fixed;
     bottom: 0;
+    margin: 0 auto;
     width: 80%;
     z-index: 99;
 }

@@ -90,7 +90,7 @@
 
                                 <ul>
                                     <li class="mb-3">
-                                        {{ current_user.role.value }}: <a href="{{ url_for('profile.profile', role=appointment.other_user.role.value, role_specific_id=appointment.other_user.id) }}">{{ appointment.other_user.full_name }}</a>
+                                        {{ current_user.role.value }}: <a href="{{ url_for('profile.profile', user_id=appointment.other_user.id) }}">{{ appointment.other_user.full_name }}</a>
 
                                     </li>
                                     <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %-d/%-m/%Y – %I:%M %p') }}</li>
