@@ -45,12 +45,16 @@ body {
 
 main {
     position: absolute;
-    top: var(--navbar-height);
+    top :0;
     left: 0;
     width: 100%;
     min-height: calc(100% - var(--navbar-height));
     padding: 2.5rem;
     z-index: 1;
+}
+
+.navbar ~ main {
+    top: var(--navbar-height);
 }
 
 
@@ -75,6 +79,10 @@ main {
     --bs-navbar-active-color: var(--colour-primary) !important;
 }
 
+.nav-link {
+    padding: 0.5rem 1rem;
+}
+
 .nav-link.active {
     color: var(--colour-primary);
 }
@@ -86,11 +94,12 @@ main {
 
 .navbar-toggler {
     color: var(--light-grey-text);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 1rem !important;
 }
 
 .navbar-toggler:hover {
     color: var(--dark-grey-text);
+    background: var(--light-grey-bg);
 }
 
 .navbar-toggler:focus {
@@ -125,7 +134,7 @@ main {
     left: 0;
     width: var(--sidebar-expanded-width);
     height: 100vh;
-    padding: 1rem;
+    padding: 2.25rem 1rem;
     background-color: white;
     transition: width 0.3s ease;
     z-index: 100;
@@ -133,15 +142,6 @@ main {
 
 .sidebar.collapsed {
     width: var(--sidebar-collapsed-width);
-}
-
-.sidebar .navbar-brand {
-    color: var(--light-grey-text);
-    padding: 0 1rem;
-}
-
-.sidebar .navbar-brand:hover {
-    color: var(--light-grey-text);
 }
 
 .sidebar-header {

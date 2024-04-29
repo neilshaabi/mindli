@@ -1,8 +1,12 @@
 <div class="sidebar">
     
     <div class="sidebar-header">
-      <span class='navbar-brand'>{{ current_user.role.value }}</span>
-      <button class="btn navbar-toggler h-auto" type="button">
+      <!-- Brand -->
+        <a class="navbar-brand" href="/">
+          <img src="{{ url_for('static', filename='img/logos/logo.png') }}" alt="Logo" height="24" class="d-inline-block align-text-top mx-1">
+          mindli
+      </a>
+      <button class="btn navbar-toggler h-auto" type="button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Expand">
         <i class="fa-solid fa-bars"></i>
       </button>
     </div>
