@@ -188,11 +188,15 @@ a:hover {
 }
 
 i:has(+ span) {
-    margin-right: 0.2rem;
+    margin-right: 0.25rem;
 }
 
 .btn i:has(+ span) {
     margin-right: 0.5rem;
+}
+
+#flashed-messages-container i {
+    margin-right: 0.75rem;
 }
 
 

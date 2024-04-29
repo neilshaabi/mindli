@@ -12,21 +12,22 @@ from itsdangerous import URLSafeTimedSerializer
 
 from app.config import CONFIGS, Config
 
-# Declare extensions
+# Declare extensions for global use
 db = SQLAlchemy()
 migrate = Migrate()
 csrf = CSRFProtect()
 mail = Mail()
 login_manager = LoginManager()
 
+# Configure login manager
 login_manager.login_view = "/login"
 login_manager.login_message = None
 
 from app.models.user import User  # noqa: E402
 
-
+# Define user loader to associate current user with User instance
 @login_manager.user_loader
-def load_user(user_id: str):
+def load_user(user_id: str) -> User:
     return db.session.execute(
         db.select(User).filter_by(id=int(user_id))
     ).scalar_one_or_none()
@@ -42,12 +43,16 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     mail.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+    
+    # Initialise Celery
+    from app.utils.celery import celery_init_app
+    app.celery = celery_init_app(app)
 
-    # Initialise Stripe
+    # Configure Stripe
     stripe.api_key = app.config["STRIPE_SECRET_KEY"]
     stripe.api_version = "2023-10-16"
 
-    # Initialise CSRF protection for forms
+    # Initialise CSRF protection conditionally
     if app.config["WTF_CSRF_ENABLED"]:
         csrf.init_app(app)
 

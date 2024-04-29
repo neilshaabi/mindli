@@ -6,13 +6,13 @@ basedir: str = os.path.abspath(os.path.dirname(__file__))
 load_dotenv(os.path.join(basedir, ".env"))
 
 
-# Default config values
+# Default configuration values
 class Config(object):
     ENV: str = os.environ["ENV"]
     SECRET_KEY: str = os.environ["SECRET_KEY"]  # os.urandom(12).hex()
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
-    # Flask Mail setup
+    # Flask Mail configuration
     MAIL_SERVER: str = "smtp.gmail.com"
     MAIL_PORT: int = 465
     MAIL_USE_SSL: bool = True
@@ -22,10 +22,15 @@ class Config(object):
     MAIL_DEFAULT_SENDER: str = MAIL_USERNAME
     MAIL_SUPPRESS_SEND: bool = False
 
-    # Stripe setup
+    # Stripe configuration
     STRIPE_SECRET_KEY: str = os.environ["STRIPE_SECRET_KEY"]
     STRIPE_PUBLISHABLE_KEY: str = os.environ["STRIPE_PUBLISHABLE_KEY"]
     STRIPE_WEBHOOK_SECRET: str = os.environ["STRIPE_WEBHOOK_SECRET"]
+
+    # Celery configuration
+    CELERY_BROKER_URL: str = os.getenv('CELERY_BROKER_URL', 'redis://localhost')
+    CELERY_RESULT_BACKEND: str = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost')
+    CELERY_TASK_IGNORE_RESULT: bool = True
 
 
 class DevConfig(Config):

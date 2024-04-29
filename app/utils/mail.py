@@ -1,8 +1,9 @@
+from app import mail
+from app.tasks import send_async_email
 from flask import current_app, render_template, url_for
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
-from app import mail
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject
 from app.models.user import User
@@ -101,25 +102,23 @@ class EmailMessage:
         self.link = url_for(endpoint=endpoint, _external=True, **self.url_params)
         return
 
-    def send(self) -> None:
+    
+    def prepare_email(self) -> str:
+        html_body = render_template("email.html", message=self)
+        return html_body
+    
+    def send(self, asynchronous: bool = True):
         try:
             with current_app.app_context():
-                # Send email to developer in dev environment
-                recipients = (
-                    [current_app.config["MAIL_USERNAME"]]
-                    if current_app.config["ENV"] == "dev"
-                    else [self.recipient.email]
-                )
-
-                # Construct and send message
-                msg = Message(self.subject.value, recipients=recipients)
-                msg.html = render_template("email.html", message=self)
-                self.mail.send(msg)
-
-        # Log errors
+                message = Message(self.subject.value, recipients=[self.recipient.email])
+                message.html = self.prepare_email()
+                
+                if asynchronous:
+                    send_async_email.delay(message)
+                else:
+                    self.mail.send(message)
         except Exception as e:
             print(f"Failed to send email: {e}")
-
         return
 
 

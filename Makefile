@@ -1,5 +1,5 @@
 help:
-	@echo "Available commands: make [help, tree, venv, deps, reqs, app, migrate-db, reset-db, lint, test, clean]"
+	@echo "Available commands: make [help, tree, venv, dependencies, requirements, app, migrate-db, reset-db, lint, test, clean]"
 
 tree:
 	tree -I 'node_modules|__pycache__|.venv'
@@ -10,13 +10,13 @@ venv:
 	@echo "Note: You will need to activate the virtual environment in your shell manually using:"
 	@echo "source .venv/bin/activate"
 
-deps:
+dependencies:
 	@echo "Installing Python dependencies..."
 	pip install -r requirements.txt
 	@echo "Installing Node.js dependencies..."
 	npm install
 
-reqs:
+requirements:
 	@echo "Updating requirements.txt..."
 	pip freeze > requirements.txt
 
@@ -55,6 +55,7 @@ clean:
 	find . -type d -name '__pycache__' -exec rm -r {} +
 	find . -type f -name '*.pyc' -delete
 	rm -rf app/static/dist/*
+	rm -rf node_modules
 	@echo "Removed Python and JavaScript build files."
 
-.PHONY: help venv deps reqs app migrate-db reset-db lint test clean
+.PHONY: help venv dependencies requirements app migrate-db reset-db lint test clean
