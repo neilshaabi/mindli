@@ -1,4 +1,4 @@
-from flask import (Blueprint, Response, abort, jsonify, render_template,
+from flask import (Blueprint, Response, abort, flash, jsonify, render_template,
                    render_template_string, request, session, url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func
@@ -19,7 +19,6 @@ from app.models.therapist import Therapist
 from app.models.title import Title
 from app.models.user import User
 from app.utils.decorators import therapist_required
-from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("therapists", __name__, url_prefix="/therapists")
 FILTERS_SESSION_KEY = "therapist_filters"
@@ -36,7 +35,12 @@ def index() -> Response:
 
     # Fetch all active therapists
     therapists = (
-        db.session.execute(db.select(Therapist).join(User).where(User.active))
+        db.session.execute(
+            db.select(Therapist)
+            .join(User)
+            .where(User.active)
+            .where(Therapist.appointment_types.any(AppointmentType.active == True))
+        )
         .scalars()
         .all()
     )
@@ -55,7 +59,7 @@ def index() -> Response:
 @therapist_required
 def new_therapist() -> Response:
     # Current user's therapist profile already exists
-    if current_user.therapist:
+    if current_user.onboarding_complete:
         abort(403)
 
     # Create mock Therapist to pass to template
@@ -221,12 +225,11 @@ def create() -> Response:
     db.session.commit()
 
     # Flash message via AJAX
+    flash("Therapist profile created", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message": get_flashed_message_html(
-                "Therapist profile created", "success"
-            ),
+            "url": url_for("profile.profile", user_id=current_user.id),
         }
     )
 
@@ -272,13 +275,12 @@ def update(therapist_id: int) -> Response:
     )
     db.session.commit()
 
-    # Flash message via AJAX
+    # Flash message and reload page to propagate changes
+    flash("Therapist profile updated", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message": get_flashed_message_html(
-                "Therapist profile updated", "success"
-            ),
+            "url": url_for("profile.profile", user_id=current_user.id),
         }
     )
 
@@ -303,8 +305,13 @@ def filter() -> Response:
         # Store filter settings in the session
         form.store_data_in_session(FILTERS_SESSION_KEY)
 
-        # Begin building the base query
-        query = db.select(Therapist).join(User).where(User.active)
+        # Build base query for active therapists with active appointment types
+        query = (
+            db.select(Therapist)
+            .join(User)
+            .where(User.active)
+            .where(Therapist.appointment_types.any(AppointmentType.active == True))
+        )
 
         # Apply filters by extending the query with conditions for each filter
         if form.name.data:
@@ -385,7 +392,7 @@ def filter() -> Response:
         )
 
         filter_count_html = render_template_string(
-            "{{ therapists|length }} therapists found",
+            "{{ therapists|length if therapists else 0}} therapists found",
             therapists=filtered_therapists,
         )
 

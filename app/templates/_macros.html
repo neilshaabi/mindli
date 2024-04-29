@@ -91,253 +91,255 @@
 
 
 {% macro therapist_cards(therapists) %}
-    {% for therapist in therapists %}
-        <div class="col-lg-6">
-            <div class="my-card">
-                
-                <!-- Header -->
-                <div class="row g-3 mb-4 align-items-center">
-                    <div class="col-auto">
-                        <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
-                        </a>
+    {% if therapists %}        
+        {% for therapist in therapists %}
+            <div class="col-lg-6">
+                <div class="my-card">
+                    
+                    <!-- Header -->
+                    <div class="row g-3 mb-4 align-items-center">
+                        <div class="col-auto">
+                            <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
+                                <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                            </a>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <h5 class="mb-1">
+                                    <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
+                                        {{ therapist.user.full_name }}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="row">
+                                <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="col">
-                        <div class="row">
-                            <h5 class="mb-1">
-                                <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
-                                    {{ therapist.user.full_name }}
-                                </a>
-                            </h5>
-                        </div>
-                        <div class="row">
-                            <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
-                        </div>
-                    </div>
-                </div>
 
-                <hr>
+                    <hr>
 
-                <!-- Body -->
-                <div class="mt-4">
-                    <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
+                    <!-- Body -->
+                    <div class="mt-4">
+                        <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
 
-                        <!-- Personal details -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
-                    
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
-                                            Personal details
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
-
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Gender</div>
-                                                <div>{{ therapist.user.gender.value }}</div>
-                                            </div>
-                                        </div>
-        
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Based in</div>
-                                                <div>{{ therapist.country if therapist.country else '' }}</div>
-                                            </div>
-                                        </div>
-        
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Languages spoken</div>
-                                                <div>{{ therapist.languages|join(', ', 'name') }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Professional experience -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
-                    
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse{{ loop.index }}" aria-expanded="false" aria-controls="professionalExperienceCollapse{{ loop.index }}">
-                                                Professional experience
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div id="professionalExperienceCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
-
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Years of experience</div>
-                                                <div>{{ therapist.years_of_experience|string + ' years' if therapist.years_of_experience else '' }}</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Qualifications</div>
-                                                <div>{{ therapist.qualifications if therapist.qualifications else '' }}</div>
-                                            </div>
-                                        </div>
-
-                                        {% if therapist.registrations %}
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <div class="mb-1 my-muted">Registrations</div>
-                                                    <div>{{ therapist.registrations }}</div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Specialisations</div>
-                                                </div>
-                                                <div class="row g-1">
-                                                    {% for specialisation in therapist.specialisations %}
-                                                        <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Interventions</div>
-                                                </div>
-                                                <div class="row g-1">
-                                                    {% for intervention in therapist.interventions %}
-                                                        <div class="col-auto">{{ tag(label=intervention.name) }}</div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {% if therapist.link %}
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <div class="mb-1 my-muted">Website</div>
-                                                    <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-                                    
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Appointment details -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
-                    
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="appointmentDetailsCollapse{{ loop.index }}">
-                                            Appointment details
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div id="appointmentDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
-
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Therapy types</div>
-                                                </div>
-                                                <div class="row g-1">
-                                                    {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
-                                                        <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Modes supported</div>
-                                                </div>
-                                                <div class="row g-1">
-                                                    {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
-                                                        <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
-                                                    {% endfor %}
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {% if therapist.location %}
-                                            <div class="row mb-3">
-                                                <div class="col-12">
-                                                    <div class="mb-1 my-muted">Location (in-person appointments)</div>
-                                                    <div>{{ therapist.location }}</div>
-                                                </div>
-                                            </div>
-                                        {% endif %}
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Durations</div>
-                                                <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|sort|join(' minutes, ') + ' minutes' if therapist.appointment_types else '' }} </div>
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                            <!-- Personal details -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
                         
-                    </div>
-                </div>
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
+                                                Personal details
+                                                </button>
+                                            </h6>
+                                        </div>
+                                    </div>
 
-                
-                <div class="row g-2 mt-4">
-                    {% if current_user and current_user.role == UserRole.THERAPIST %}    
-                        <div class="col-lg-12">
-                            <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='profile') }}" class="btn btn-outline-primary">
-                                View Profile
-                            </a>
+                                    <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Gender</div>
+                                                    <div>{{ therapist.user.gender.value }}</div>
+                                                </div>
+                                            </div>
+            
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Based in</div>
+                                                    <div>{{ therapist.country if therapist.country else '' }}</div>
+                                                </div>
+                                            </div>
+            
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Languages spoken</div>
+                                                    <div>{{ therapist.languages|join(', ', 'name') }}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Professional experience -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
+                        
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#professionalExperienceCollapse{{ loop.index }}" aria-expanded="false" aria-controls="professionalExperienceCollapse{{ loop.index }}">
+                                                    Professional experience
+                                                </button>
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div id="professionalExperienceCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Years of experience</div>
+                                                    <div>{{ therapist.years_of_experience|string + ' years' if therapist.years_of_experience else '' }}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Qualifications</div>
+                                                    <div>{{ therapist.qualifications if therapist.qualifications else '' }}</div>
+                                                </div>
+                                            </div>
+
+                                            {% if therapist.registrations %}
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <div class="mb-1 my-muted">Registrations</div>
+                                                        <div>{{ therapist.registrations }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="row mb-1 my-muted">
+                                                        <div class="col-12">Specialisations</div>
+                                                    </div>
+                                                    <div class="row g-1">
+                                                        {% for specialisation in therapist.specialisations %}
+                                                            <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="row mb-1 my-muted">
+                                                        <div class="col-12">Interventions</div>
+                                                    </div>
+                                                    <div class="row g-1">
+                                                        {% for intervention in therapist.interventions %}
+                                                            <div class="col-auto">{{ tag(label=intervention.name) }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if therapist.link %}
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <div class="mb-1 my-muted">Website</div>
+                                                        <div><a href="{{ therapist.link }}">{{ therapist.link }}</a></div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Appointment details -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
+                        
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#appointmentDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="appointmentDetailsCollapse{{ loop.index }}">
+                                                Appointment details
+                                                </button>
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div id="appointmentDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="row mb-1 my-muted">
+                                                        <div class="col-12">Therapy types</div>
+                                                    </div>
+                                                    <div class="row g-1">
+                                                        {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
+                                                            <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="row mb-1 my-muted">
+                                                        <div class="col-12">Modes supported</div>
+                                                    </div>
+                                                    <div class="row g-1">
+                                                        {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
+                                                            <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {% if therapist.location %}
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <div class="mb-1 my-muted">Location (in-person appointments)</div>
+                                                        <div>{{ therapist.location }}</div>
+                                                    </div>
+                                                </div>
+                                            {% endif %}
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Durations</div>
+                                                    <div>{{ therapist.active_appointment_types|map(attribute='duration')|unique|sort|join(' minutes, ') + ' minutes' if therapist.active_appointment_types else '' }} </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
                         </div>
-                    {% else %}
-                        <div class="col-lg-6">
-                            <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='profile') }}" class="btn btn-outline-primary">
-                                View Profile
-                            </a>
-                        </div>
-                        <div class="col-lg-6">
-                            <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='booking') }}" class="btn btn-outline-primary">
-                                Book Appointment
-                            </a>
-                        </div>
-                    {% endif %}
+                    </div>
+
+                    
+                    <div class="row g-2 mt-4">
+                        {% if current_user and current_user.role == UserRole.THERAPIST %}    
+                            <div class="col-lg-12">
+                                <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='profile') }}" class="btn btn-outline-primary">
+                                    View Profile
+                                </a>
+                            </div>
+                        {% else %}
+                            <div class="col-lg-6">
+                                <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='profile') }}" class="btn btn-outline-primary">
+                                    View Profile
+                                </a>
+                            </div>
+                            <div class="col-lg-6">
+                                <a href="{{ url_for('profile.profile', user_id=therapist.user.id, section='booking') }}" class="btn btn-outline-primary">
+                                    Book Appointment
+                                </a>
+                            </div>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 {% endmacro %}
 
 
@@ -367,186 +369,188 @@
 
 
 {% macro client_cards(client_cards) %}
-    {% for client in clients %}
-        <div class="col-lg-6">
-            <div class="my-card">
-                
-                <!-- Header -->
-                <div class="row g-3 mb-4 align-items-center">
-                    <div class="col-auto">
-                        <a href="{{ url_for('profile.profile', user_id=client.user.id) }}">
-                            <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
-                        </a>
-                    </div>
-                    <div class="col">
-                        <div class="row">
-                            <h5 class="mb-1">
-                                <a href="{{ url_for('profile.profile', user_id=client.user.id) }}">
-                                    {{ client.user.full_name }}
-                                </a>
-                            </h5>
-                        </div>
-                        <div class="row">
-                            <span class="my-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
-                        </div>
-                    </div>
-                </div>
-
-                <hr>
-
-                <!-- Body -->
-                <div class="mt-4">
-                    <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
-
-                        <!-- Personal details -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
+    {% if clients %}    
+        {% for client in clients %}
+            <div class="col-lg-6">
+                <div class="my-card">
                     
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
-                                            Personal details
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
-
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Gender</div>
-                                                <div>{{ client.user.gender.value }}</div>
-                                            </div>
-                                        </div>
-        
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Age</div>
-                                                <div>{{ client.age|string + ' years old' if client.age else '' }}</div>
-                                            </div>
-                                        </div>
-        
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Occupation</div>
-                                                <div>{{ client.occupation.value }}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                    <!-- Header -->
+                    <div class="row g-3 mb-4 align-items-center">
+                        <div class="col-auto">
+                            <a href="{{ url_for('profile.profile', user_id=client.user.id) }}">
+                                <img src="{{ url_for('static', filename='img/profile_pictures/' + client.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ client.user.full_name }}">
+                            </a>
+                        </div>
+                        <div class="col">
+                            <div class="row">
+                                <h5 class="mb-1">
+                                    <a href="{{ url_for('profile.profile', user_id=client.user.id) }}">
+                                        {{ client.user.full_name }}
+                                    </a>
+                                </h5>
+                            </div>
+                            <div class="row">
+                                <span class="my-muted">{{ 'Active' if client.user.active else 'Inactive' }}</span>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Background -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
-                    
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#backgroundCollapse{{ loop.index }}" aria-expanded="false" aria-controls="backgroundCollapse{{ loop.index }}">
-                                            Client background
-                                            </button>
-                                        </h6>
+                    <hr>
+
+                    <!-- Body -->
+                    <div class="mt-4">
+                        <div class="accordion accordion-flush" id="profileAccordion{{ loop.index }}">
+
+                            <!-- Personal details -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
+                        
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#personalDetailsCollapse{{ loop.index }}" aria-expanded="false" aria-controls="personalDetailsCollapse{{ loop.index }}">
+                                                Personal details
+                                                </button>
+                                            </h6>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div id="backgroundCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+                                    <div id="personalDetailsCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
 
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="row mb-1 my-muted">
-                                                    <div class="col-12">Current challenges</div>
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Gender</div>
+                                                    <div>{{ client.user.gender.value }}</div>
                                                 </div>
-                                                <div class="row g-1">
-                                                    {% for issue in client.issues|map(attribute='name')|unique %}
-                                                        <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
-                                                    {% endfor %}
+                                            </div>
+            
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Age</div>
+                                                    <div>{{ client.age|string + ' years old' if client.age else '' }}</div>
+                                                </div>
+                                            </div>
+            
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Occupation</div>
+                                                    <div>{{ client.occupation.value }}</div>
                                                 </div>
                                             </div>
                                         </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Referral source</div>
-                                                <div>{{ client.referral_source.value }}</div>
-                                            </div>
-                                        </div>
-
                                     </div>
                                 </div>
                             </div>
-                        </div>
+
+                            <!-- Background -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
                         
-                        <!-- Contact information -->
-                        <div class="accordion-item row">
-                            <div class="col-12">
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#backgroundCollapse{{ loop.index }}" aria-expanded="false" aria-controls="backgroundCollapse{{ loop.index }}">
+                                                Client background
+                                                </button>
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div id="backgroundCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="row mb-1 my-muted">
+                                                        <div class="col-12">Current challenges</div>
+                                                    </div>
+                                                    <div class="row g-1">
+                                                        {% for issue in client.issues|map(attribute='name')|unique %}
+                                                            <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
+                                                        {% endfor %}
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Referral source</div>
+                                                    <div>{{ client.referral_source.value }}</div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Contact information -->
+                            <div class="accordion-item row">
+                                <div class="col-12">
+                        
+                                    <div class="accordion-header row">
+                                        <div class="col-12">
+                                            <h6 class="mb-0">
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse{{ loop.index }}" aria-expanded="false" aria-controls="contactCollapse{{ loop.index }}">
+                                                    Contact information
+                                                </button>
+                                            </h6>
+                                        </div>
+                                    </div>
+
+                                    <div id="contactCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
+
+                                        <div class="accordion-body">
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Address</div>
+                                                    <div>{{ client.address if client.address else '' }}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Phone</div>
+                                                    <div>{{ client.phone if client.phone else '' }}</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Emergency contact</div>
+                                                    <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
+                                                </div>
+                                            </div>
+                                        
+                                            <div class="row mb-3">
+                                                <div class="col-12">
+                                                    <div class="mb-1 my-muted">Emergency contact phone</div>
+                                                    <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
+                                                </div>
+                                            </div>
+                                        
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
                     
-                                <div class="accordion-header row">
-                                    <div class="col-12">
-                                        <h6 class="mb-0">
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#contactCollapse{{ loop.index }}" aria-expanded="false" aria-controls="contactCollapse{{ loop.index }}">
-                                                Contact information
-                                            </button>
-                                        </h6>
-                                    </div>
-                                </div>
-
-                                <div id="contactCollapse{{ loop.index }}" class="accordion-collapse collapse text-s" data-bs-parent="#profileAccordion{{ loop.index }}">
-
-                                    <div class="accordion-body">
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Address</div>
-                                                <div>{{ client.address if client.address else '' }}</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Phone</div>
-                                                <div>{{ client.phone if client.phone else '' }}</div>
-                                            </div>
-                                        </div>
-
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Emergency contact</div>
-                                                <div>{{ client.emergency_contact_name if client.emergency_contact_name else '' }}</div>
-                                            </div>
-                                        </div>
-                                    
-                                        <div class="row mb-3">
-                                            <div class="col-12">
-                                                <div class="mb-1 my-muted">Emergency contact phone</div>
-                                                <div>{{ client.emergency_contact_phone if client.emergency_contact_phone else '' }}</div>
-                                            </div>
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="row g-2 mt-4">
+                        <div class="col-lg-6">
+                            <a href="{{ url_for('profile.profile', user_id=client.user.id, section='profile') }}" class="btn btn-outline-primary">View Profile</a>
                         </div>
-                        
-                    </div>
-                </div>
-                
-                <div class="row g-2 mt-4">
-                    <div class="col-lg-6">
-                        <a href="{{ url_for('profile.profile', user_id=client.user.id, section='profile') }}" class="btn btn-outline-primary">View Profile</a>
-                    </div>
-                    <div class="col-lg-6">
-                        <a href="{{ url_for('messages.conversation', therapist_user_id=current_user.id, client_user_id=client.user.id) }}" class="btn btn-outline-primary">Send Message</a>
+                        <div class="col-lg-6">
+                            <a href="{{ url_for('messages.conversation', therapist_user_id=current_user.id, client_user_id=client.user.id) }}" class="btn btn-outline-primary">Send Message</a>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    {% endfor %}
+        {% endfor %}
+    {% endif %}
 {% endmacro %}

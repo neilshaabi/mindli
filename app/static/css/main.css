@@ -50,7 +50,6 @@ main {
     width: 100%;
     min-height: calc(100% - var(--navbar-height));
     padding: 2.5rem;
-    z-index: 1;
 }
 
 .navbar ~ main {
@@ -65,7 +64,6 @@ main {
     font-weight: 300;
     background: white;
     box-shadow: var(--my-box-shadow);
-    z-index: 99;
 }
 
 .navbar {
@@ -160,6 +158,10 @@ main {
 
 
 /* Text */
+
+.text-primary {
+    color: var(--colour-primary) !important;
+}
 
 a {
     color: var(--colour-primary);
@@ -296,7 +298,9 @@ form .btn,
 
 .btn-primary,
 .btn-primary.show,
-.btn-primary:disabled {
+.btn-primary:disabled,
+.btn-primary:active,
+.btn-primary.active {
     color: white;
     background: var(--colour-primary);
     border-color: var(--colour-primary);
@@ -304,11 +308,10 @@ form .btn,
 
 .btn-primary:hover, 
 .btn-primary:focus,
-.btn-primary:active,
 .btn-primary:first-child:active,
 .btn-primary:focus-visible,
-.btn-primary.active,
 :not(.btn-check)+.btn-primary:active {
+    color: white;
     background: var(--colour-dark);
     border-color: var(--colour-dark);
 }
@@ -608,6 +611,18 @@ table th {
 .tag-sm {
     font-size: 0.8rem;
     padding: 0.25rem 0.4rem;
+}
+
+
+/* Modals */
+
+.modal-body {
+    padding: 1.5rem 2.5rem;
+}
+
+#onboardingModal .form-check-input:disabled~.form-check-label, 
+#onboardingModal .form-check-input[disabled]~.form-check-label {
+    color: var(--dark-grey-text);
 }
 
 

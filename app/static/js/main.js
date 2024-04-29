@@ -40,9 +40,16 @@ $(document).ready(function() {
     $(window).resize(function() {
         resizeSidebar();
     });
+
+
+
+    // Display onboarding modal by default when page loads
+    $(window).on('load', function() {
+        $('#onboardingModal').modal('show');
+    });
     
 
-    // Updates preview of profile picture when uploaded
+    // Update preview of profile picture when uploaded
     $('#profile_picture').change(function(event) {
         var reader = new FileReader();
         reader.onload = function(){
@@ -103,12 +110,12 @@ $(document).ready(function() {
         $('#section-selector .list-group-item').removeClass('active');
         $(this).addClass('active');
 
-        // Hide all sections
-        $('.section').hide();
-
-        // Show the section corresponding to the clicked item
+        // Show only the section corresponding to the clicked item if one exists
         var target = $(this).data('target');
-        $(target).show();
+        if (target) {
+            $('.section').hide();
+            $(target).show();
+        }
 
         var messagesContainer = $(target).find('.messages-container');
         messagesContainer.scrollTop(messagesContainer.prop('scrollHeight'));

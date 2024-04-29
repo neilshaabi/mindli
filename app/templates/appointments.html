@@ -185,7 +185,7 @@
 
                     <div class="row mt-4">
                         <div class="col-auto my-muted" id="filter-count">
-                            {{ appointments|length }} appointments found
+                            {{ appointments|length if appointments else 0}} appointments found
                         </div>
                     </div>
                 </div>

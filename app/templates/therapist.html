@@ -47,7 +47,22 @@
                         </li>
                         
                         {% if therapist.is_current_user %}
+
+                            {% if not therapist.onboarding_complete %}
+                            <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#onboardingModal">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        Onboarding
+                                    </div>
+                                    <div class="col-auto ms-auto">
+                                        <i class="fa-solid fa-user-plus"></i>
+                                    </div>
+                                </div>
+                            </li>
+                            {% endif %}
                             
+                            
+                        
                             <li class="list-group-item list-group-item-action" data-target="#edit-profile">
                                 <div class="row align-items-center">
                                     <div class="col-auto">
@@ -822,26 +837,24 @@
                                                 </div>
                                             </div>
 
-                                            <!-- TODO -->
+                                            <!-- Notifications -->
                                             <div class="accordion-item row">
                                                 <div class="col-12">
                                         
                                                     <div class="accordion-header row">
                                                         <div class="col-12">
                                                             <h6 class="mb-0">
-                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#TODO" aria-expanded="false" aria-controls="TODO">
-                                                                TODO
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#notificationsCollapse" aria-expanded="false" aria-controls="notificationsCollapse">
+                                                                Notifications
                                                                 </button>
                                                             </h6>
                                                         </div>
                                                     </div>
                         
-                                                    <div id="TODO" class="accordion-collapse collapse text-s">
+                                                    <div id="notificationsCollapse" class="accordion-collapse collapse text-s">
 
                                                         <div class="accordion-body">
-
-                                                            TODO
-                                                            
+                                                            <!-- TODO -->
                                                         </div>
                                                     </div>
 
@@ -948,19 +961,22 @@
         </div>
     </div>
 
+    <!-- Modal to delete an appointment type -->
     {% if therapist.is_current_user and therapist.appointment_types %}
-        <!-- Modal to delete an appointment type -->
         <div class="modal fade" id="deleteAppointmentTypeModal" tabindex="-1" aria-labelledby="deleteAppointmentTypeModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
+            <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
+                    
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="deleteAppointmentTypeModalLabel">Confirm deletion</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
+                    
                     <div class="modal-body">
-                        Are you sure you want to delete this appointment type?
+                        <p class="mb-2">Are you sure you want to delete this appointment type?</p>
                         <strong>Warning:</strong> this action cannot be undone.
                     </div>
+                    
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <form id="{{ forms.delete_appt_type_form.id }}" action="{{ forms.delete_appt_type_form.endpoint }}" novalidate>
@@ -969,9 +985,64 @@
                             {{ submit_button(forms.delete_appt_type_form.submit, class='btn btn-danger') }}
                         </form>
                     </div>
+
                 </div>
             </div>
         </div>
     {% endif %}
+
+    <!-- Onboarding modal -->
+    {% if therapist.is_current_user and not therapist.onboarding_complete %}
+        <div class="modal fade" id="onboardingModal" tabindex="-1" aria-labelledby="onboardingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="onboardingModalLabel">Onboarding Checklist</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <p class="my-muted mb-3">Welcome to <span class="text-primary">mindli</span>! To complete your registration:</p>
+                        
+                        <form>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="personalCheckbox" disabled{% if therapist.user.gender %} checked{% endif %}>
+                                <label class="form-check-label" for="personalCheckbox">
+                                    Submit your personal details
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="professionalCheckbox" disabled{% if therapist.titles %} checked{% endif %}>
+                                <label class="form-check-label" for="professionalCheckbox">
+                                    Submit details of your professional experience
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="appointmentTypesCheckbox" disabled{% if therapist.active_appointment_types %} checked{% endif %}>
+                                <label class="form-check-label" for="appointmentTypesCheckbox">
+                                    Submit details for appointment types offered
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="stripeCheckbox" disabled{% if therapist.stripe_account_id %} checked{% endif %}>
+                                <label class="form-check-label" for="stripeCheckbox">
+                                    Connect with Stripe to process payments securely (optional)
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+{% endif %}
 
 {% endblock %}

@@ -1,13 +1,13 @@
 import os
 
-from flask import Blueprint, Response, abort, current_app, jsonify, request
+from flask import (Blueprint, Response, abort, current_app, flash, jsonify,
+                   request, url_for)
 from flask_login import current_user, login_required
 from werkzeug.utils import secure_filename
 
 from app import db
 from app.forms.users import UserProfileForm
 from app.utils.files import get_file_extension
-from app.utils.formatters import get_flashed_message_html
 
 bp = Blueprint("user", __name__, url_prefix="/user")
 
@@ -42,12 +42,10 @@ def update(user_id: int) -> Response:
     current_user.gender = form.gender.data
     db.session.commit()
 
-    # Flash message using AJAX
+    flash("Personal information updated", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message": get_flashed_message_html(
-                "Personal information updated", "success"
-            ),
+            "url": url_for("profile.profile", user_id=current_user.id),
         }
     )

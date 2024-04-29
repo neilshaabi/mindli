@@ -202,7 +202,7 @@
 
                     <div class="row mt-4">
                         <div class="col-auto my-muted" id="filter-count">
-                            {{ therapists|length }} therapists found
+                            {{ therapists|length if therapists else 0}} therapists found
                         </div>
                     </div>
                 </div>

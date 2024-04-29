@@ -33,7 +33,7 @@ class Config(object):
 
 class DevConfig(Config):
     DEBUG: bool = True
-    RESET_DB: bool = True
+    RESET_DB: bool = False
     FAKE_DATA: bool = True
     WTF_CSRF_ENABLED: str = True
     ERROR_HANDLER: bool = False

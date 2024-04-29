@@ -67,7 +67,7 @@ def index() -> Response:
 @client_required
 def new_client() -> Response:
     # Current user's client profile already exists
-    if current_user.client:
+    if current_user.onboarding_complete:
         abort(403)
 
     # Create mock Client to pass to template
@@ -305,7 +305,7 @@ def filter() -> Response:
         )
 
         filter_count_html = render_template_string(
-            "{{ clients|length }} clients found",
+            "{{ clients|length if clients else 0}} clients found",
             clients=filtered_clients,
         )
 

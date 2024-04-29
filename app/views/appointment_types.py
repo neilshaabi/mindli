@@ -126,7 +126,7 @@ def delete():
     db.session.commit()
 
     # Redirect to appointment types page
-    flash("Appointment type deleted", "success")
+    flash("Appointment type deleted", "warning")
     return jsonify(
         {
             "success": True,

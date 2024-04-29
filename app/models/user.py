@@ -59,12 +59,13 @@ class User(UserMixin, SeedableMixin, db.Model):
         return f"{self.first_name} {self.last_name}"
 
     @property
-    def user_id(self):
-        if self.role == UserRole.THERAPIST and self.therapist:
-            return self.therapist.id
-        elif self.role == UserRole.CLIENT and self.client:
-            return self.client.id
-        return None
+    def onboarding_complete(self) -> bool:
+        if self.role == UserRole.THERAPIST:
+            return self.therapist and self.therapist.onboarding_complete()
+        elif self.role == UserRole.CLIENT:
+            return self.user and self.client.onboarding_complete()
+        print(f"Unhandled user role: {self.role}")
+        return False
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:

@@ -33,7 +33,7 @@ class EmailMessage:
         self.send_with_token = False
 
         if self.subject == EmailSubject.EMAIL_VERIFICATION:
-            self.body = f"Thanks for registering as a {recipient.role.value} with mindli! To continue setting up your account, please verify that this is your email address."
+            self.body = f"Thanks for registering as a {recipient.role.value} with mindli! To continue setting up your account, please verify that this is your email address and follow the onboarding instructions in your profile."
             self.link_text = "Verify Email"
             endpoint = "auth.email_verification"
             self.send_with_token = True
@@ -111,11 +111,14 @@ class EmailMessage:
 
     def send(self, asynchronous: bool = True):
         with current_app.app_context():
-        
             subject = self.subject.value
-            recipients = current_app.config["MAIL_USERNAME"] if isinstance(current_app.config, DevConfig) else [self.recipient.email]
+            recipients = (
+                current_app.config["MAIL_USERNAME"]
+                if isinstance(current_app.config, DevConfig)
+                else [self.recipient.email]
+            )
             html = render_template("email.html", message=self)
-        
+
             try:
                 # Send email synchronously
                 if asynchronous and current_app.config["CELERY_ENABLED"]:

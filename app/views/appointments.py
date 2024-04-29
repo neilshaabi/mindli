@@ -569,7 +569,7 @@ def filter():
         )
 
         filter_count_html = render_template_string(
-            "{{ appointments|length }} appointments found",
+            "{{ appointments|length if appointments else 0}} appointments found",
             appointments=filtered_appointments,
         )
 
