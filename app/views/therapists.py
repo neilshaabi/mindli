@@ -44,7 +44,10 @@ def index() -> Response:
 
     # Render template
     return render_template(
-        "therapists.html", filter_form=filter_form, therapists=therapists
+        "therapists.html",
+        active_page="therapists",
+        filter_form=filter_form,
+        therapists=therapists,
     )
 
 
@@ -86,6 +89,7 @@ def new_therapist() -> Response:
     # Render template with information for this therapist
     return render_template(
         "therapist.html",
+        active_page="profile",
         therapist=mock_therapist,
         default_section="profile",
         forms=forms,
@@ -115,8 +119,10 @@ def therapist(therapist_id: int) -> Response:
         "stripe_onboarding_form": None,
     }
 
-    # Initialise forms for current user to edit their profile
     if therapist.is_current_user:
+        active_page = "profile"
+
+        # Initialise forms for current user to edit their profile
         forms["user_profile_form"] = UserProfileForm(
             obj=current_user,
             id="user-profile",
@@ -158,20 +164,24 @@ def therapist(therapist_id: int) -> Response:
             endpoint=url_for("stripe.create_account"),
         )
 
-    # Initialise form for client to book an appointment with this therapist
-    elif current_user.role == UserRole.CLIENT:
-        forms["book_appointment_form"] = BookAppointmentForm(
-            obj=therapist,
-            id="book_appointment",
-            endpoint=url_for(
-                "appointments.create",
-                therapist_id=therapist_id,
-            ),
-        )
+    # Not current user
+    else:
+        active_page = "therapists"
+
+        if current_user.role == UserRole.CLIENT:
+            forms["book_appointment_form"] = BookAppointmentForm(
+                obj=therapist,
+                id="book_appointment",
+                endpoint=url_for(
+                    "appointments.create",
+                    therapist_id=therapist_id,
+                ),
+            )
 
     # Render template with information for this therapist
     return render_template(
         "therapist.html",
+        active_page=active_page,
         therapist=therapist,
         default_section=request.args.get("section", "profile"),
         TherapyType=TherapyType,

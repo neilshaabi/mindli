@@ -8,16 +8,13 @@ $(document).ready(function() {
     toggleSidebarTooltips();
     
     // Toggle active state for navbar link when selected
-    var pathname = window.location.pathname;
-    var links = document.getElementsByClassName('nav-link');
-    for (var i = 0; i < links.length; i++) {
-        var link = links[i]
-        var href = link.getAttribute('href');
-        if (pathname == href) {
-            links[i].classList.add('active');
-            break;
+    var activePage = $('body').data('active-page');
+    $('.nav-link').each(function() {
+        var $this = $(this);
+        if ($this.data('page') === activePage) {
+            $this.addClass('active');
         }
-    }
+    });
 
     // Expands/collapses sidebar when toggler clicked
     $('.sidebar .navbar-toggler').click(function() {

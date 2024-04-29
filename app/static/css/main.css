@@ -17,7 +17,7 @@
     --my-form-padding: 1rem 0.75rem;
 
     --my-border-radius: 5px;
-    --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.08);
+    --my-box-shadow: 0 5px 10px 0 rgba(60, 66, 87, 0.05);
 
     --my-transition: ease all 0.15s;
 }
@@ -63,13 +63,13 @@ main {
 .navbar, 
 .sidebar {
     font-weight: 300;
+    background: white;
+    box-shadow: var(--my-box-shadow);
+    z-index: 99;
 }
 
 .navbar {
     width: 100%;
-    background: white;
-    box-shadow: var(--my-box-shadow);
-    z-index: 99;
 }
 
 .navbar-nav,
@@ -135,9 +135,7 @@ main {
     width: var(--sidebar-expanded-width);
     height: 100vh;
     padding: 2.25rem 1rem;
-    background-color: white;
     transition: width 0.3s ease;
-    z-index: 100;
 }
 
 .sidebar.collapsed {
@@ -333,7 +331,8 @@ form .btn,
     border: solid var(--bs-btn-color);
 }
 
-.btn-outline-secondary:hover {
+.btn-outline-secondary:hover,
+.btn-outline-secondary.active {
     color: white;
     background: var(--bs-btn-color);
     border: solid var(--bs-btn-color);

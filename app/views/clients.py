@@ -57,6 +57,7 @@ def index() -> Response:
     # Render template
     return render_template(
         "clients.html",
+        active_page="clients",
         filter_form=filter_form,
         clients=clients,
     )
@@ -95,6 +96,7 @@ def new_client() -> Response:
     # Render template with information for this client
     return render_template(
         "client.html",
+        active_page="profile",
         client=mock_client,
         default_section="profile",
         forms=forms,
@@ -132,6 +134,7 @@ def client(client_id: int) -> Response:
 
     # Initialise forms for current user to edit their profile
     if client.is_current_user:
+        active_page = "profile"
         forms["user_profile_form"] = UserProfileForm(
             obj=current_user,
             id="user-profile",
@@ -144,9 +147,13 @@ def client(client_id: int) -> Response:
             endpoint=url_for("clients.update", client_id=client_id),
         )
 
+    else:
+        active_page = "clients"
+
     # Render template with information for this client
     return render_template(
         "client.html",
+        active_page=active_page,
         client=client,
         default_section=request.args.get("section", "profile"),
         forms=forms,

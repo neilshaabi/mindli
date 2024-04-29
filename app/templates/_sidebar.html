@@ -1,58 +1,71 @@
 <div class="sidebar">
     
+  <!-- Header -->
     <div class="sidebar-header">
+        
       <!-- Brand -->
-        <a class="navbar-brand" href="/">
+      <a class="navbar-brand" href="/">
           <img src="{{ url_for('static', filename='img/logos/logo.png') }}" alt="Logo" height="24" class="d-inline-block align-text-top mx-1">
           mindli
       </a>
+
+      <!-- Toggler -->
       <button class="btn navbar-toggler h-auto" type="button" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Expand">
         <i class="fa-solid fa-bars"></i>
       </button>
     </div>
 
     <hr>
+
+    <!-- Body -->
     <ul class="nav flex-column">
       <li class="nav-item">
-        <a class="nav-link" href="/" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Home">
+        <a class="nav-link" href="/" data-page="home" 
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Home">
           <i class="fa-solid fa-house"></i>
           <span>Home</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('profile.index') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Profile">
+        <a class="nav-link" href="{{ url_for('profile.index') }}" data-page="profile"
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Profile">
           <i class="fas fa-user"></i>
           <span>Profile</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('messages.index') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Messages">
+        <a class="nav-link" href="{{ url_for('messages.index') }}" data-page="messages" 
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Messages">
           <i class="fas fa-comments"></i>
           <span>Messages</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('appointments.index') }}"data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Appointments">
+        <a class="nav-link" href="{{ url_for('appointments.index') }}" data-page="appointments"
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Appointments">
           <i class="fas fa-calendar"></i>
           <span>Appointments</span>
         </a>
       </li>
       {% if current_user.role == UserRole.THERAPIST %}
-      <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('clients.index') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Clients">
-          <i class="fas fa-users"></i>
-          <span>Clients</span>
-        </a>
-      </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('clients.index') }}" data-page="clients"
+             data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Clients">
+            <i class="fas fa-users"></i>
+            <span>Clients</span>
+          </a>
+        </li>
       {% endif %}
       <li class="nav-item">
-        <a class="nav-link" href="{{ url_for('therapists.index') }}" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Therapists">
+        <a class="nav-link" href="{{ url_for('therapists.index') }}" data-page="therapists"
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Therapists">
           <i class="fas fa-user-md"></i>
           <span>Therapists</span>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/logout" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Sign Out">
+        <a class="nav-link" href="/logout" data-page="logout"
+           data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="Sign Out">
           <i class="fas fa-sign-out-alt"></i>
           <span>Sign Out</span>
         </a>

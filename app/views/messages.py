@@ -76,6 +76,7 @@ def index():
     # Render template with conversation from request selected as default
     return render_template(
         "messages.html",
+        active_page="messages",
         default_section=request.args.get("section"),
         conversations=conversations,
     )

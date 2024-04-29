@@ -17,8 +17,9 @@ bp = Blueprint("auth", __name__)
 
 @bp.route("/")
 @bp.route("/index")
+@bp.route("/home")
 def index() -> Response:
-    return render_template("index.html")
+    return render_template("index.html", active_page="home")
 
 
 @bp.route("/logout")
@@ -35,7 +36,7 @@ def register() -> Response:
     # GET request - display page
     if request.method == "GET":
         logout_user()
-        return render_template("register.html", form=form)
+        return render_template("register.html", active_page="register", form=form)
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():
@@ -80,7 +81,7 @@ def login() -> Response:
     # GET request - display page
     if request.method == "GET":
         logout_user()
-        return render_template("login.html", form=form)
+        return render_template("login.html", active_page="login", form=form)
 
     # Invalid form submission - return errors
     if not form.validate_on_submit():

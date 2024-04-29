@@ -64,7 +64,10 @@ def index():
 
     # Render the page with the appointment forms
     return render_template(
-        "appointments.html", appointments=appointments, filter_form=filter_form
+        "appointments.html",
+        active_page="appointments",
+        appointments=appointments,
+        filter_form=filter_form,
     )
 
 
@@ -116,6 +119,7 @@ def appointment(appointment_id: int) -> Response:
     # Render the page with the appointment details and forms
     return render_template(
         "appointment.html",
+        active_page="appointments",
         appointment=appointment,
         update_form=update_form,
         notes_form=notes_form,

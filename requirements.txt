@@ -14,7 +14,7 @@ Flask==2.2.5
 Flask-Login==0.6.3
 Flask-Mail==0.9.1
 Flask-Migrate==4.0.5
-Flask-SQLAlchemy==3.0.5
+flask-sqlalchemy==3.0.5
 Flask-WTF==1.1.1
 greenlet==3.0.3
 idna==3.6
@@ -48,7 +48,7 @@ SQLAlchemy==2.0.23
 stripe==4.2.0b1
 tomli==2.0.1
 typed-ast==1.5.5
-typing_extensions==4.7.1
+typing-extensions==4.7.1
 urllib3==2.0.7
 Werkzeug==2.2.3
 WTForms==3.0.1
