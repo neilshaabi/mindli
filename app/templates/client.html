@@ -19,7 +19,7 @@
                     <div class="col-auto">
                         <a href="{{ url_for('clients.index') }} ">
                             <i class="fa-solid fa-chevron-left"></i>
-                            Client directory
+                            <span>Client directory</span>
                         </a>
                     </div>
                     {% endif %}
@@ -124,7 +124,7 @@
                                         <div class="col-auto ms-auto">
                                             <a href="{{ url_for('messages.conversation', therapist_user_id=current_user.id, client_user_id=client.user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
                                                 <i class="fa-regular fa-paper-plane"></i>
-                                                Send Message
+                                                <span>Send Message</span>
                                             </a>
                                         </div>
                                     {% endif %}

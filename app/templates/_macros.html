@@ -8,7 +8,7 @@
     {% set alert_class, icon_class = class_map.get(category, ('alert-primary', 'fa-solid fa-circle-info')) %}
     
     <div class="alert {{ alert_class }} alert-dismissible fade show" role='alert'>
-        <i class="{{ icon_class }}"></i> {{ message }}
+        <i class="{{ icon_class }}"></i><span>{{ message }}</span>
         <button type='button' class='btn-close' data-bs-dismiss='alert' aria-label='Close'></button>
     </div>
 {% endmacro %}
@@ -57,10 +57,9 @@
     <span class="tag {{ class }} {{ additional_class }}">
         
         {% if with_icon and icon_class %}
-            <i class="{{ icon_class }}" {% if not label %}style="margin-right:0;"{% endif %}></i>
+            <i class="{{ icon_class }}"></i>
         {% endif %}
-        
-        {% if label %}{{ label }}{% endif %}
+        {% if label %}<span>{{ label }}</span>{% endif %}
     </span>
 
 {% endmacro %}

@@ -11,6 +11,7 @@
 
     --navbar-height: 60px;
     --sidebar-width: 200px;
+    --sidebar-collapsed-width: 60px;
 
     --my-form-height: calc(3.5rem + 2px);
     --my-form-padding: 1rem 0.75rem;
@@ -31,7 +32,6 @@
 
 html,
 body {
-    color: var(--dark-grey-text);
     font-size: 1rem;
     max-width: 100%;
     min-height: 100vh;
@@ -43,77 +43,81 @@ body {
 
 main {
     position: absolute;
-    top: 0;
+    top: var(--navbar-height);
     left: 0;
     width: 100%;
-    min-height: 100%;
-    padding: 3rem;
-}
-
-body > .navbar ~ main {
-    top: var(--navbar-height);
-}
-
-body > .sidebar ~ main {
-    left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
+    min-height: calc(100% - var(--navbar-height));
+    padding: 2.5rem;
 }
 
 
 /* Navbar */
 
-.navbar,
-.sidebar {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 1000;
-    background: white;
-    box-shadow: var(--my-box-shadow);
-    padding: 0.5rem 0;
-}
-
 .navbar {
     height: var(--navbar-height);
-    width: 100%;
+    background: white;
+    box-shadow: var(--my-box-shadow);
+}
+
+.navbar-expand .navbar-toggler {
+    display: block;
+}
+
+.navbar-nav,
+.sidebar .nav-link {
+    --bs-nav-link-color: var(--light-grey-text) !important;
+    --bs-nav-link-hover-color: var(--dark-grey-text) !important;
+    --bs-navbar-active-color: var(--colour-primary) !important;
 }
 
 .navbar-brand {
-    font-size: 1.25rem;
-    color: var(--dark-grey-text) !important;
-}
-
-.navbar-brand img {
-    height: 1.25rem;
-    margin-right: 3px;
-}
-
-.nav-link {
-    color: var(--light-grey-text);
-    transition: var(--my-transition);
-}
-
-.nav-link.btn {
-    height: 40px;
-}
-
-.nav-link:hover {
-    color: var(--dark-grey-text);
-}
-
-.nav-link.active {
-    color: var(--colour-primary);
+    --bs-navbar-brand-color: var(--dark-grey-text) !important;
+    --bs-navbar-brand-hover-color: black !important;
 }
 
 
 /* Sidebar */
 
+.sidebar ~ main {
+    margin-left: var(--sidebar-width);
+    transition: margin-left 0.3s ease;
+}
+  
+.sidebar.collapsed ~ main {
+    margin-left: var(--sidebar-collapsed-width);
+}
+
 .sidebar {
-    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: var(--sidebar-width);
-    max-width: var(--sidebar-width);
-    position: fixed;
-    top: var(--navbar-height);
+    height: 100vh;
+    padding: 1rem;
+    background-color: white;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width);
+}
+
+.sidebar-toggler {
+    color: var(--dark-grey-text);
+    background: none;
+    border: none;
+}
+
+.sidebar-toggler i {
+    margin-right: 0 !important;
+}
+
+.sidebar .nav-link {
+    border-radius: var(--my-border-radius);
+}
+
+.sidebar .nav-link:hover {
+    background: var(--light-grey-bg);
 }
 
 
@@ -129,10 +133,6 @@ a:hover {
     color: var(--colour-dark);
 }
 
-i:not(:only-child) {
-    margin-right: 3px;
-}
-
 .my-muted {
     color: var(--light-grey-text);
 }
@@ -140,6 +140,15 @@ i:not(:only-child) {
 .text-s {
     font-size: 0.9rem;
 }
+
+i:has(+ span) {
+    margin-right: 3px;
+}
+
+.btn i:has(+ span) {
+    margin-right: 8px;
+}
+
 
 
 /* Forms */
@@ -314,6 +323,8 @@ form .btn,
     position: absolute;
     top: 0;
     right: 0;
+    margin-right: 3px; 
+    /* TODO: verify above */
     border: none;
     background: none;
     cursor: pointer;
@@ -537,17 +548,6 @@ table th {
 .tag-sm {
     font-size: 0.8rem;
     padding: 4px 6px;
-}
-
-.alert i,
-.error-message i,
-.tag i,
-.input-btn-icon i {
-    margin-right: 3px;
-}
-
-.btn i {
-    margin-right: 8px;
 }
 
 

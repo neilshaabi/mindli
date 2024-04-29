@@ -4,7 +4,6 @@ $(document).ready(function() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
     
-
     // Toggle active state for navbar link when selected
     var pathname = window.location.pathname;
     var links = document.getElementsByClassName('nav-link');
@@ -15,6 +14,11 @@ $(document).ready(function() {
             break;
         }
     }
+
+    // Expands/collapses sidebar when toggler clicked
+    $('.sidebar-toggler').click(function() {
+        $('.sidebar').toggleClass('collapsed');
+      });
 
     // Updates preview of profile picture when uploaded
     $('#profile_picture').change(function(event) {
@@ -306,7 +310,9 @@ function displayFormErrors(formId, formPrefix, errors) {
         const errorMessage = $(
             '<div class="error-message mt-2" data-form-id="' + formId + '" data-for="' + key + '">' +
                 '<i class="fa-solid fa-circle-exclamation"></i> ' +
+                    '<span>' +
                 newErrorMessages[key] +
+                '</span>' +
             '</div>'
         );
         

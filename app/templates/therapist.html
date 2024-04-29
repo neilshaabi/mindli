@@ -17,7 +17,7 @@
                     <div class="col-auto">
                         <a href="{{ url_for('therapists.index') }} ">
                             <i class="fa-solid fa-chevron-left"></i>
-                            Therapist directory
+                            <span>Therapist directory</span>
                         </a>
                     </div>
                     <div class="col-auto">
@@ -126,7 +126,7 @@
                                         <div class="col-auto ms-auto">
                                             <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
                                                 <i class="fa-regular fa-paper-plane"></i>
-                                                Send Message
+                                                <span>Send Message</span>
                                             </a>
                                         </div>
                                     {% endif %}
@@ -775,7 +775,7 @@
                                                             <div class="row mb-3">
                                                                 <div class="my-muted text-s">
                                                                     <i class="fa-solid fa-circle-info"></i>
-                                                                    mindli partners with <a href="stripe.com">Stripe</a> for secure payments
+                                                                    <span>mindli partners with <a href="stripe.com">Stripe</a> for secure payments</span>
                                                                 </div>
                                                             </div>
                                                             
@@ -878,7 +878,7 @@
                                             <div class="col-auto ms-auto">
                                                 <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
                                                     <i class="fa-regular fa-paper-plane"></i>
-                                                    Send Message
+                                                    <span>Send Message</span>
                                                 </a>
                                             </div>
                                         {% endif %}
@@ -934,7 +934,7 @@
                                     
                                         <div class="my-muted text-s">
                                             <i class="fa-solid fa-circle-info"></i>
-                                            Please <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.user.id, client_user_id=current_user.id) }}">message</a> your therapist to confirm these details before proceeding
+                                            <span>Please <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.user.id, client_user_id=current_user.id) }}">message</a> your therapist to confirm these details before proceeding</span>
                                         </div>
                                         
                                     </div>

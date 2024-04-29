@@ -17,7 +17,7 @@
                     <div class="col-auto">
                         <a href="{{ url_for('appointments.index') }} ">
                             <i class="fa-solid fa-chevron-left"></i>
-                            All appointments
+                            <span>All appointments</span>
                         </a>
                     </div>
                     <div class="col-auto">
@@ -173,7 +173,7 @@
                                             {{ notes_form.issues.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from client's profile: {{ appointment.client.issues|join(', ', 'name') }}">
-                                                <i class="fa-regular fa-lightbulb me-3"></i>
+                                                <i class="fa-regular fa-lightbulb"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@
                                             {{ notes_form.interventions.label }}
                                             <button type='button' class='input-btn-icon' id='togglePassword'
                                             data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Suggested from your profile: {{ appointment.therapist.interventions|join(', ', 'name') }}">
-                                                <i class="fa-regular fa-lightbulb me-3"></i>
+                                                <i class="fa-regular fa-lightbulb"></i>
                                             </button>
                                         </div>
                                     </div>
