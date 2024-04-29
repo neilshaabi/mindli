@@ -68,7 +68,7 @@ def index() -> Response:
 def new_client() -> Response:
     # Current user's client profile already exists
     if current_user.client:
-        abort(400)
+        abort(403)
 
     # Create mock Client to pass to template
     mock_client = Client(user=current_user)
@@ -99,14 +99,8 @@ def new_client() -> Response:
 @bp.route("/<int:client_id>", methods=["GET"])
 @login_required
 def client(client_id: int) -> Response:
-    # Get client with this ID
-    client: Client = db.session.execute(
-        db.select(Client).filter_by(id=client_id)
-    ).scalar_one_or_none()
-
-    # Client not found
-    if not client:
-        abort(400)
+    # Fetch client with this ID
+    client = db.get_or_404(Client, client_id)
 
     # Current user is a client who is not the current user
     if current_user.role == UserRole.CLIENT and not client.is_current_user:
@@ -197,14 +191,8 @@ def create() -> Response:
 @login_required
 @client_required
 def update(client_id: int) -> Response:
-    # Get client with this ID
-    client = db.session.execute(
-        db.select(Client).filter_by(id=client_id)
-    ).scalar_one_or_none()
-
-    # Client not found
-    if not client:
-        abort(400)
+    # Fetch client with this ID
+    client = db.get_or_404(Client, client_id)
 
     # Current user is not authorised
     if not client.is_current_user:

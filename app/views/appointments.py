@@ -75,13 +75,7 @@ def index():
 @login_required
 def appointment(appointment_id: int) -> Response:
     # Fetch appointment with this ID
-    appointment = db.session.execute(
-        db.select(Appointment).filter_by(id=appointment_id)
-    ).scalar_one_or_none()
-
-    # Appointment not found
-    if not appointment:
-        abort(400)
+    appointment = db.get_or_404(Appointment, appointment_id)
 
     # Current user is not in this appointment
     if appointment.this_user.id != current_user.id:
@@ -194,13 +188,7 @@ def create(therapist_id: int) -> Response:
 @login_required
 def update(appointment_id: int) -> Response:
     # Fetch appointment with this ID
-    appointment: Appointment = db.session.execute(
-        db.select(Appointment).filter_by(id=appointment_id)
-    ).scalar_one()
-
-    # Appointment not found
-    if not appointment:
-        abort(400)
+    appointment = db.get_or_404(Appointment, appointment_id)
 
     # Current user is not in this appointment
     if appointment.this_user.id != current_user.id:
@@ -343,13 +331,7 @@ def update(appointment_id: int) -> Response:
 @therapist_required
 def notes(appointment_id: int) -> Response:
     # Fetch appointment with this ID
-    appointment: Appointment = db.session.execute(
-        db.select(Appointment).filter_by(id=appointment_id)
-    ).scalar_one()
-
-    # Appointment not found
-    if not appointment:
-        abort(400)
+    appointment = db.get_or_404(Appointment, appointment_id)
 
     # Current user is not the therapist for the appointment
     if not appointment.therapist.is_current_user:
@@ -396,13 +378,7 @@ def notes(appointment_id: int) -> Response:
 @login_required
 def exercise(appointment_id: int) -> Response:
     # Fetch appointment with this ID
-    appointment: Appointment = db.session.execute(
-        db.select(Appointment).filter_by(id=appointment_id)
-    ).scalar_one()
-
-    # Appointment not found
-    if not appointment:
-        abort(400)
+    appointment = db.get_or_404(Appointment, appointment_id)
 
     # Current user is not in this appointment
     if appointment.this_user.id != current_user.id:

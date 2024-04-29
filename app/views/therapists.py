@@ -56,7 +56,7 @@ def index() -> Response:
 def new_therapist() -> Response:
     # Current user's therapist profile already exists
     if current_user.therapist:
-        abort(400)
+        abort(403)
 
     # Create mock Therapist to pass to template
     mock_therapist = Therapist(user=current_user)
@@ -96,14 +96,8 @@ def new_therapist() -> Response:
 @bp.route("/<int:therapist_id>", methods=["GET"])
 @login_required
 def therapist(therapist_id: int) -> Response:
-    # Get therapist with this ID
-    therapist: Therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one_or_none()
-
-    # Therapist not found
-    if not therapist:
-        abort(400)
+    # Fetch therapist with this ID
+    therapist = db.get_or_404(Therapist, therapist_id)
 
     # Initialise dictionary to hold all forms
     forms = {
@@ -242,13 +236,7 @@ def create() -> Response:
 @therapist_required
 def update(therapist_id: int) -> Response:
     # Get therapist with this ID
-    therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one_or_none()
-
-    # Appointment not found
-    if not therapist:
-        abort(400)
+    therapist = db.get_or_404(Therapist, therapist_id)
 
     # Current user is not authorised
     if not therapist.is_current_user:
