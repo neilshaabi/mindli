@@ -25,6 +25,7 @@ login_manager.login_message = None
 
 from app.models.user import User  # noqa: E402
 
+
 # Define user loader to associate current user with User instance
 @login_manager.user_loader
 def load_user(user_id: str) -> User:
@@ -43,9 +44,10 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
     mail.init_app(app)
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
-    
+
     # Initialise Celery
     from app.utils.celery import celery_init_app
+
     app.celery = celery_init_app(app)
 
     # Configure Stripe

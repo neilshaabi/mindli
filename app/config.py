@@ -28,9 +28,11 @@ class Config(object):
     STRIPE_WEBHOOK_SECRET: str = os.environ["STRIPE_WEBHOOK_SECRET"]
 
     # Celery configuration
-    CELERY_BROKER_URL: str = os.getenv('CELERY_BROKER_URL', 'redis://localhost')
-    CELERY_RESULT_BACKEND: str = os.getenv('CELERY_RESULT_BACKEND', 'redis://localhost')
-    CELERY_TASK_IGNORE_RESULT: bool = True
+    CELERY: dict = {
+        "broker_url": os.getenv("CELERY_BROKER_URL", "redis://localhost"),
+        "result_backend": os.getenv("CELERY_RESULT_BACKEND", "redis://localhost"),
+        "task_ignore_result": True,
+    }
 
 
 class DevConfig(Config):

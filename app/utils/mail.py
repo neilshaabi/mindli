@@ -1,12 +1,14 @@
-from app import mail
-from app.tasks import send_async_email
+from typing import List
+
 from flask import current_app, render_template, url_for
 from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
+from app import mail
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject
 from app.models.user import User
+from app.tasks import send_async_email
 
 
 class EmailMessage:
@@ -102,24 +104,29 @@ class EmailMessage:
         self.link = url_for(endpoint=endpoint, _external=True, **self.url_params)
         return
 
-    
     def prepare_email(self) -> str:
         html_body = render_template("email.html", message=self)
         return html_body
-    
+
     def send(self, asynchronous: bool = True):
+        subject = self.subject.value
+        recipients = [self.recipient.email]
+        html = render_template("email.html", message=self)
+
         try:
             with current_app.app_context():
-                message = Message(self.subject.value, recipients=[self.recipient.email])
-                message.html = self.prepare_email()
-                
                 if asynchronous:
-                    send_async_email.delay(message)
+                    send_async_email.delay(subject, recipients, html)
                 else:
+                    message = prepare_message(subject, recipients, html)
                     self.mail.send(message)
         except Exception as e:
             print(f"Failed to send email: {e}")
         return
+
+
+def prepare_message(subject: str, recipients: List[str], html: str) -> Message:
+    return Message(subject, recipients=recipients, html=html)
 
 
 def send_appointment_update_email(
