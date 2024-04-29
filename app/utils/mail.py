@@ -5,6 +5,7 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
 from app import mail
+from app.config import DevConfig
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject
 from app.models.user import User
@@ -109,12 +110,13 @@ class EmailMessage:
         return html_body
 
     def send(self, asynchronous: bool = True):
-        subject = self.subject.value
-        recipients = [self.recipient.email]
-        html = render_template("email.html", message=self)
-
-        try:
-            with current_app.app_context():
+        with current_app.app_context():
+        
+            subject = self.subject.value
+            recipients = current_app.config["MAIL_USERNAME"] if isinstance(current_app.config, DevConfig) else [self.recipient.email]
+            html = render_template("email.html", message=self)
+        
+            try:
                 # Send email synchronously
                 if asynchronous and current_app.config["CELERY_ENABLED"]:
                     try:
@@ -128,9 +130,9 @@ class EmailMessage:
                 message = prepare_message(subject, recipients, html)
                 self.mail.send(message)
 
-        # Failed to send email
-        except Exception as e:
-            print(f"Failed to send email synchronously: {e}")
+            # Failed to send email
+            except Exception as e:
+                print(f"Failed to send email synchronously: {e}")
         return
 
 
