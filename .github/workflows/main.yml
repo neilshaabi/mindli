@@ -11,9 +11,17 @@ on:
 permissions:
   contents: read
 
-jobs:
+env:
+    ENV: ${{ secrets.ENV }}
+    SECRET_KEY: ${{ secrets.SECRET_KEY }}
+    MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+    MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+    STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+    STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+    STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+    
+jobs:    
   build:
-
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
