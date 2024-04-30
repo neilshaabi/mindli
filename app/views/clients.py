@@ -1,7 +1,17 @@
 from datetime import timedelta
 
-from flask import (Blueprint, Response, abort, jsonify, render_template,
-                   render_template_string, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    flash,
+    jsonify,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
@@ -177,13 +187,14 @@ def create() -> Response:
     db.session.commit()
 
     # Redirect to client profile
+    flash("Client profile created", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message": get_flashed_message_html(
-                "Client profile created", "success"
+            "url": url_for(
+                "profile.profile", user_id=current_user.id, section="edit-profile"
             ),
-        }
+        },
     )
 
 
@@ -219,11 +230,12 @@ def update(client_id: int) -> Response:
     db.session.commit()
 
     # Flash message via AJAX
+    flash("Client profile updated", "success")
     return jsonify(
         {
             "success": True,
-            "flashed_message": get_flashed_message_html(
-                "Client profile updated", "success"
+            "url": url_for(
+                "profile.profile", user_id=current_user.id, section="edit-profile"
             ),
         }
     )

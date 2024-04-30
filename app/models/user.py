@@ -61,9 +61,9 @@ class User(UserMixin, SeedableMixin, db.Model):
     @property
     def onboarding_complete(self) -> bool:
         if self.role == UserRole.THERAPIST:
-            return self.therapist and self.therapist.onboarding_complete()
+            return self.therapist and self.therapist.onboarding_complete
         elif self.role == UserRole.CLIENT:
-            return self.user and self.client.onboarding_complete()
+            return self.client and self.client.onboarding_complete
         print(f"Unhandled user role: {self.role}")
         return False
 

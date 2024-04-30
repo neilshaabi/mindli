@@ -125,6 +125,7 @@ $(document).ready(function() {
         window.history.pushState({ path: newUrl }, '', newUrl);
 
         // Adjust height of messages selector
+        // if () TODO: re-implement adjustMessagesSelectorHeight
         adjustMessagesSelectorHeight();
         $(window).resize(adjustMessagesSelectorHeight);
     });

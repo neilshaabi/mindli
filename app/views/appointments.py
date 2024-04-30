@@ -1,19 +1,38 @@
 from datetime import datetime
 
-from flask import (Blueprint, Response, abort, jsonify, render_template,
-                   render_template_string, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    jsonify,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
-                                    FilterAppointmentsForm,
-                                    TherapyExerciseForm, UpdateAppointmentForm)
+from app.forms.appointments import (
+    AppointmentNotesForm,
+    BookAppointmentForm,
+    FilterAppointmentsForm,
+    TherapyExerciseForm,
+    UpdateAppointmentForm,
+)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
-                              TherapyMode, TherapyType, UserRole)
+from app.models.enums import (
+    AppointmentStatus,
+    EmailSubject,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist

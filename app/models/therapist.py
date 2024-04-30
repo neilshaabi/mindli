@@ -57,7 +57,9 @@ class Therapist(SeedableMixin, db.Model):
 
     @property
     def onboarding_complete(self) -> bool:
-        return self and self.user.gender and self.active_appointment_types
+        return (
+            self and self.user.gender and self.titles and self.active_appointment_types
+        )
 
     @property
     def active_appointment_types(self) -> List["AppointmentType"]:

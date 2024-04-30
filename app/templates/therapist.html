@@ -21,7 +21,7 @@
                         </a>
                     </div>
                     <div class="col-auto">
-                        {% set status = 'Active' if therapist.user.active else 'Inactive' %}
+                        {% set status = 'Active' if therapist.user.active and therapist.onboarding_complete else 'Inactive' %}
                         <div>{{ tag(label=status, status=status, with_icon=True, additional_class='tag-lg') }}</div>
                     </div>
                 </div>
@@ -49,16 +49,16 @@
                         {% if therapist.is_current_user %}
 
                             {% if not therapist.onboarding_complete %}
-                            <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#onboardingModal">
-                                <div class="row align-items-center">
-                                    <div class="col-auto">
-                                        Onboarding
+                                <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#onboardingModal">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            Onboarding
+                                        </div>
+                                        <div class="col-auto ms-auto">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                        </div>
                                     </div>
-                                    <div class="col-auto ms-auto">
-                                        <i class="fa-solid fa-user-plus"></i>
-                                    </div>
-                                </div>
-                            </li>
+                                </li>
                             {% endif %}
                             
                             
@@ -769,7 +769,31 @@
                                     <div class="mt-4">
                                         <div class="accordion accordion-flush" id="settingsAccordion">
 
-                                            <!-- Payment setup -->
+                                            <!-- General settings -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generalSettingsCollapse" aria-expanded="false" aria-controls="generalSettingsCollapse">
+                                                                General
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="generalSettingsCollapse" class="accordion-collapse collapse text-s">
+
+                                                        <div class="accordion-body">
+                                                            <!-- TODO -->
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Payment settings -->
                                             <div class="accordion-item row">
                                                 <div class="col-12">
                                         
@@ -1007,15 +1031,15 @@
                         
                         <form>
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="personalCheckbox" disabled{% if therapist.user.gender %} checked{% endif %}>
-                                <label class="form-check-label" for="personalCheckbox">
+                                <input class="form-check-input" type="checkbox" id="personalInfoCheckbox" disabled{% if therapist.user.gender %} checked{% endif %}>
+                                <label class="form-check-label" for="personalInfoCheckbox">
                                     Submit your personal details
                                 </label>
                             </div>
 
                             <div class="form-check mb-2">
-                                <input class="form-check-input" type="checkbox" id="professionalCheckbox" disabled{% if therapist.titles %} checked{% endif %}>
-                                <label class="form-check-label" for="professionalCheckbox">
+                                <input class="form-check-input" type="checkbox" id="professionalInfoCheckbox" disabled{% if therapist.titles %} checked{% endif %}>
+                                <label class="form-check-label" for="professionalInfoCheckbox">
                                     Submit details of your professional experience
                                 </label>
                             </div>
@@ -1043,6 +1067,6 @@
                 </div>
             </div>
         </div>
-{% endif %}
+    {% endif %}
 
 {% endblock %}

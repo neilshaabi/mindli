@@ -27,17 +27,15 @@ class Config(object):
     STRIPE_PUBLISHABLE_KEY: str = os.environ["STRIPE_PUBLISHABLE_KEY"]
     STRIPE_WEBHOOK_SECRET: str = os.environ["STRIPE_WEBHOOK_SECRET"]
 
-    # Celery enabled by default
-    CELERY_ENABLED: bool = True
-
 
 class DevConfig(Config):
     DEBUG: bool = True
-    RESET_DB: bool = False
+    RESET_DB: bool = True
     FAKE_DATA: bool = True
     WTF_CSRF_ENABLED: str = True
     ERROR_HANDLER: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
+    CELERY_ENABLED: bool = True
     CELERY: dict = {
         "broker_url": "redis://localhost",
         "result_backend": "redis://localhost",

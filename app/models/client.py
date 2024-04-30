@@ -59,7 +59,7 @@ class Client(db.Model):
 
     @property
     def onboarding_complete(self) -> bool:
-        return self and self.user.gender
+        return self and self.user.gender and self.issues
 
     def get_appointments_with_therapist(
         self, therapist: Therapist

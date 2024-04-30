@@ -1,11 +1,20 @@
-from flask import (Blueprint, Response, abort, flash, jsonify, render_template,
-                   render_template_string, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    flash,
+    jsonify,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 
 from app import db
-from app.forms.appointment_types import (AppointmentTypeForm,
-                                         DeleteAppointmentTypeForm)
+from app.forms.appointment_types import AppointmentTypeForm, DeleteAppointmentTypeForm
 from app.forms.appointments import BookAppointmentForm
 from app.forms.stripe import CreateStripeAccountForm
 from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
@@ -229,7 +238,9 @@ def create() -> Response:
     return jsonify(
         {
             "success": True,
-            "url": url_for("profile.profile", user_id=current_user.id),
+            "url": url_for(
+                "profile.profile", user_id=current_user.id, section="edit-profile"
+            ),
         }
     )
 
@@ -280,7 +291,9 @@ def update(therapist_id: int) -> Response:
     return jsonify(
         {
             "success": True,
-            "url": url_for("profile.profile", user_id=current_user.id),
+            "url": url_for(
+                "profile.profile", user_id=current_user.id, section="edit-profile"
+            ),
         }
     )
 

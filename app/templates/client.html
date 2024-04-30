@@ -25,7 +25,7 @@
                     {% endif %}
 
                     <div class="col-auto">
-                        {% set status = 'Active' if client.user.active else 'Inactive' %}
+                        {% set status = 'Active' if client.user.active and client.onboarding_complete else 'Inactive' %}
                         <div>{{ tag(label=status, status=status, with_icon=True, additional_class='tag-lg') }}</div>
                     </div>
                 </div>
@@ -51,6 +51,19 @@
                         </li>
                         
                         {% if client.is_current_user %}
+
+                            {% if not client.onboarding_complete %}
+                                <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#onboardingModal">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            Onboarding
+                                        </div>
+                                        <div class="col-auto ms-auto">
+                                            <i class="fa-solid fa-user-plus"></i>
+                                        </div>
+                                    </div>
+                                </li>
+                            {% endif %}
                             
                             <li class="list-group-item list-group-item-action" data-target="#edit-profile">
                                 <div class="row align-items-center">
@@ -501,6 +514,30 @@
                                     <div class="mt-4">
                                         <div class="accordion accordion-flush" id="settingsAccordion">
 
+                                            <!-- General settings -->
+                                            <div class="accordion-item row">
+                                                <div class="col-12">
+                                        
+                                                    <div class="accordion-header row">
+                                                        <div class="col-12">
+                                                            <h6 class="mb-0">
+                                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#generalSettingsCollapse" aria-expanded="false" aria-controls="generalSettingsCollapse">
+                                                                General
+                                                                </button>
+                                                            </h6>
+                                                        </div>
+                                                    </div>
+                        
+                                                    <div id="generalSettingsCollapse" class="accordion-collapse collapse text-s">
+
+                                                        <div class="accordion-body">
+                                                            <!-- TODO -->
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </div>
+                                            
                                             <!-- Notifications -->
                                             <div class="accordion-item row">
                                                 <div class="col-12">
@@ -537,5 +574,45 @@
             </div>
         </div>
     </div>
+
+    <!-- Onboarding modal -->
+    {% if client.is_current_user and not client.onboarding_complete %}
+        <div class="modal fade" id="onboardingModal" tabindex="-1" aria-labelledby="onboardingModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="onboardingModalLabel">Onboarding Checklist</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <p class="my-muted mb-3">Welcome to <span class="text-primary">mindli</span>! Before booking an appointment:</p>
+                        
+                        <form>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="personalInfoCheckbox" disabled{% if client.user.gender %} checked{% endif %}>
+                                <label class="form-check-label" for="personalInfoCheckbox">
+                                    Submit your personal details
+                                </label>
+                            </div>
+
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="backgroundInfoCheckbox" disabled{% if client.issues %} checked{% endif %}>
+                                <label class="form-check-label" for="backgroundInfoCheckbox">
+                                    Submit required background information
+                                </label>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    {% endif %}
 
 {% endblock %}
