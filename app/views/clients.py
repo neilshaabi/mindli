@@ -24,7 +24,7 @@ from app.models.enums import UserRole
 from app.models.issue import Issue
 from app.models.user import User
 from app.utils.decorators import client_required, therapist_required
-from app.utils.formatters import age_to_date_of_birth, get_flashed_message_html
+from app.utils.formatters import age_to_date_of_birth
 
 bp = Blueprint("clients", __name__, url_prefix="/clients")
 FILTERS_SESSION_KEY = "client_filters"
