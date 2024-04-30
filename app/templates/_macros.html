@@ -212,7 +212,7 @@
                                                     <div class="row mb-1 my-muted">
                                                         <div class="col-12">Specialisations</div>
                                                     </div>
-                                                    <div class="row g-1">
+                                                    <div class="row g-2">
                                                         {% for specialisation in therapist.specialisations %}
                                                             <div class="col-auto">{{ tag(label=specialisation.name) }}</div>
                                                         {% endfor %}
@@ -225,7 +225,7 @@
                                                     <div class="row mb-1 my-muted">
                                                         <div class="col-12">Interventions</div>
                                                     </div>
-                                                    <div class="row g-1">
+                                                    <div class="row g-2">
                                                         {% for intervention in therapist.interventions %}
                                                             <div class="col-auto">{{ tag(label=intervention.name) }}</div>
                                                         {% endfor %}
@@ -270,7 +270,7 @@
                                                     <div class="row mb-1 my-muted">
                                                         <div class="col-12">Therapy types</div>
                                                     </div>
-                                                    <div class="row g-1">
+                                                    <div class="row g-2">
                                                         {% for therapy_type in therapist.active_appointment_types|map(attribute='therapy_type')|unique %}
                                                             <div class="col-auto">{{ tag(label=therapy_type.value, status=therapy_type.name, with_icon=True) }}</div>
                                                         {% endfor %}
@@ -283,7 +283,7 @@
                                                     <div class="row mb-1 my-muted">
                                                         <div class="col-12">Modes supported</div>
                                                     </div>
-                                                    <div class="row g-1">
+                                                    <div class="row g-2">
                                                         {% for therapy_mode in therapist.active_appointment_types|map(attribute='therapy_mode')|unique %}
                                                             <div class="col-auto">{{ tag(label=therapy_mode.value, status=therapy_mode.name, with_icon=True) }}</div>
                                                         {% endfor %}
@@ -467,7 +467,7 @@
                                                     <div class="row mb-1 my-muted">
                                                         <div class="col-12">Current challenges</div>
                                                     </div>
-                                                    <div class="row g-1">
+                                                    <div class="row g-2">
                                                         {% for issue in client.issues|map(attribute='name')|unique %}
                                                             <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
                                                         {% endfor %}

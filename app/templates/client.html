@@ -215,7 +215,7 @@
                                                                 <div class="row mb-1 my-muted">
                                                                     <div class="col-12">Current challenges</div>
                                                                 </div>
-                                                                <div class="row g-1">
+                                                                <div class="row g-2">
                                                                     {% for issue in client.issues|map(attribute='name')|unique %}
                                                                         <div class="col-auto">{{ tag(label=issue, status=issue) }}</div>
                                                                     {% endfor %}
