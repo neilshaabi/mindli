@@ -6,3 +6,5 @@
 node_modules/
 /app/static/dist/
 dump.rdb
+app/static/img/profile_pictures/*
+!app/static/img/profile_pictures/default.png
