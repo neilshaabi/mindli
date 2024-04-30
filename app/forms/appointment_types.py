@@ -1,5 +1,4 @@
-from wtforms import (DecimalField, HiddenField, IntegerField, SelectField,
-                     SubmitField)
+from wtforms import DecimalField, HiddenField, IntegerField, SelectField, SubmitField
 from wtforms.validators import DataRequired, NumberRange
 
 from app.constants import CURRENCIES

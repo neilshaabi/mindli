@@ -1,7 +1,17 @@
 from datetime import timedelta
 
-from flask import (Blueprint, Response, abort, flash, jsonify, render_template,
-                   render_template_string, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    flash,
+    jsonify,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func
 

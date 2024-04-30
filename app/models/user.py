@@ -13,8 +13,11 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
 from app import db
-from app.constants import (EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL,
-                           EXAMPLE_VALID_PASSWORD)
+from app.constants import (
+    EXAMPLE_CLIENT_EMAIL,
+    EXAMPLE_THERAPIST_EMAIL,
+    EXAMPLE_VALID_PASSWORD,
+)
 from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
 
@@ -154,11 +157,13 @@ class User(UserMixin, SeedableMixin, db.Model):
 
         # Insert example therapist and client for development purposes
         fake_users.append(
-            make_random_user(role=UserRole.CLIENT, email=EXAMPLE_CLIENT_EMAIL)
-        )
-        fake_users.append(
             make_random_user(role=UserRole.THERAPIST, email=EXAMPLE_THERAPIST_EMAIL)
         )
+        fake_users.append(
+            make_random_user(role=UserRole.CLIENT, email=EXAMPLE_CLIENT_EMAIL)
+        )
+        used_emails.add(EXAMPLE_THERAPIST_EMAIL)
+        used_emails.add(EXAMPLE_CLIENT_EMAIL)
 
         # Insert 20 fake therapists and clients (10 each)
         for _ in range(10):

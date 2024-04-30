@@ -1,19 +1,40 @@
 from datetime import datetime
 
-from flask import (Blueprint, Response, abort, jsonify, render_template,
-                   render_template_string, request, session, url_for)
+from flask import (
+    Blueprint,
+    Response,
+    abort,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    render_template_string,
+    request,
+    session,
+    url_for,
+)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
-                                    FilterAppointmentsForm,
-                                    TherapyExerciseForm, UpdateAppointmentForm)
+from app.forms.appointments import (
+    AppointmentNotesForm,
+    BookAppointmentForm,
+    FilterAppointmentsForm,
+    TherapyExerciseForm,
+    UpdateAppointmentForm,
+)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
-                              TherapyMode, TherapyType, UserRole)
+from app.models.enums import (
+    AppointmentStatus,
+    EmailSubject,
+    PaymentStatus,
+    TherapyMode,
+    TherapyType,
+    UserRole,
+)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
@@ -125,10 +146,15 @@ def appointment(appointment_id: int) -> Response:
 @login_required
 @client_required
 def create(therapist_id: int) -> Response:
+    # Ensure client has completed onboarding
+    if not current_user.onboarding_complete:
+        flash(
+            "Please complete your onboarding before booking an appointment", "warning"
+        )
+        return redirect(url_for("profile.profile", user_id=current_user.id))
+
     # Fetch therapist with this ID to initialise form correctly
-    therapist = db.session.execute(
-        db.select(Therapist).filter_by(id=therapist_id)
-    ).scalar_one()
+    therapist = db.get_or_404(Therapist, therapist_id)
 
     form = BookAppointmentForm(obj=therapist)
 

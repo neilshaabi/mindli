@@ -34,7 +34,8 @@ def load_user(user_id: str) -> User:
     ).scalar_one_or_none()
 
 
-def create_app(config: Config = None):
+# Flask application factory
+def create_app(config: Config = None, celery_worker: bool = False):
     if not config:
         config = CONFIGS[os.environ["ENV"]]
 
@@ -48,11 +49,6 @@ def create_app(config: Config = None):
     login_manager.init_app(app)
     app.serialiser = URLSafeTimedSerializer(app.config["SECRET_KEY"])
 
-    # Initialise Celery
-    from app.utils.celery import celery_init_app
-
-    app.celery = celery_init_app(app)
-
     # Configure Stripe
     stripe.api_key = app.config["STRIPE_SECRET_KEY"]
     stripe.api_version = "2023-10-16"
@@ -60,6 +56,13 @@ def create_app(config: Config = None):
     # Initialise CSRF protection conditionally
     if app.config["WTF_CSRF_ENABLED"]:
         csrf.init_app(app)
+
+    # Initialise Celery
+    from app.utils.celery import celery_init_app
+
+    app.celery = celery_init_app(app)
+    if celery_worker:
+        return app
 
     # Register context processor to inject global variables
     @app.context_processor
@@ -71,9 +74,9 @@ def create_app(config: Config = None):
             "STRIPE_PUBLISHABLE_KEY": app.config["STRIPE_PUBLISHABLE_KEY"],
         }
 
-    from app.seed import seed_db
-
     with app.app_context():
+        from app.seed import seed_db
+
         # Reset database
         if app.config["RESET_DB"]:
             db.drop_all()
@@ -96,8 +99,15 @@ def create_app(config: Config = None):
             )
 
     # Register blueprints with endpoints
-    from app.views import (appointment_types, appointments, auth, clients,
-                           main, messages, profile)
+    from app.views import (
+        appointment_types,
+        appointments,
+        auth,
+        clients,
+        main,
+        messages,
+        profile,
+    )
     from app.views import stripe as stripe_bp
     from app.views import therapists, users
 

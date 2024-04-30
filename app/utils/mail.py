@@ -5,7 +5,6 @@ from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer
 
 from app import mail
-from app.config import DevConfig
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject
 from app.models.user import User
@@ -113,8 +112,8 @@ class EmailMessage:
         with current_app.app_context():
             subject = self.subject.value
             recipients = (
-                current_app.config["MAIL_USERNAME"]
-                if isinstance(current_app.config, DevConfig)
+                [current_app.config["MAIL_USERNAME"]]
+                if current_app.config["ENV"] == "dev"
                 else [self.recipient.email]
             )
             html = render_template("email.html", message=self)

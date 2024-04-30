@@ -35,7 +35,7 @@ class DevConfig(Config):
     WTF_CSRF_ENABLED: str = True
     ERROR_HANDLER: bool = False
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
-    SEED_FROM_EXTERNAL_API: bool = True
+    SEED_FROM_EXTERNAL_API: bool = False
     CELERY_ENABLED: bool = True
     CELERY: dict = {
         "broker_url": "redis://localhost",
