@@ -6,7 +6,7 @@ from app.forms import (CustomFlaskForm, CustomSelectField,
                        CustomSelectMultipleField)
 from app.models.enums import Gender, Occupation, ReferralSource
 from app.models.issue import Issue
-from app.utils.validators import (DateBeforeToday, NotWhitespace, ValidName,
+from app.utils.validators import (DateBeforeToday, NotWhitespace,
                                   ValidPhoneNumber)
 
 
@@ -30,7 +30,6 @@ class ClientProfileForm(CustomFlaskForm):
         validators=[
             DataRequired(),
             NotWhitespace(),
-            ValidName(),
             Length(min=1, max=50),
         ],
     )

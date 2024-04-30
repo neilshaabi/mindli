@@ -1,4 +1,3 @@
-import re
 from datetime import date
 
 import phonenumbers
@@ -14,14 +13,6 @@ class NotWhitespace:
         if field.data and field.data.isspace():
             raise ValidationError(f"Invalid {field.name.replace('_', ' ').lower()}.")
         return
-
-
-class ValidName:
-    def __call__(self, form, field) -> None:
-        if not re.match(r"^[a-zA-Z]+(?:[ '-][a-zA-Z]+)*$", field.data):
-            raise ValidationError(
-                "Invalid name (only letters, spaces, apostrophes, hyphens allowed)."
-            )
 
 
 class ValidPassword:

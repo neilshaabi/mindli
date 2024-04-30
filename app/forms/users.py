@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Length
 
 from app.forms import CustomFlaskForm, CustomSelectField
 from app.models.enums import Gender
-from app.utils.validators import NotWhitespace, ValidName
+from app.utils.validators import NotWhitespace
 
 
 class UserProfileForm(CustomFlaskForm):
@@ -19,7 +19,6 @@ class UserProfileForm(CustomFlaskForm):
         validators=[
             DataRequired(),
             NotWhitespace(),
-            ValidName(),
             Length(min=1, max=50),
         ],
     )
@@ -28,7 +27,6 @@ class UserProfileForm(CustomFlaskForm):
         validators=[
             DataRequired(),
             NotWhitespace(),
-            ValidName(),
             Length(min=1, max=50),
         ],
     )

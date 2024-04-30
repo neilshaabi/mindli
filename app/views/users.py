@@ -32,7 +32,7 @@ def update(user_id: int) -> Response:
         extension = get_file_extension(file)
         filename = secure_filename(f"user_{current_user.id}.{extension}")
 
-        filepath = os.path.join("app", "static", "img", "profile_pictures", filename)
+        filepath = os.path.join("static", "img", "profile_pictures", filename)
         savepath = os.path.join(current_app.root_path, filepath)
         file.save(savepath)
         current_user.profile_picture = filename
