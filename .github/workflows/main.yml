@@ -35,7 +35,7 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --show-source
+        flake8 . --exclude ./migrations --show-source
     - name: Test with pytest
       run: |
         pytest
