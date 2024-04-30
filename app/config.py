@@ -33,9 +33,9 @@ class DevConfig(Config):
     RESET_DB: bool = True
     FAKE_DATA: bool = True
     WTF_CSRF_ENABLED: str = True
-    ERROR_HANDLER: bool = False
+    ERROR_HANDLER: bool = True
     SQLALCHEMY_DATABASE_URI: str = "sqlite:///" + os.path.join(basedir, "mindli.sqlite")
-    SEED_FROM_EXTERNAL_API: bool = False
+    SEED_FROM_EXTERNAL_API: bool = True
     CELERY_ENABLED: bool = True
     CELERY: dict = {
         "broker_url": "redis://localhost",

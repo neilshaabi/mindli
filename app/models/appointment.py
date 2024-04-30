@@ -87,9 +87,8 @@ class Appointment(SeedableMixin, db.Model):
             .all()
         )
 
-        # Select five different clients including example to make appointments with
-        selected_clients = [example_client_user.client]
-        selected_clients.extend(other_clients[:4])
+        # Select different clients including example to make appointments with
+        selected_clients = [example_client_user.client] + other_clients
 
         # Insert between 2-5 appointments between the example therapist and selected clients
         for client in selected_clients:

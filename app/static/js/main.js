@@ -336,7 +336,7 @@ function registerFormHandlers() {
                 }
             },
             error: function() {
-                // window.location = '/error'; // TODO
+                window.location = '/error'; // TODO
             },
             complete: function() { // Hide loading button only for this form
                 submitBtn.prop('disabled', false);
