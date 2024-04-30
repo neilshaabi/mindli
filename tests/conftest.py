@@ -22,7 +22,7 @@ from app.models.title import Title
 from app.models.user import User
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def app() -> Generator[Flask, Any, None]:
     app = create_app(config=TestConfig)
     with app.app_context():
@@ -30,19 +30,19 @@ def app() -> Generator[Flask, Any, None]:
     return
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def client(app: Flask) -> FlaskClient:
     return app.test_client()
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def fake() -> Generator[Faker, Any, None]:
     fake = Faker()
     yield fake
     return
 
 
-@pytest.fixture(scope="module")
+@pytest.fixture(scope="session")
 def seeded_data():
     seeded_data_dict = {}
     for model in SeedableMixin.__subclasses__():

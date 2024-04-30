@@ -1,16 +1,20 @@
+import os
 import random
 from datetime import date
 from typing import List, Optional
 
+import requests
 import sqlalchemy as sa
 import sqlalchemy.orm as so
 from faker import Faker
+from flask import current_app
 from flask_login import UserMixin
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
 from app import db
-from app.constants import EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL
+from app.constants import (EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL,
+                           EXAMPLE_VALID_PASSWORD)
 from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
 
@@ -69,78 +73,98 @@ class User(UserMixin, SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
-        # Create a fake email that doesn't already exist in the database
-        def unique_fake_email() -> str:
-            fake_email = fake.unique.email().lower()
-            while (
-                db.session.execute(
-                    db.select(User).filter_by(email=fake_email)
-                ).scalar_one_or_none()
-                is not None
-            ):
-                fake_email = fake.unique.email()
-            return fake_email
+        used_emails = set()
 
-        # Fake password that meets requirements to be used for all users
-        fake_password_hash = generate_password_hash("ValidPassword1")
+        def fetch_random_user_from_api(save_profile_picture: bool = True) -> dict:
+            while True:
+                # Fetch random user data from external API
+                response = requests.get("https://randomuser.me/api/")
+                data = response.json()
 
-        # Insert example client for development purposes
-        example_fake_user_client = User(
-            email=EXAMPLE_CLIENT_EMAIL.lower(),
-            password_hash=fake_password_hash,
-            first_name="John",
-            last_name="Smith",
-            gender=Gender.MALE,
-            role=UserRole.CLIENT,
-            date_joined=fake.past_date(start_date="-1y", tzinfo=None),
-            verified=True,
-            active=True,
-        )
-        db.session.add(example_fake_user_client)
+                # Extract user data
+                user_data = data.get("results")[0]
+                email = user_data.get("email")
 
-        # Insert example therapist for development purposes
-        example_fake_user_therapist = User(
-            email=EXAMPLE_THERAPIST_EMAIL.lower(),
-            password_hash=fake_password_hash,
-            first_name="Jane",
-            last_name="Doe",
-            gender=Gender.FEMALE,
-            role=UserRole.THERAPIST,
-            date_joined=fake.past_date(start_date="-1y", tzinfo=None),
-            verified=True,
-            active=True,
-        )
-        db.session.add(example_fake_user_therapist)
+                # Retry if email has already been used
+                if email in used_emails:
+                    continue
 
-        # Insert 10 clients with fake and randomly selected data
-        for _ in range(10):
-            fake_user_therapist = User(
-                email=unique_fake_email(),
-                password_hash=fake_password_hash,
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                gender=random.choice(list(Gender)),
-                role=UserRole.CLIENT,
+                user_data["profile_pic_filename"] = None
+
+                if save_profile_picture:
+                    # Save profile picture locally
+                    profile_pic_url = user_data["picture"]["medium"]
+                    profile_pic_filename = f"user_{fake.uuid4()}.jpg"
+                    profile_pic_filepath = os.path.join(
+                        "app", "static", "img", "profile_pictures", profile_pic_filename
+                    )
+                    with open(profile_pic_filepath, "wb") as f:
+                        pic_response = requests.get(profile_pic_url)
+                        f.write(pic_response.content)
+                    user_data["profile_pic_filename"] = profile_pic_filename
+                return user_data
+
+        def make_random_user(role: UserRole, **kwargs) -> User:
+            random_user_data = {}
+
+            # Fetch data from external API
+            if current_app.config["SEED_FROM_EXTERNAL_API"]:
+                random_user_data = fetch_random_user_from_api()
+                email = random_user_data["email"]
+                first_name = random_user_data["name"]["first"]
+                last_name = random_user_data["name"]["last"]
+                profile_pic = random_user_data.get("profile_pic_filename")
+                try:
+                    gender = Gender[random_user_data["gender"].upper()]
+                except KeyError:
+                    gender = random.choice(list(Gender))
+
+            # Generate data using faker and random
+            else:
+                email = fake.unique.email().lower()
+                while email in used_emails:
+                    email = fake.unique.email().lower()
+                first_name = fake.first_name()
+                last_name = fake.last_name()
+                gender = random.choice(list(Gender))
+                profile_pic = None
+
+            user = User(
+                email=email,
+                password_hash=generate_password_hash(EXAMPLE_VALID_PASSWORD),
+                first_name=first_name,
+                last_name=last_name,
+                gender=gender,
+                role=role,
                 date_joined=fake.past_date(start_date="-1y", tzinfo=None),
+                profile_picture=profile_pic,
                 verified=True,
                 active=True,
             )
-            db.session.add(fake_user_therapist)
 
-        # Insert 10 therapists with fake and randomly selected data
+            # Update values with kwargs if provided
+            for key, value in kwargs.items():
+                setattr(user, key, value)
+
+            # Keep track of used emails to prevent duplicates
+            used_emails.add(email)
+            return user
+
+        fake_users = []
+
+        # Insert example therapist and client for development purposes
+        fake_users.append(
+            make_random_user(role=UserRole.CLIENT, email=EXAMPLE_CLIENT_EMAIL)
+        )
+        fake_users.append(
+            make_random_user(role=UserRole.THERAPIST, email=EXAMPLE_THERAPIST_EMAIL)
+        )
+
+        # Insert 20 fake therapists and clients (10 each)
         for _ in range(10):
-            fake_user_therapist = User(
-                email=unique_fake_email(),
-                password_hash=fake_password_hash,
-                first_name=fake.first_name(),
-                last_name=fake.last_name(),
-                gender=random.choice(list(Gender)),
-                role=UserRole.THERAPIST,
-                date_joined=fake.past_date(start_date="-1y", tzinfo=None),
-                verified=True,
-                active=True,
-            )
-            db.session.add(fake_user_therapist)
+            fake_users.append(make_random_user(UserRole.THERAPIST))
+            fake_users.append(make_random_user(UserRole.CLIENT))
 
+        db.session.add_all(fake_users)
         db.session.commit()
         return

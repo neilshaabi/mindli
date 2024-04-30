@@ -34,7 +34,10 @@ def load_user(user_id: str) -> User:
     ).scalar_one_or_none()
 
 
-def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
+def create_app(config: Config = None):
+    if not config:
+        config = CONFIGS[os.environ["ENV"]]
+
     app = Flask(__name__)
     app.config.from_object(config)
 
@@ -93,15 +96,8 @@ def create_app(config: Config = CONFIGS[os.environ["ENV"]]):
             )
 
     # Register blueprints with endpoints
-    from app.views import (
-        appointment_types,
-        appointments,
-        auth,
-        clients,
-        main,
-        messages,
-        profile,
-    )
+    from app.views import (appointment_types, appointments, auth, clients,
+                           main, messages, profile)
     from app.views import stripe as stripe_bp
     from app.views import therapists, users
 

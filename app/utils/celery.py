@@ -1,7 +1,9 @@
-from celery import Celery, Task
-from flask import Flask
+from typing import List
 
-from app import create_app
+from celery import Celery, Task, shared_task
+from flask import Flask, current_app
+
+from app import mail
 
 
 def celery_init_app(app: Flask) -> Celery:
@@ -16,6 +18,11 @@ def celery_init_app(app: Flask) -> Celery:
     return celery_app
 
 
-# Required to use celery commands
-flask_app = create_app()
-celery = flask_app.celery
+@shared_task
+def send_async_email(subject: str, recipients: List[str], html: str) -> None:
+    with current_app.app_context():
+        from app.utils.mail import prepare_message
+
+        message = prepare_message(subject, recipients, html)
+        mail.send(message)
+    return

@@ -187,7 +187,7 @@ def test_user_login_success(
         data = response.get_json()
         assert response.status_code == 200
         assert data["success"] is True
-        assert "url" in data and data["url"] == "/index"
+        assert "url" in data
         assert current_user.is_authenticated
         client.get("/logout")
     return

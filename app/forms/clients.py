@@ -1,15 +1,13 @@
-from wtforms import BooleanField, DateField, IntegerField, StringField, SubmitField
+from wtforms import (BooleanField, DateField, IntegerField, StringField,
+                     SubmitField)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
 from app.models.enums import Gender, Occupation, ReferralSource
 from app.models.issue import Issue
-from app.utils.validators import (
-    DateBeforeToday,
-    NotWhitespace,
-    ValidName,
-    ValidPhoneNumber,
-)
+from app.utils.validators import (DateBeforeToday, NotWhitespace, ValidName,
+                                  ValidPhoneNumber)
 
 
 class ClientProfileForm(CustomFlaskForm):

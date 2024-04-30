@@ -9,7 +9,7 @@ from app.config import DevConfig
 from app.models.appointment import Appointment
 from app.models.enums import EmailSubject
 from app.models.user import User
-from app.tasks import send_async_email
+from app.utils.celery import send_async_email
 
 
 class EmailMessage:

@@ -1,6 +1,7 @@
 # Email addresses used for example therapist and client accounts in development and testing.
 EXAMPLE_THERAPIST_EMAIL = "therapist@example.com"
 EXAMPLE_CLIENT_EMAIL = "client@example.com"
+EXAMPLE_VALID_PASSWORD = "ValidPassword1"
 
 COUNTRIES = [
     "Afghanistan",

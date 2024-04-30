@@ -123,11 +123,6 @@ $(document).ready(function() {
         // Update the URL query string with the new section
         var newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + '?section=' + target.substring(1);
         window.history.pushState({ path: newUrl }, '', newUrl);
-
-        // Adjust height of messages selector
-        // if () TODO: re-implement adjustMessagesSelectorHeight
-        adjustMessagesSelectorHeight();
-        $(window).resize(adjustMessagesSelectorHeight);
     });
 
     

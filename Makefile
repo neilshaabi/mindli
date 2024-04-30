@@ -29,7 +29,7 @@ app:
 celery:
 	@echo "Starting celery worker..."
 	@echo "Note: requires connection with redis via redis-server"
-	celery -A app.utils.celery worker --loglevel INFO
+	celery -A make_celery worker --loglevel INFO
 
 redis:
 	@echo "Starting redis server..."
