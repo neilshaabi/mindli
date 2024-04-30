@@ -75,7 +75,7 @@ def create_app(config: Config = None, celery_worker: bool = False):
         }
 
     with app.app_context():
-        from app.seed import seed_db
+        from app.models import seed_db
 
         # Reset database
         if app.config["RESET_DB"]:

@@ -27,3 +27,24 @@ from .therapist import Therapist
 from .therapy_exercise import TherapyExercise
 from .title import Title
 from .user import User
+
+
+# Seed required models in order
+def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
+    Title.seed(db)
+    Language.seed(db)
+    Issue.seed(db)
+    Intervention.seed(db)
+
+    if use_fake_data:
+        fake = Faker()
+        User.seed(db, fake)
+        Therapist.seed(db, fake)
+        Client.seed(db, fake)
+        Conversation.seed(db)
+        Message.seed(db, fake)
+        AppointmentType.seed(db, fake)
+        Appointment.seed(db, fake)
+        AppointmentNotes.seed(db, fake)
+        TherapyExercise.seed(db, fake)
+    return
