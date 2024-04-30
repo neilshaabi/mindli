@@ -50,7 +50,7 @@ class ProdConfig(Config):
     FAKE_DATA: bool = False
     WTF_CSRF_ENABLED: str = True
     ERROR_HANDLER: bool = True
-    SQLALCHEMY_DATABASE_URI: str = os.environ["DATABASE_URL"]
+    SQLALCHEMY_DATABASE_URI: str = os.environ.get("DATABASE_URL")
     SEED_FROM_EXTERNAL_API: bool = False
 
 
