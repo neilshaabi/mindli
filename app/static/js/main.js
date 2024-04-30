@@ -212,7 +212,7 @@ $(document).ready(function() {
 function resizeSidebar() {
     var screenWidth = $(window).width();
     var sidebar = $('.sidebar');
-    if (screenWidth < 768) {
+    if (screenWidth < 1000) {
         collapseSidebar();
         sidebar.addClass('collapsed');
     } else {

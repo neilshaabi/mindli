@@ -399,10 +399,6 @@ table th {
 
 /* Containers */
 
-.col-lg-auto {
-    min-width: 180px;
-}
-
 .my-card {
     color: var(--dark-grey-text);
     background: white;

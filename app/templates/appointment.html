@@ -36,10 +36,25 @@
                     
                         <li class="list-group-item list-group-item-action active" data-target="#details-section">
                             <div class="row align-items-center">
-                                <div class="col-auto">Appointment Details</div>
+                                <div class="col-auto">
+                                    Details
+                                </div>
+                                <div class="col-auto ms-auto">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                </div>
                             </div>
                         </li>
-                    
+
+                        <li class="list-group-item list-group-item-action" data-target="#manage-section">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    Manage
+                                </div>
+                                <div class="col-auto ms-auto">
+                                    <i class="fa-solid fa-wrench"></i>
+                                </div>
+                            </div>
+                        </li>
                         
                         {% if current_user.role == UserRole.THERAPIST %}
                             <li class="list-group-item list-group-item-action" data-target="#notes-section">
@@ -56,7 +71,7 @@
                     
                         <li class="list-group-item list-group-item-action rounded-bottom" data-target="#exercise-section">
                             <div class="row align-items-center">
-                                <div class="col-auto">Therapy Exercise</div>
+                                <div class="col-auto">Exercise</div>
                                 <div class="col-auto ms-auto">
                                     {% if appointment.exercise %}
                                         {% set status = 'Completed' if appointment.exercise.completed else 'Incomplete' %}
@@ -82,7 +97,7 @@
                     <!-- Appointment details section-->
                     <div id="details-section" class="section">
                         <div class="row mb-3">
-                            <div class="col-auto">
+                            <div class="col-12">
                                 
                                 <div class="row mb-4 align-items-center">
                                     <div class="col-auto">
@@ -90,65 +105,115 @@
                                     </div>
                                 </div>
 
-                                <ul>
-                                    <li class="mb-3">
-                                        {{ current_user.role.value }}: <a href="{{ url_for('profile.profile', user_id=appointment.other_user.id) }}">{{ appointment.other_user.full_name }}</a>
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">{{ appointment.other_user.role.value }}</div>
+                                                <div>
+                                                    <a href="{{ url_for('profile.profile', user_id=appointment.other_user.id) }}">
+                                                        {{ appointment.other_user.full_name }}
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
 
-                                    </li>
-                                    <li class="mb-3">Date and time: {{ appointment.time.strftime('%A, %-d/%-m/%Y – %I:%M %p') }}</li>
-                                    <li class="mb-3">Therapy type: {{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</li>
-                                    <li class="mb-3">Mode: {{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=True) }}</li>
-                                    <li class="mb-3">Duration: {{ appointment.appointment_type.duration }} minutes</li>
-                                    <li class="mb-3">Fee: {{ appointment.appointment_type.fee_currency }} {{ appointment.appointment_type.fee_amount }}</li>
-                                    <li class="mb-3">Payment: {{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=True) }}</li>
-                                </ul>
-
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Date and time</div>
+                                                <div>{{ appointment.time.strftime('%A, %-d/%-m/%Y – %I:%M %p') }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Therapy type</div>
+                                                <div>{{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=True) }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Mode</div>
+                                                <div>{{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=True) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="col-lg-6">
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Duration</div>
+                                                <div>{{ appointment.appointment_type.duration }} minutes</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Fee</div>
+                                                <div>{{ appointment.appointment_type.fee_currency }} {{ appointment.appointment_type.fee_amount }}</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="row mb-3">
+                                            <div class="col-12">
+                                                <div class="mb-1 my-muted">Payment</div>
+                                                <div>{{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=True) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    
+                    </div>
+
+                    <!-- Appointment management -->
+                    <div id="manage-section" class="section hidden">
+                        
+                        <div class="row mb-4 align-items-center">
+                            <div class="col-auto">
+                                <h5 class="mb-0">Manage Appointment</h5>
+                            </div>
+                        </div>
+
                         <form id="{{ update_form.id }}" action="{{ update_form.endpoint }}" novalidate>
                             
                             {{ update_form.csrf_token }}
                             
-                            <div class="row mb-3 align-items-center">
-                                <div class="col-auto">
-                                    <h6 class="mb-0">Update Appointment</h6>
-                                </div>
-                            </div>
-                            
-                            <div class="row g-3 mb-4 align-items-center">
-                                <div class="col-md-4">
+                            <div class="row mb-2">
+                                <div class="col-md-12">
                                     <div class='form-floating'>
                                         {{ update_form.action(class_='form-control', placeholder=update_form.action.label.text, id='action') }}
                                         {{ update_form.action.label }}
                                     </div>
                                 </div>
-
-                                <div class="col-md-3 datetime-field hidden">
+                            </div>
+                            
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-4 datetime-field hidden">
                                     <div class='form-floating'>
                                         {{ update_form.new_date(class_='form-control', placeholder=update_form.new_date.label.text) }}
                                         {{ update_form.new_date.label }}
                                     </div>
                                 </div>
 
-                                <div class="col-md-3 datetime-field hidden">
+                                <div class="col-md-4 datetime-field hidden">
                                     <div class='form-floating'>
                                         {{ update_form.new_time(class_='form-control', placeholder=update_form.new_time.label.text) }}
                                         {{ update_form.new_time.label }}
                                     </div>
                                 </div>
 
-                                <div class="col-md-2">
+                                <div class="col-md-4">
                                     {{ submit_button(update_form.submit, id='submit-btn', disabled=True) }}
                                 </div>
-
                             </div>
                         </form>
                     </div>
 
                     <!-- Notes section -->
                     {% if current_user.role == UserRole.THERAPIST %}
-                        <div id="notes-section" class="section" style="display:none;">
+                        <div id="notes-section" class="section hidden">
                             <form id="{{ notes_form.id }}" action="{{ notes_form.endpoint }}" novalidate>
                                 
                                 {{ notes_form.csrf_token }}
@@ -214,7 +279,7 @@
                     {% endif %}
 
                     <!-- Therapy Exercise -->
-                    <div id="exercise-section" class="section" style="display:none;">
+                    <div id="exercise-section" class="section hidden">
                         <form id="{{ exercise_form.id }}" action="{{ exercise_form.endpoint }}" novalidate>
                                 
                             {{ exercise_form.csrf_token }}
