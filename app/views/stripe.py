@@ -1,18 +1,8 @@
 import secrets
 
 import stripe
-from flask import (
-    Blueprint,
-    abort,
-    current_app,
-    flash,
-    json,
-    jsonify,
-    redirect,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, abort, current_app, flash, json, jsonify,
+                   redirect, request, session, url_for)
 from flask_login import current_user, login_required
 
 from app import csrf, db

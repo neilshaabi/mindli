@@ -1,24 +1,12 @@
-from wtforms import (
-    BooleanField,
-    DateField,
-    IntegerField,
-    SelectField,
-    StringField,
-    SubmitField,
-    TextAreaField,
-    TimeField,
-)
+from wtforms import (BooleanField, DateField, IntegerField, SelectField,
+                     StringField, SubmitField, TextAreaField, TimeField)
 from wtforms.validators import DataRequired, Length, NumberRange, Optional
 
 from app.constants import CURRENCIES
-from app.forms import CustomFlaskForm, CustomSelectField, CustomSelectMultipleField
-from app.models.enums import (
-    AppointmentStatus,
-    PaymentStatus,
-    TherapyMode,
-    TherapyType,
-    UserRole,
-)
+from app.forms import (CustomFlaskForm, CustomSelectField,
+                       CustomSelectMultipleField)
+from app.models.enums import (AppointmentStatus, PaymentStatus, TherapyMode,
+                              TherapyType, UserRole)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 
@@ -135,6 +123,11 @@ class TherapyExerciseForm(CustomFlaskForm):
         elif role == UserRole.CLIENT:
             self.title.render_kw = {"disabled": "disabled"}
             self.description.render_kw = {"disabled": "disabled"}
+
+        exercise = kwargs.get("obj")
+        if not exercise:
+            self.client_response.render_kw = {"disabled": "disabled"}
+            self.completed.render_kw = {"disabled": "disabled"}
         return
 
 

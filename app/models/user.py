@@ -13,11 +13,8 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
 from app import db
-from app.constants import (
-    EXAMPLE_CLIENT_EMAIL,
-    EXAMPLE_THERAPIST_EMAIL,
-    EXAMPLE_VALID_PASSWORD,
-)
+from app.constants import (EXAMPLE_CLIENT_EMAIL, EXAMPLE_THERAPIST_EMAIL,
+                           EXAMPLE_VALID_PASSWORD)
 from app.models import SeedableMixin
 from app.models.enums import Gender, UserRole
 

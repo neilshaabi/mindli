@@ -1,40 +1,20 @@
 from datetime import datetime
 
-from flask import (
-    Blueprint,
-    Response,
-    abort,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    render_template_string,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, abort, flash, jsonify, redirect,
+                   render_template, render_template_string, request, session,
+                   url_for)
 from flask_login import current_user, login_required
 from sqlalchemy import func, or_
 
 from app import db
-from app.forms.appointments import (
-    AppointmentNotesForm,
-    BookAppointmentForm,
-    FilterAppointmentsForm,
-    TherapyExerciseForm,
-    UpdateAppointmentForm,
-)
+from app.forms.appointments import (AppointmentNotesForm, BookAppointmentForm,
+                                    FilterAppointmentsForm,
+                                    TherapyExerciseForm, UpdateAppointmentForm)
 from app.models.appointment import Appointment
 from app.models.appointment_notes import AppointmentNotes
 from app.models.client import Client
-from app.models.enums import (
-    AppointmentStatus,
-    EmailSubject,
-    PaymentStatus,
-    TherapyMode,
-    TherapyType,
-    UserRole,
-)
+from app.models.enums import (AppointmentStatus, EmailSubject, PaymentStatus,
+                              TherapyMode, TherapyType, UserRole)
 from app.models.intervention import Intervention
 from app.models.issue import Issue
 from app.models.therapist import Therapist
@@ -163,7 +143,7 @@ def create(therapist_id: int) -> Response:
         return jsonify({"success": False, "errors": form.errors})
 
     # Add new appointment with pending payment in database
-    new_appointment = Appointment(
+    appointment = Appointment(
         therapist_id=therapist_id,
         client_id=current_user.client.id,
         appointment_type_id=form.appointment_type.data,
@@ -171,7 +151,7 @@ def create(therapist_id: int) -> Response:
         appointment_status=AppointmentStatus.SCHEDULED,
         payment_status=PaymentStatus.PENDING,
     )
-    db.session.add(new_appointment)
+    db.session.add(appointment)
     db.session.commit()
 
     # Redirect the client to Stripe Checkout
@@ -189,7 +169,7 @@ def create(therapist_id: int) -> Response:
             }
         )
 
-    checkout_session_url = create_checkout_session(new_appointment)
+    checkout_session_url = create_checkout_session(appointment)
 
     if not checkout_session_url:
         return jsonify(
@@ -416,26 +396,32 @@ def exercise(appointment_id: int) -> Response:
     if not form.validate_on_submit():
         return jsonify({"success": False, "errors": form.errors})
 
-    # Create new exercise if one does not exist and current user is therapist
-    if not appointment.exercise and current_user.role == UserRole.THERAPIST:
-        appointment.exercise = TherapyExercise(
-            appointment_id=appointment.id,
-            title=form.title.data,
-            description=form.description.data,
-            client_response=None,
-            completed=False,
-        )
-        db.session.add(appointment.exercise)
+    # Appointment exercise not previously set
+    if not appointment.exercise:
+        # Create new exercise as therapist
+        if current_user.role == UserRole.THERAPIST:
+            appointment.exercise = TherapyExercise(
+                appointment_id=appointment.id,
+                title=form.title.data,
+                description=form.description.data,
+                client_response=None,
+                completed=False,
+            )
 
-    # Update exercise with form data as therapist
-    elif current_user.role == UserRole.THERAPIST:
-        appointment.exercise.title = form.title.data
-        appointment.exercise.description = form.description.data
-        appointment.exercise.completed = form.completed.data
+        # Prevent client from taking any actions
+        elif current_user.role == UserRole.CLIENT:
+            abort(403)
 
-    # Update exercise with form data as client
-    elif current_user.role == UserRole.CLIENT:
-        appointment.exercise.client_response = form.client_response.data
+    else:
+        # Update exercise with form data as therapist
+        if current_user.role == UserRole.THERAPIST:
+            appointment.exercise.title = form.title.data
+            appointment.exercise.description = form.description.data
+            appointment.exercise.completed = form.completed.data
+
+        # Update exercise with form data as client
+        elif current_user.role == UserRole.CLIENT:
+            appointment.exercise.client_response = form.client_response.data
         appointment.exercise.completed = form.completed.data
 
     db.session.commit()

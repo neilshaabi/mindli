@@ -99,15 +99,8 @@ def create_app(config: Config = None, celery_worker: bool = False):
             )
 
     # Register blueprints with endpoints
-    from app.views import (
-        appointment_types,
-        appointments,
-        auth,
-        clients,
-        main,
-        messages,
-        profile,
-    )
+    from app.views import (appointment_types, appointments, auth, clients,
+                           main, messages, profile)
     from app.views import stripe as stripe_bp
     from app.views import therapists, users
 

@@ -1,28 +1,13 @@
-from flask import (
-    Blueprint,
-    Response,
-    current_app,
-    flash,
-    jsonify,
-    redirect,
-    render_template,
-    request,
-    session,
-    url_for,
-)
+from flask import (Blueprint, Response, current_app, flash, jsonify, redirect,
+                   render_template, request, session, url_for)
 from flask_login import login_user, logout_user
 from itsdangerous import BadSignature, SignatureExpired
 from sqlalchemy.exc import IntegrityError
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from app import db
-from app.forms.auth import (
-    LoginForm,
-    RegisterForm,
-    RequestPasswordResetForm,
-    ResetPasswordForm,
-    VerifyEmailForm,
-)
+from app.forms.auth import (LoginForm, RegisterForm, RequestPasswordResetForm,
+                            ResetPasswordForm, VerifyEmailForm)
 from app.models.enums import EmailSubject, UserRole
 from app.models.user import User
 from app.utils.mail import EmailMessage

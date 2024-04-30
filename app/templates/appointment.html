@@ -60,11 +60,13 @@
                                 <div class="col-auto ms-auto">
                                     {% if appointment.exercise %}
                                         {% set status = 'Completed' if appointment.exercise.completed else 'Incomplete' %}
+                                        {% set label = status  %}
                                     {% else %}
                                         {% set status = 'not_set' %}
+                                        {% set label = 'Not set' %}
                                     {% endif %}
                                     <div id="completion-tag-sm"
-                                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="{{ status }}">
+                                    data-bs-toggle="tooltip" data-bs-placement="right" data-bs-custom-class="my-tooltip" data-bs-title="{{ label }}">
                                         {{ tag(status=status, with_icon=True, additional_class='tag-sm') }}
                                     </div>
                                 </div>
@@ -251,7 +253,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-2">
+                            <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class='form-floating'>
                                         {{ exercise_form.client_response(class_='form-control', placeholder=exercise_form.client_response.label.text) }}
@@ -260,7 +262,7 @@
                                 </div>
                             </div>
 
-                            <div class="row mb-2">
+                            <div class="row mb-3">
                                 <div class="col-md-12">
                                     <div class="form-check form-switch">
                                         {{ exercise_form.completed(class_='form-check-input') }}
