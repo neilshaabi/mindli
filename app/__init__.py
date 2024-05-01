@@ -102,7 +102,7 @@ def create_app(config: Config = None, celery_worker: bool = False):
     from app.views import (appointment_types, appointments, auth, clients,
                            main, messages, profile)
     from app.views import stripe as stripe_bp
-    from app.views import therapists, users
+    from app.views import therapists, treatment_plans, users
 
     app.register_blueprint(appointment_types.bp)
     app.register_blueprint(appointments.bp)
@@ -113,6 +113,7 @@ def create_app(config: Config = None, celery_worker: bool = False):
     app.register_blueprint(messages.bp)
     app.register_blueprint(stripe_bp.bp)
     app.register_blueprint(therapists.bp)
+    app.register_blueprint(treatment_plans.bp)
     app.register_blueprint(users.bp)
 
     return app

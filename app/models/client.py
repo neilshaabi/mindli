@@ -13,7 +13,6 @@ from app import db
 from app.models import SeedableMixin
 from app.models.enums import Occupation, ReferralSource, UserRole
 from app.models.issue import Issue
-from app.models.therapist import Therapist
 from app.models.user import User
 
 
@@ -65,20 +64,9 @@ class Client(SeedableMixin, db.Model):
     def onboarding_complete(self) -> bool:
         return self and self.user.gender and self.issues
 
-    def get_appointments_with_therapist(
-        self, therapist: Therapist
-    ) -> List["Appointment"]:
-        from app.models.appointment import Appointment
-
-        return (
-            db.session.execute(
-                db.select(Appointment).filter_by(
-                    client_id=self.id, therapist_id=therapist.id
-                )
-            )
-            .scalars()
-            .all()
-        )
+    @property
+    def therapists(self):
+        return [appointment.therapist for appointment in self.appointments]
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:

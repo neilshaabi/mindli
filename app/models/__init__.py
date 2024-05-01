@@ -42,6 +42,7 @@ def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
         User.seed(db, fake)
         Therapist.seed(db, fake)
         Client.seed(db, fake)
+        TreatmentPlan.seed(db)
         Conversation.seed(db)
         Message.seed(db, fake)
         AppointmentType.seed(db, fake)

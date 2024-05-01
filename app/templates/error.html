@@ -14,10 +14,10 @@
             
                 {% if is_http_exception %}
                     <h4 class="mb-3">{{ error.code }} {{ error.name }}</h4>
-                    <p>{{ error.description }}</p>
+                    <p class="mb-2">{{ error.description }}</p>
                 {% else %}
                     <h4 class="mb-3">Error</h4>
-                    <p>Sorry, it looks like something went wrong.</p>
+                    <p class="mb-2">Sorry, it looks like something went wrong.</p>
                 {% endif %}
                 <p class='my-muted text-s'>Need help? <a href='/contact'>Contact us</a></p>
                 

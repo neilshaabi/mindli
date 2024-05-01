@@ -69,18 +69,8 @@ class Therapist(SeedableMixin, db.Model):
         return [at for at in self.appointment_types if at.active]
 
     @property
-    def appointments_with_client(self, client_id: int) -> List["Appointment"]:
-        from app.models.appointment import Appointment
-
-        return (
-            db.session.execute(
-                db.select(Appointment).filter_by(
-                    therapist_id=self.id, client_id=client_id
-                )
-            )
-            .scalars()
-            .all()
-        )
+    def clients(self):
+        return [appointment.client for appointment in self.appointments]
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:

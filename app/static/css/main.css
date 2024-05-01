@@ -249,7 +249,7 @@ input:-webkit-autofill:focus {
 }
 
 textarea {
-    height: calc(2* var(--my-form-height)) !important;
+    height: calc(2 * var(--my-form-height)) !important;
 }
 
 .input-error {

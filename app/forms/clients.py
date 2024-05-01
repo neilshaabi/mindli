@@ -43,7 +43,7 @@ class ClientProfileForm(CustomFlaskForm):
         validators=[DataRequired()],
     )
     issues = CustomSelectMultipleField(
-        "Current challenges",
+        "Presenting issues",
         validators=[DataRequired()],
         coerce=int,
     )

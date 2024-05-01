@@ -1,4 +1,4 @@
-from flask import Blueprint, flash, jsonify, redirect, url_for
+from flask import Blueprint, abort, flash, jsonify, url_for
 from flask_login import current_user, login_required
 
 from app import db
@@ -33,7 +33,7 @@ def create():
     db.session.add(new_appointment_type)
     db.session.commit()
 
-    flash("New appointment type created", "success")
+    flash("Appointment type created", "success")
     return jsonify(
         {
             "success": True,
@@ -51,15 +51,11 @@ def create():
 @therapist_required
 def update(appointment_type_id):
     # Find the appointment type by ID
-    appointment_type = db.session.execute(
-        db.select(AppointmentType).filter_by(
-            id=appointment_type_id, therapist_id=current_user.therapist.id
-        )
-    ).scalar_one_or_none()
+    appointment_type = db.get_or_404(AppointmentType, appointment_type_id)
 
-    # Redirect if appointment type not found
-    if not appointment_type or appointment_type.therapist.user.id != current_user.id:
-        return redirect(url_for("main.index"))
+    # Appointment type does not belong to this therapist
+    if appointment_type.therapist.user.id != current_user.id:
+        abort(403)
 
     form = AppointmentTypeForm(prefix=str(appointment_type_id))
 
@@ -73,7 +69,7 @@ def update(appointment_type_id):
             }
         )
 
-    # Mark existing appointment type as inactive to maintain historical integrity
+    # Soft delete - mark existing appointment type as inactive for integrity
     appointment_type.active = False
 
     # Create a new appointment type
@@ -117,9 +113,9 @@ def delete():
         )
     ).scalar_one()
 
-    # Redirect if appointment type does not belong to this therapist
+    # Appointment type does not belong to this therapist
     if appointment_type.therapist.user.id != current_user.id:
-        return redirect(url_for("main.index"))
+        abort(403)
 
     # Soft delete appointment to maintain historical integrity
     appointment_type.active = False

@@ -163,8 +163,8 @@ def create(therapist_id: int) -> Response:
                     "appointments.appointment", appointment_id=appointment.id
                 ),
                 "flashed_message_html": get_flashed_message_html(
-                    message="Appointment scheduled, awaiting payment and confirmation",
-                    category="info",
+                    "Appointment scheduled, awaiting payment and confirmation",
+                    "info",
                 ),
             }
         )
@@ -176,8 +176,8 @@ def create(therapist_id: int) -> Response:
             {
                 "success": False,
                 "flashed_message_html": get_flashed_message_html(
-                    message="Failed to initiate payment via Stripe, please contact therapist",
-                    category="error",
+                    "Failed to initiate payment via Stripe, please contact therapist",
+                    "error",
                 ),
             }
         )

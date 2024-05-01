@@ -47,7 +47,6 @@
                         </li>
                         
                         {% if therapist.is_current_user %}
-
                             {% if not therapist.onboarding_complete %}
                                 <li class="list-group-item list-group-item-action" data-bs-toggle="modal" data-bs-target="#onboardingModal">
                                     <div class="row align-items-center">
@@ -60,7 +59,6 @@
                                     </div>
                                 </li>
                             {% endif %}
-                            
                             
                         
                             <li class="list-group-item list-group-item-action" data-target="#edit-profile">
@@ -104,7 +102,21 @@
                                     </div>
                                 </div>
                             </li>
+
+                            {% if current_user.client in therapist.clients %}
+
+                                <li class="list-group-item list-group-item-action" data-target="#treatment-plan">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            Treatment Plan
+                                        </div>
+                                        <div class="col-auto ms-auto">
+                                            <i class="fa-solid fa-clipboard-list"></i>
+                                        </div>
+                                    </div>
+                                </li>
                             
+                            {% endif %}
                         {% endif %}
                     </ul>
                 </div>
@@ -121,7 +133,7 @@
                                 <!-- Header -->
                                 <div class="row g-3 mb-4 align-items-center">
                                     <div class="col-auto">
-                                    <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
+                                        <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
                                             <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
                                         </a>
                                     </div>
@@ -139,7 +151,7 @@
                                     </div>
                                     {% if current_user.role == UserRole.CLIENT %}
                                         <div class="col-auto ms-auto">
-                                            <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
+                                            <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary h-auto text-s">
                                                 <i class="fa-regular fa-paper-plane"></i>
                                                 <span>Message</span>
                                             </a>
@@ -901,11 +913,15 @@
                                     <!-- Header -->
                                     <div class="row g-3 mb-4 align-items-center">
                                         <div class="col-auto">
-                                            <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                                            <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
+                                                <img src="{{ url_for('static', filename='img/profile_pictures/' + therapist.user.profile_picture) }}" class="profile-picture" alt="Profile picture of {{ therapist.user.full_name }}">
+                                            </a>
                                         </div>
                                         <div class="col">
                                             <div class="row">
-                                                <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                                                <a href="{{ url_for('profile.profile', user_id=therapist.user.id) }}">
+                                                    <h5 class="mb-1">{{ therapist.user.full_name }}</h5>
+                                                </a>
                                             </div>
                                             <div class="row">
                                                 <span class="my-muted">{{ therapist.titles|join(', ', 'name') }}</span>
@@ -913,7 +929,7 @@
                                         </div>
                                         {% if current_user.role == UserRole.CLIENT %}
                                             <div class="col-auto ms-auto">
-                                                <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary btn-default-height text-s">
+                                                <a href="{{ url_for('messages.conversation', therapist_user_id=therapist.id, client_user_id=current_user.id) }}" class="btn btn-outline-primary h-auto text-s">
                                                     <i class="fa-regular fa-paper-plane"></i>
                                                     <span>Message</span>
                                                 </a>
@@ -947,7 +963,7 @@
                                                 </div>
                                             </div>
                     
-                                            <div class="row mb-2 g-2">
+                                            <div class="row mb-3 g-2">
                                                 <div class="col-md-4">
                                                     <div class='form-floating'>
                                                         {{ forms.book_appointment_form.date(class_='form-control', placeholder=forms.book_appointment_form.date.label.text) }}
@@ -978,8 +994,116 @@
                                 </div>
                             </div>
                         </div>
-                    {% endif %}
 
+                        <!-- Treatment plan section -->
+                        {% if current_user.client in therapist.clients %}
+                            <div id="treatment-plan" class="section hidden">
+                                <div class="row">
+                                    <div class="col-12">
+                                        
+                                        <!-- Header -->
+                                        <div class="row mb-4 align-items-center">
+                                            <div class="col-auto">
+                                                <h5 class="mb-0">Treatment Plan</h5>
+                                            </div>
+                                        </div>
+                                        
+                                        <hr>
+
+                                        <!-- Body -->
+                                        <div class="mt-4 text-s">
+
+                                            <div class="row mb-4">
+                                                <div class="col-12">
+                                                    <span class="my-muted">
+                                                        <i class="fa-solid fa-circle-info"></i>
+                                                        {% if treatment_plan %}
+                                                            <span>Last updated: {{ treatment_plan.last_updated.strftime('%A, %-d %B %Y at %I:%M %p') }}</span>
+                                                        {% else %}
+                                                            <span>You do not have a treatment plan with {{ therapist.user.full_name }}</span>
+                                                        {% endif %}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row mb-2 g-2">
+                                                
+                                                {% if treatment_plan.issues %}
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Presenting issues</div>
+                                                            </div>
+                                                            <div class="row g-2">
+                                                                {% for issue in treatment_plan.issues %}
+                                                                    <div class="col-auto">{{ tag(label=issue.name) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if treatment_plan.issues_description %}
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row my-muted">
+                                                                <div class="col-12">Description of presenting issues</div>
+                                                            </div>
+                                                            <div>
+                                                                {{ treatment_plan.issues_description }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if treatment_plan.interventions %}
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row mb-1 my-muted">
+                                                                <div class="col-12">Interventions</div>
+                                                            </div>
+                                                            <div class="row g-2">
+                                                                {% for intervention in treatment_plan.interventions %}
+                                                                    <div class="col-auto">{{ tag(label=intervention.name) }}</div>
+                                                                {% endfor %}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                                
+                                                {% if treatment_plan.interventions_description %}
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row my-muted">
+                                                                <div class="col-12">Description of interventions</div>
+                                                            </div>
+                                                            <div>
+                                                                {{ treatment_plan.interventions_description }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+
+                                                {% if treatment_plan.medication %}
+                                                    <div class="row mb-3">
+                                                        <div class="col-12">
+                                                            <div class="row my-muted">
+                                                                <div class="col-12">Medication</div>
+                                                            </div>
+                                                            <div>
+                                                                {{ treatment_plan.medication }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% endif %}
+
+                    </div>
                 </div>
             </div>
         </div>

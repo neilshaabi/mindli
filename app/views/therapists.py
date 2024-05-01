@@ -17,6 +17,7 @@ from app.models.issue import Issue
 from app.models.language import Language
 from app.models.therapist import Therapist
 from app.models.title import Title
+from app.models.treatment_plan import TreatmentPlan
 from app.models.user import User
 from app.utils.decorators import therapist_required
 
@@ -110,9 +111,11 @@ def therapist(therapist_id: int) -> Response:
         "create_appt_type_form": None,
         "delete_appt_type_form": None,
         "update_appt_type_forms": [],
-        "book_appointment_form": None,
         "stripe_onboarding_form": None,
+        "book_appointment_form": None,
     }
+
+    treatment_plan = None
 
     if therapist.is_current_user:
         active_page = "profile"
@@ -163,15 +166,23 @@ def therapist(therapist_id: int) -> Response:
     else:
         active_page = "therapists"
 
-        if current_user.role == UserRole.CLIENT:
-            forms["book_appointment_form"] = BookAppointmentForm(
-                obj=therapist,
-                id="book_appointment",
-                endpoint=url_for(
-                    "appointments.create",
-                    therapist_id=therapist_id,
-                ),
-            )
+    if current_user.role == UserRole.CLIENT:
+        forms["book_appointment_form"] = BookAppointmentForm(
+            obj=therapist,
+            id="book_appointment",
+            endpoint=url_for(
+                "appointments.create",
+                therapist_id=therapist.id,
+            ),
+        )
+
+        # Display treatment plan with this therapist
+        if current_user.client in therapist.clients:
+            treatment_plan = db.session.execute(
+                db.select(TreatmentPlan).filter_by(
+                    therapist_id=therapist.id, client_id=current_user.client.id
+                )
+            ).scalar_one_or_none()
 
     # Render template with information for this therapist
     return render_template(
@@ -182,6 +193,7 @@ def therapist(therapist_id: int) -> Response:
         TherapyType=TherapyType,
         TherapyMode=TherapyMode,
         forms=forms,
+        treatment_plan=treatment_plan,
     )
 
 

@@ -125,6 +125,22 @@ $(document).ready(function() {
         window.history.pushState({ path: newUrl }, '', newUrl);
     });
 
+
+    // Toggle between preview and form for treatment plan when button clicked
+    $('#toggle-treatment-plan').click(function() {
+        form = $('#treatment-plan-form');
+        preview = $('#treatment-plan-preview');
+        if (form.hasClass('hidden')) {
+            preview.addClass('hidden');
+            form.removeClass('hidden');
+            $(this).html('<i class="fa-solid fa-magnifying-glass"></i><span>Preview</span>')
+        } else {
+            form.addClass('hidden');
+            preview.removeClass('hidden');
+            $(this).html('<i class="fa-solid fa-pen-to-square"></i><span>Edit</span>')
+        }
+    });
+
     
     // Set scroll position to bottom for messages
     $(window).on('load', function() {

@@ -5,6 +5,7 @@ import sqlalchemy.orm as so
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.constants import ISSUES
 from app.models import SeedableMixin
 
 
@@ -29,12 +30,7 @@ class Issue(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:
-        issue_names = [
-            "Anxiety",
-            "Depression",
-            "Stress",
-        ]
-        issues = [Issue(name=issue_name) for issue_name in issue_names]
+        issues = [Issue(name=issue) for issue in ISSUES]
         db.session.add_all(issues)
         db.session.commit()
         return

@@ -7,11 +7,13 @@ from sqlalchemy import func
 
 from app import db
 from app.forms.clients import ClientProfileForm, FilterClientsForm
+from app.forms.treatment_plans import TreatmentPlanForm
 from app.forms.users import UserProfileForm
 from app.models.appointment import Appointment
 from app.models.client import Client
 from app.models.enums import UserRole
 from app.models.issue import Issue
+from app.models.treatment_plan import TreatmentPlan
 from app.models.user import User
 from app.utils.decorators import client_required, therapist_required
 from app.utils.formatters import age_to_date_of_birth
@@ -109,7 +111,7 @@ def client(client_id: int) -> Response:
     # Current user is a therapist with no appointments with this client
     elif (
         current_user.role == UserRole.THERAPIST
-        and client.get_appointments_with_therapist(current_user.therapist) is None
+        and client not in current_user.therapist.clients
     ):
         abort(403)
 
@@ -117,7 +119,10 @@ def client(client_id: int) -> Response:
     forms = {
         "user_profile_form": None,
         "client_profile_form": None,
+        "treatment_plan_form": None,
     }
+
+    treatment_plan = None
 
     # Initialise forms for current user to edit their profile
     if client.is_current_user:
@@ -134,8 +139,29 @@ def client(client_id: int) -> Response:
             endpoint=url_for("clients.update", client_id=client_id),
         )
 
+    # Current user is a therapist of this client
     else:
         active_page = "clients"
+
+        treatment_plan = db.session.execute(
+            db.select(TreatmentPlan).filter_by(
+                therapist_id=current_user.therapist.id, client_id=client.id
+            )
+        ).scalar_one_or_none()
+
+        # Select endpoint url for treatment plan based on whether it exists
+        if treatment_plan is None:
+            endpoint = url_for(
+                "treatment_plan.create",
+                therapist_id=current_user.therapist.id,
+                client_id=client.id,
+            )
+        else:
+            endpoint = url_for("treatment_plan.update", plan_id=treatment_plan.id)
+
+        forms["treatment_plan_form"] = TreatmentPlanForm(
+            obj=treatment_plan, id="treatment_plan", endpoint=endpoint
+        )
 
     # Render template with information for this client
     return render_template(
@@ -144,6 +170,7 @@ def client(client_id: int) -> Response:
         client=client,
         default_section=request.args.get("section", "profile"),
         forms=forms,
+        treatment_plan=treatment_plan,
     )
 
 
