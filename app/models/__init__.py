@@ -26,6 +26,7 @@ from .message import Message
 from .therapist import Therapist
 from .therapy_exercise import TherapyExercise
 from .title import Title
+from .treatment_plan import TreatmentPlan
 from .user import User
 
 

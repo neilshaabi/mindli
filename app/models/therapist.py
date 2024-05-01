@@ -50,6 +50,9 @@ class Therapist(SeedableMixin, db.Model):
     appointments: so.Mapped[List["Appointment"]] = so.relationship(
         back_populates="therapist",
     )
+    treatment_plans: so.Mapped[List["TreatmentPlan"]] = so.relationship(
+        back_populates="therapist",
+    )
 
     @property
     def is_current_user(self) -> bool:

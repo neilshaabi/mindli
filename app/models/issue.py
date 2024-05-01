@@ -22,6 +22,10 @@ class Issue(SeedableMixin, db.Model):
         secondary="note_issue",
         back_populates="issues",
     )
+    treatment_plans: so.Mapped[List["TreatmentPlan"]] = so.relationship(
+        secondary="plan_issue",
+        back_populates="issues",
+    )
 
     @classmethod
     def seed(cls, db: SQLAlchemy) -> None:

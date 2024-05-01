@@ -29,7 +29,7 @@ class SelectFieldMixin:
         else:
             choices = [
                 (row.id, row.name)
-                for row in db.session.execute(db.select(source)).scalars()
+                for row in db.session.execute(db.select(source)).scalars().all()
             ]
         if self.choices is None:
             self.choices = choices

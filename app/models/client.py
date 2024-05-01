@@ -10,13 +10,14 @@ from flask_login import current_user
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
+from app.models import SeedableMixin
 from app.models.enums import Occupation, ReferralSource, UserRole
 from app.models.issue import Issue
 from app.models.therapist import Therapist
 from app.models.user import User
 
 
-class Client(db.Model):
+class Client(SeedableMixin, db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     user_id: so.Mapped[int] = so.mapped_column(
         sa.ForeignKey("user.id", ondelete="CASCADE"), index=True
@@ -36,6 +37,9 @@ class Client(db.Model):
         secondary="client_issue", back_populates="clients"
     )
     appointments: so.Mapped[List["Appointment"]] = so.relationship(
+        back_populates="client",
+    )
+    treatment_plans: so.Mapped[List["TreatmentPlan"]] = so.relationship(
         back_populates="client",
     )
 
@@ -115,3 +119,4 @@ class Client(db.Model):
             db.session.add(fake_client)
 
         db.session.commit()
+        return

@@ -37,6 +37,13 @@ therapist_title = sa.Table(
     sa.Column("title_id", sa.ForeignKey("title.id"), primary_key=True),
 )
 
+note_issue = sa.Table(
+    "note_issue",
+    db.Model.metadata,
+    sa.Column("note_id", sa.ForeignKey("appointment_notes.id"), primary_key=True),
+    sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
+)
+
 note_intervention = sa.Table(
     "note_intervention",
     db.Model.metadata,
@@ -44,9 +51,16 @@ note_intervention = sa.Table(
     sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
 )
 
-note_issue = sa.Table(
-    "note_issue",
+plan_issue = sa.Table(
+    "plan_issue",
     db.Model.metadata,
-    sa.Column("note_id", sa.ForeignKey("appointment_notes.id"), primary_key=True),
+    sa.Column("plan_id", sa.ForeignKey("treatment_plan.id"), primary_key=True),
     sa.Column("issue_id", sa.ForeignKey("issue.id"), primary_key=True),
+)
+
+plan_intervention = sa.Table(
+    "plan_intervention",
+    db.Model.metadata,
+    sa.Column("plan_id", sa.ForeignKey("treatment_plan.id"), primary_key=True),
+    sa.Column("intervention_id", sa.ForeignKey("intervention.id"), primary_key=True),
 )
