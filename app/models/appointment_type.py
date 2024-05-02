@@ -6,10 +6,11 @@ from faker import Faker
 from flask_sqlalchemy import SQLAlchemy
 
 from app import db
-from app.constants import CURRENCIES
+from app.constants import CURRENCIES, EXAMPLE_THERAPIST_EMAIL
 from app.models import SeedableMixin
 from app.models.enums import TherapyMode, TherapyType
 from app.models.therapist import Therapist
+from app.models.user import User
 
 
 class AppointmentType(SeedableMixin, db.Model):
@@ -33,6 +34,21 @@ class AppointmentType(SeedableMixin, db.Model):
 
     @classmethod
     def seed(cls, db: SQLAlchemy, fake: Faker) -> None:
+        # Create fixed appointment type for example therapist
+        example_therapist_user = db.session.execute(
+            db.select(User).filter_by(email=EXAMPLE_THERAPIST_EMAIL)
+        ).scalar_one()
+
+        appointment_type = AppointmentType(
+            therapist_id=example_therapist_user.therapist.id,
+            therapy_type=TherapyType.INDIVIDUAL,
+            therapy_mode=TherapyMode.IN_PERSON,
+            duration=random.choice([30, 45, 60, 90]),
+            fee_amount=100,
+            fee_currency="SGD",
+        )
+        db.session.add(appointment_type)
+
         # Fetch all therapists
         therapists = db.session.execute(db.select(Therapist)).scalars().all()
 

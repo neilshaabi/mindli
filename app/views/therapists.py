@@ -93,7 +93,7 @@ def new_therapist() -> Response:
         "therapist.html",
         active_page="profile",
         therapist=mock_therapist,
-        default_section="profile",
+        default_section="edit-profile",
         forms=forms,
     )
 

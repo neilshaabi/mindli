@@ -354,7 +354,7 @@
         <td>{{ tag(label=appointment.appointment_type.therapy_type.value, status=appointment.appointment_type.therapy_type.name, with_icon=False) }}</td>
         <td>{{ tag(label=appointment.appointment_type.therapy_mode.value, status=appointment.appointment_type.therapy_mode.name, with_icon=False) }}</td>
         <td>{{ appointment.appointment_type.duration }} minutes</td>
-        <td>{{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=False) }}</td>
+        <td>{{ tag(label=appointment.appointment_status.value, status=appointment.appointment_status.name, with_icon=True) }}</td>
         <td>{{ tag(label=appointment.payment_status.value, status=appointment.payment_status.name, with_icon=False) }}</td>
         <td>
             <a href="{{ url_for('appointments.appointment', appointment_id=appointment.id) }}" class="btn btn-icon"

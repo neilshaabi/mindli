@@ -104,6 +104,7 @@ class Therapist(SeedableMixin, db.Model):
             interventions=random.sample(
                 interventions, random.randint(1, min(3, len(interventions)))
             ),
+            stripe_account_id="acct_1PBwwfFSyBYsHcUa",
         )
         db.session.add(example_therapist)
 

@@ -93,7 +93,7 @@ def new_client() -> Response:
         "client.html",
         active_page="profile",
         client=mock_client,
-        default_section="profile",
+        default_section="edit-profile",
         forms=forms,
     )
 
