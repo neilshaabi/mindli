@@ -56,7 +56,7 @@ class ValidPhoneNumber:
         return
 
 
-class LocationRequired:
+class TherapistLocationRequired:
     def __call__(self, form, field) -> None:
         if (
             field.data == TherapyMode.IN_PERSON.name
@@ -65,7 +65,7 @@ class LocationRequired:
             raise ValidationError("Location required for in-person appointments.")
 
 
-class MinimumFeeAmount:
+class MinimumStripeFee:
     def __call__(self, form, field) -> None:
         amount = form.fee_amount.data
         currency = form.fee_currency.data

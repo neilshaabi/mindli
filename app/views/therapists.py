@@ -7,8 +7,8 @@ from app import db
 from app.forms.appointment_types import (AppointmentTypeForm,
                                          DeleteAppointmentTypeForm)
 from app.forms.appointments import BookAppointmentForm
-from app.forms.stripe import CreateStripeAccountForm
-from app.forms.therapists import FilterTherapistsForm, TherapistProfileForm
+from app.forms.therapists import (CreateStripeAccountForm,
+                                  FilterTherapistsForm, TherapistProfileForm)
 from app.forms.users import UserProfileForm
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType, UserRole

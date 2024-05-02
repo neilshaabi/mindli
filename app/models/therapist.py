@@ -69,7 +69,7 @@ class Therapist(SeedableMixin, db.Model):
         return [at for at in self.appointment_types if at.active]
 
     @property
-    def clients(self):
+    def clients(self) -> List["Client"]:
         return [appointment.client for appointment in self.appointments]
 
     @classmethod

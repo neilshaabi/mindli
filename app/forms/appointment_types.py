@@ -6,7 +6,7 @@ from app.constants import CURRENCIES
 from app.forms import CustomFlaskForm, CustomSelectField
 from app.models.appointment_type import AppointmentType
 from app.models.enums import TherapyMode, TherapyType
-from app.utils.validators import LocationRequired, MinimumFeeAmount
+from app.utils.validators import MinimumStripeFee, TherapistLocationRequired
 
 
 class AppointmentTypeForm(CustomFlaskForm):
@@ -22,7 +22,7 @@ class AppointmentTypeForm(CustomFlaskForm):
         choices=[("", "Select mode")]
         + [(choice.name, choice.value) for choice in TherapyMode],
         default="",
-        validators=[DataRequired(), LocationRequired()],
+        validators=[DataRequired(), TherapistLocationRequired()],
     )
     duration = IntegerField(
         "Duration (minutes)",
@@ -30,7 +30,7 @@ class AppointmentTypeForm(CustomFlaskForm):
     )
     fee_amount = DecimalField(
         "Fee",
-        validators=[DataRequired(), NumberRange(min=0.01), MinimumFeeAmount()],
+        validators=[DataRequired(), NumberRange(min=0.01), MinimumStripeFee()],
     )
     fee_currency = SelectField(
         "Currency",

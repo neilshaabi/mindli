@@ -56,14 +56,14 @@ def FAKE_PASSWORD() -> str:
 
 
 @pytest.fixture(scope="module")
-def fake_user_client(FAKE_PASSWORD: str) -> Generator[User, Any, None]:
+def fake_user_client(fake: Faker, FAKE_PASSWORD: str) -> Generator[User, Any, None]:
     fake_user_client = User(
-        email="test_client@example.com".lower(),
+        email=fake.unique.email().lower(),
         password_hash=generate_password_hash(FAKE_PASSWORD),
-        first_name="John",
-        last_name="Smith",
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
         gender=Gender.MALE,
-        date_joined=date.today(),
+        date_joined=fake.past_date(start_date="-1y", tzinfo=None),
         role=UserRole.CLIENT,
         verified=True,
         active=True,

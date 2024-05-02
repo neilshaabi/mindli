@@ -141,3 +141,7 @@ class FilterTherapistsForm(CustomFlaskForm):
         self.specialisations.populate_choices(Issue)
         self.interventions.populate_choices(Intervention)
         return
+
+
+class CreateStripeAccountForm(CustomFlaskForm):
+    submit = SubmitField("Stripe Onboarding")

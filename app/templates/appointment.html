@@ -59,7 +59,7 @@
                         {% if current_user.role == UserRole.THERAPIST %}
                             <li class="list-group-item list-group-item-action" data-target="#notes-section">
                                 <div class="row align-items-center">
-                                    <div class="col-auto">Appointment Notes</div>
+                                    <div class="col-auto">Notes</div>
                                     <div class="col-auto ms-auto">
                                         <div data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="my-tooltip" data-bs-title="Therapist-only access">
                                             {{ tag(status='restricted', with_icon=True, additional_class='tag-sm') }}

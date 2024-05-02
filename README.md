@@ -1,3 +1,3 @@
 # mindli
 
-Web-based psychotherapy management software designed for mental health practioners and clients seeking support.
+Web-based psychotherapy management software designed to support mental health practioners and clients throughout the therapeutic journey.
