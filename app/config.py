@@ -9,7 +9,7 @@ load_dotenv(os.path.join(basedir, ".env"))
 # Default configuration values
 class Config(object):
     ENV: str = os.environ["ENV"]
-    SECRET_KEY: str = os.environ["SECRET_KEY"]  # os.urandom(12).hex()
+    SECRET_KEY: str = os.environ["SECRET_KEY"]
     SQLALCHEMY_TRACK_MODIFICATIONS: bool = False
 
     # Flask Mail configuration
