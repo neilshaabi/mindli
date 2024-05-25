@@ -73,6 +73,7 @@ class MinimumStripeFee:
         if not currency:
             return
 
+        # Convert currency to USD
         if currency != "USD":
             try:
                 converter = CurrencyConverter()
