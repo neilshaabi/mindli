@@ -1,7 +1,5 @@
 {
-  "dependencies": {
-    "@stripe/connect-js": "^3.3.5"
-  },
+  "dependencies": {},
   "name": "mindli",
   "version": "1.0.0",
   "main": "index.js",

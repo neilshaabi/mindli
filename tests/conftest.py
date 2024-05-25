@@ -57,7 +57,6 @@ def FAKE_PASSWORD() -> str:
 
 @pytest.fixture(scope="module")
 def fake_user_client(fake: Faker, FAKE_PASSWORD: str) -> Generator[User, Any, None]:
-    
     # Create User with fake data
     fake_user_client = User(
         email=fake.unique.email().lower(),
@@ -70,7 +69,7 @@ def fake_user_client(fake: Faker, FAKE_PASSWORD: str) -> Generator[User, Any, No
         verified=True,
         active=True,
     )
-    
+
     # Insert fake user into database
     db.session.add(fake_user_client)
     db.session.commit()

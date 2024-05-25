@@ -32,7 +32,6 @@ from .user import User
 
 # Seed database models in order
 def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
-    
     # Insert static data
     Title.seed(db)
     Language.seed(db)
