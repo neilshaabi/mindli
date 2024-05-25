@@ -25,7 +25,6 @@ def test_register_success(
         data = response.get_json()
 
         assert response.status_code == 200
-
         assert data["success"] is True and "url" in data
         assert (
             db.session.execute(
@@ -50,15 +49,13 @@ def test_register_missing_fields(
     data = response.get_json()
 
     assert response.status_code == 200
-    assert data["success"] is False
-    assert "errors" in data
+    assert data["success"] is False and "errors" in data
     assert set(data["errors"]) == set(fake_registration_data.keys())
     assert (
         db.session.execute(db.select(db.func.count()).select_from(User)).scalar()
         == initial_user_count
     )
     mock_send_email.assert_not_called()
-
     return
 
 
