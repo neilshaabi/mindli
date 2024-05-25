@@ -30,13 +30,16 @@ from .treatment_plan import TreatmentPlan
 from .user import User
 
 
-# Seed required models in order
+# Seed database models in order
 def seed_db(db: SQLAlchemy, use_fake_data: bool) -> None:
+    
+    # Insert static data
     Title.seed(db)
     Language.seed(db)
     Issue.seed(db)
     Intervention.seed(db)
 
+    # Insert dummy data conditionally
     if use_fake_data:
         fake = Faker()
         User.seed(db, fake)

@@ -1,6 +1,4 @@
-# This workflow will install Python dependencies, run tests and lint with a single version of Python
-
-name: Python application CI/CD
+name: mindli CI/CD
 
 on:
   push:
@@ -39,4 +37,4 @@ jobs:
         flake8 . --exclude ./migrations --show-source
     - name: Test with pytest
       run: |
-        pytest
+        pytest -s -x
