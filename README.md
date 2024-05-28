@@ -36,6 +36,13 @@ Several useful commands are defined in the `Makefile` to facilitate the various 
     make app
     ```
 
+## Example User Credentials
+
+Example accounts are provided for a therapist and client, with data designed to simulate the appearance of mindli with a large user base. Their login credentials are as follows:
+- Therapist email: therapist@example.com
+- Client email: client@example.com
+- Password (both): ValidPassword1
+
 ## Makefile Commands
 
 - `help`: Displays available commands.
