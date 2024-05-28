@@ -231,7 +231,7 @@ function resizeSidebar() {
     if (screenWidth < 1000) {
         collapseSidebar();
         sidebar.addClass('collapsed');
-    } else {
+    } else if (!sidebar.hasClass('collapsed')) {
         sidebar.removeClass('collapsed');
         expandSidebar();
     }
@@ -305,7 +305,8 @@ function registerFormHandlers() {
             data: formData,
             processData: false,
             contentType: false,
-            beforeSend: function() { // Show loading state for submit button, remove flashed messages
+            beforeSend: function() {
+                // Show loading state for submit button, remove flashed messages
                 submitBtn.prop('disabled', true);
                 btnText.hide();
                 btnSpinner.show();
@@ -352,9 +353,10 @@ function registerFormHandlers() {
                 }
             },
             error: function() {
-                window.location = '/error'; // TODO
+                window.location = '/error';å
             },
-            complete: function() { // Hide loading button only for this form
+            complete: function() {
+                // Hide loading button only for this form
                 submitBtn.prop('disabled', false);
                 btnText.show();
                 btnSpinner.hide();

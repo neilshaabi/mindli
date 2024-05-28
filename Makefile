@@ -35,7 +35,6 @@ redis:
 	@echo "Starting redis server..."
 	redis-server
 
-
 migrate-db:
 	@echo "Generating database migrations..."
 	flask db migrate

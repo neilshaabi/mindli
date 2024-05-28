@@ -8,8 +8,6 @@ bp = Blueprint("main", __name__)
 @bp.route("/home")
 def index() -> Response:
     if current_user.is_authenticated:
-        # TODO
-        # return render_template("dashboard.html", active_page="home")
         return redirect(url_for("profile.profile", user_id=current_user.id))
     else:
         return render_template("index.html", active_page="home")

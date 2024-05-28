@@ -49,7 +49,7 @@ def index():
         .all()
     )
 
-    # Combine the lists: new conversations first
+    # Combine lists, inserting new conversations first
     conversations = conversations_without_messages + conversations_with_messages
 
     for conversation in conversations:

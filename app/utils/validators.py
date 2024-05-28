@@ -83,7 +83,7 @@ class MinimumStripeFee:
             except ValueError:
                 return
 
-        # Minimum amount for a Stripe charge
+        # Raise error if below minimum amount for a Stripe charge
         if amount < 0.5:
             raise ValidationError(
                 "Fee amount must be at least $0.50 USD or equivalent in charge currency"
