@@ -111,11 +111,7 @@ class EmailMessage:
     def send(self, asynchronous: bool = True):
         with current_app.app_context():
             subject = self.subject.value
-            recipients = (
-                [current_app.config["MAIL_USERNAME"]]
-                if current_app.config["ENV"] == "dev"
-                else [self.recipient.email]
-            )
+            recipients = [self.recipient.email]
             html = render_template("email.html", message=self)
 
             try:
