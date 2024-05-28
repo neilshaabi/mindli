@@ -31,18 +31,6 @@ Several useful commands are defined in the `Makefile` to facilitate the various 
     make dependencies
     ```
 
-4. **Enable asynchronous task management (optional but recommended for responsiveness):**
-    
-    Open a new terminal window and start redis server:
-    ```
-    make redis
-    ```
-    
-    Open another terminal window and start celery worker:
-    ```
-    make celery
-    ```
-
 4. **Run application**:
     ```
     make app
