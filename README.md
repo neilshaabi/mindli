@@ -1,6 +1,6 @@
 # mindli
 
-Web application designed to improve the efficiency and effectiveness of psychotherapy on a global scale, empowering mental health practioners and clients throughout the therapeutic journey.
+Web application designed to improve the efficiency and effectiveness of psychotherapy on a global scale, empowering mental health practitioners and clients throughout the therapeutic journey.
 
 Key features include:
 
