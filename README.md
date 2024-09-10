@@ -1,6 +1,6 @@
 # mindli
 
-Web application designed to improve the efficiency and effectiveness of psychotherapy on a global scale, empowering mental health practitioners and clients throughout the therapeutic journey.
+Web application designed to improve outcomes for mental health services on a global scale, empowering practitioners and clients throughout the therapeutic journey.
 
 Key features include:
 
@@ -58,3 +58,24 @@ Example accounts are provided for a therapist and client, with data designed to 
 - `lint`: Formats, lints, and reorganizes imports for Python files.
 - `test`: Runs tests using pytest.
 - `clean`: Cleans up the directory by removing build files, caches, and virtual environment.
+
+## Screenshots
+
+User registration
+
+<img width="1000" alt="User registration" src="https://github.com/user-attachments/assets/0563f154-b098-416a-a16f-83a7d67c920d">
+
+\
+Therapist directory
+
+<img width="1512" alt="Therapist directory" src="https://github.com/user-attachments/assets/ca8e6d63-b510-4f53-978f-5b8e59ec91fc">
+
+\
+Appointment notes
+
+<img width="1512" alt="Appointment notes" src="https://github.com/user-attachments/assets/6f8d428c-965d-49bb-b78c-47384339dca5">
+
+\
+Messages
+
+<img width="1512" alt="Messages" src="https://github.com/user-attachments/assets/8a8a5ca0-6e46-47f5-8204-193753234c3e">
